@@ -5,6 +5,20 @@ try:
     import configparser
 except ImportError:
     import ConfigParser as configparser
+#    import new
+#    def __getitem__(self, key):
+#        print(key)
+#        if self.section_key is None:
+#            self.section_key = key
+#            return self
+#        else:
+#            element = self.get(self.section_key, key)
+#            self.section_key = None
+#            return element
+#    method = new.instancemethod(__getitem__, None, configparser.ConfigParser)
+#    configparser.ConfigParser.__dict__['__getitem__'] = method
+#    configparser.ConfigParser.__dict__['section_key'] = None
+
 import argparse
 import subprocess
 import sys
@@ -16,10 +30,9 @@ def main(args):
 
     config = configparser.ConfigParser()
     config.read(args.config_file)
-    deploy_section = config['deploy']
 
-    branch = get_branch(args, deploy_section)
-    clean_repo = get_clean_repo(args, deploy_section)
+    branch = get_branch(args, config)
+    clean_repo = get_clean_repo(args, config)
 
     deploy(args.config_file, branch, clean_repo)
 
@@ -32,18 +45,18 @@ def init():
     subprocess.call(cmd)
 
 
-def get_branch(args, deploy_section):
+def get_branch(args, config):
     if args.branch is not None:
         return args.branch
-    elif 'branch' in deploy_section:
-        return deploy_section['branch']
+    elif config.has_option('deploy', 'branch'):
+        return config.get('deploy', 'branch')
 
 
-def get_clean_repo(args, deploy_section):
+def get_clean_repo(args, config):
     if args.clean_repo is not None:
         return args.clean_repo
-    elif 'clean_repo' in deploy_section:
-        return deploy_section.getboolean('clean_repo')
+    elif config.has_option('deploy', 'clean_repo'):
+        return config.getboolean('deploy', 'clean_repo')
     else:
         return False
 

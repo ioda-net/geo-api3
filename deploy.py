@@ -70,7 +70,7 @@ def deploy(config_file, branch, clean_repo):
         sys.exit(1)
 
     if branch:
-        subprocess.Popen(['git', 'checkou', branch]).communicate()
+        subprocess.Popen(['git', 'checkout', branch]).communicate()
 
     subprocess.call(['buildout/bin/buildout', '-c', config_file])
 

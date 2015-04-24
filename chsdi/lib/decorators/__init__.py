@@ -14,7 +14,10 @@ def requires_authorization():
                 request = self.request
             else:
                 request = self
-            if request.headers.get('X-SearchServer-Authorized', '').lower() != 'true':
+
+            # TODO: we shunt the authorization, this must be improve.
+            # NB: this header doesn't seem to be used by swisstopo either.
+            if request.headers.get('X-SearchServer-Authorized', 'true').lower() != 'true':
                 raise HTTPForbidden(detail='This service requires an authorization')
             else:
                 return f(self, *args, **kwargs)

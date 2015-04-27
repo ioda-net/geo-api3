@@ -5,19 +5,6 @@ try:
     import configparser
 except ImportError:
     import ConfigParser as configparser
-#    import new
-#    def __getitem__(self, key):
-#        print(key)
-#        if self.section_key is None:
-#            self.section_key = key
-#            return self
-#        else:
-#            element = self.get(self.section_key, key)
-#            self.section_key = None
-#            return element
-#    method = new.instancemethod(__getitem__, None, configparser.ConfigParser)
-#    configparser.ConfigParser.__dict__['__getitem__'] = method
-#    configparser.ConfigParser.__dict__['section_key'] = None
 
 import argparse
 import subprocess

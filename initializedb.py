@@ -1,6 +1,8 @@
 import os
 import sys
 
+import ConfigParser as configparser
+
 from sqlalchemy import engine_from_config
 from sqlalchemy.orm import sessionmaker
 
@@ -47,8 +49,12 @@ def initialize_bod(engine):
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
     session = Session()
+
+    config = configparser.ConfigParser()
+    config.read('buildout_config.cfg')
+
     add_topics(session)
-    add_layers_config(session)
+    add_layers_config(session, config)
     add_catalog(session)
 
 
@@ -59,9 +65,9 @@ def add_topics(session):
     session.commit()
 
 
-def add_layers_config(session):
-    wms_url = 'http://mapserver.local/wms/geojbwms'
-    wms_version = '1.1.0'
+def add_layers_config(session, config):
+    wms_url = config.get('initdb', 'wms_url')
+    wms_version = config.get('initdb', 'wms_version')
     wms = WebMapService(wms_url, version=wms_version)
     for layer_name, layer in wms.contents.items():
         styles = layer.styles

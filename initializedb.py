@@ -53,7 +53,7 @@ def initialize_bod(engine):
 
 
 def add_topics(session):
-    geojb = Topics(id=TOPIC, orderKey=0, availableLangs='fr', selectedLayers=[],
+    geojb = Topics(id=TOPIC, orderKey=0, availableLangs='fr,de,en', selectedLayers=[],
                         backgroundLayers=['COUVERTUREDUSOL'], showCatalog=True, staging='')
     session.add(geojb)
     session.commit()

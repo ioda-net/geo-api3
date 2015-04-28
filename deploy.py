@@ -10,18 +10,27 @@ import argparse
 import subprocess
 import sys
 
+from shutil import rmtree
+from glob import glob
+
 
 def main(args):
-    if args.init:
-        init()
-
     config = configparser.ConfigParser()
     config.read(args.config_file)
 
     branch = get_branch(args, config)
     clean_repo = get_clean_repo(args, config)
+    must_clean = get_clean(args, config)
+    redeploy = get_deploy(args, config)
 
-    deploy(args.config_file, branch, clean_repo)
+    if must_clean:
+        clean()
+
+    if args.init or (must_clean and redeploy):
+        init()
+
+    if (must_clean and redeploy) or not must_clean:
+        deploy(args.config_file, branch, clean_repo)
 
 
 def init():
@@ -33,19 +42,54 @@ def init():
 
 
 def get_branch(args, config):
-    if args.branch is not None:
+    if args.branch:
         return args.branch
     elif config.has_option('deploy', 'branch'):
         return config.get('deploy', 'branch')
 
 
 def get_clean_repo(args, config):
-    if args.clean_repo is not None:
+    if args.clean_repo:
         return args.clean_repo
     elif config.has_option('deploy', 'clean_repo'):
         return config.getboolean('deploy', 'clean_repo')
     else:
         return False
+
+
+def get_clean(args, config):
+    if args.clean:
+        return args.clean
+    elif config.has_option('deploy', 'clean'):
+        return config.getboolean('deploy', 'clean')
+    else:
+        return False
+
+
+def get_deploy(args, config):
+    if args.deploy:
+        return args.deploy
+    # If the clean is from config, always deploy
+    elif not args.clean and config.has_option('deploy', 'clean'):
+        return True
+    else:
+        return False
+
+
+def clean():
+    try:
+        # Used to clean generated files
+        subprocess.call(['buildout/bin/buildout', '-c', 'buildout_cleaner.cfg'])
+    except OSError:
+        print('buildout has not been reinstalled since last clean')
+    try:
+        # Clean the rest
+        rmtree('node_modules')
+        rmtree('chsdi.egg-info')
+        for file in glob('buildout/*'):
+            rmtree(file)
+    except OSError:
+        print('You must reinit the project before cleaning it')
 
 
 def deploy(config_file, branch, clean_repo):
@@ -73,5 +117,9 @@ if __name__ == '__main__':
         dest='branch')
     parser.add_argument('--clean-repo', help='If the working directory is not clean, exit',
         dest='clean_repo', action='store_true')
+    parser.add_argument('-C', '--clean', help='Remove all downloaded files and folders and all '
+        'generated files', dest='clean', action='store_true')
+    parser.add_argument('-d', '--deploy', help='Use this flag to deploy after a clean',
+        dest='deploy', action='store_true')
 
     main(parser.parse_args())

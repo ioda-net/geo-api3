@@ -14,8 +14,6 @@ pyramid.debug_routematch = true
 pyramid.prevent_http_cache = true
 pyramid.includes = 
     pyramid_debugtoolbar
-pyramid.debug_header =
-    ${pyramid_debug_headers}
 mako.imports =
     import logging
 

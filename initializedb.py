@@ -47,6 +47,7 @@ def main(argv=sys.argv):
 def initialize_bod(engine):
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(engine)
+
     Session = sessionmaker(bind=engine)
     session = Session()
 
@@ -56,13 +57,13 @@ def initialize_bod(engine):
     add_topics(session)
     add_layers_config(session, config)
     add_catalog(session)
+    session.commit()
 
 
 def add_topics(session):
     geojb = Topics(id=TOPIC, orderKey=0, availableLangs='fr,de,en', selectedLayers=[],
                         backgroundLayers=['COUVERTUREDUSOL'], showCatalog=True, staging='')
     session.add(geojb)
-    session.commit()
 
 
 def add_layers_config(session, config):
@@ -86,7 +87,6 @@ def add_layers_config(session, config):
         if layer_name == 'COUVERTUREDUSOL':
             layer_row.background = True
         session.add(layer_row)
-    session.commit()
 
 
 def add_catalog(session):
@@ -98,7 +98,6 @@ def add_catalog(session):
                                     nameDe=name, nameFr=name,
                                     nameIt=name, nameRm=name, nameEn=name, depth=1, path='root/' + name)
         session.add(catalog_entry)
-    session.commit()
 
 
 if __name__ == '__main__':

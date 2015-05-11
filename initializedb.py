@@ -1,7 +1,13 @@
+#!/usr/bin/env python3
+#-*- coding: utf-8 -*-
+
 import os
 import sys
 
-import ConfigParser as configparser
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 
 from sqlalchemy import engine_from_config
 from sqlalchemy.orm import sessionmaker

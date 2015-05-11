@@ -11,6 +11,7 @@ except ImportError:
 
 from sqlalchemy import engine_from_config
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.schema import CreateSchema
 
 from owslib.wms import WebMapService
 
@@ -47,7 +48,23 @@ def main(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri, options=options)
     engine = engine_from_config(settings, 'sqlalchemy.bod.')
+
+    create_schema(engine, 're3')
     initialize_bod(engine)
+
+
+def create_schema(engine, schema_name):
+    if not schema_exists(engine, schema_name):
+        engine.execute(CreateSchema(schema_name))
+
+
+def schema_exists(engine, schema_name):
+    engine.execute("""PREPARE schema_exists(text) AS
+        SELECT EXISTS(SELECT 1 FROM information_schema.schemata
+        WHERE schema_name = $1)
+        """)
+    return engine.execute('EXECUTE schema_exists(%s)', (schema_name, ))\
+                .fetchone()[0]
 
 
 def initialize_bod(engine):

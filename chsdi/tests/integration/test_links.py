@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import httplib2
+import unittest
 
 from chsdi.tests.integration import TestsBase
 
 
+@unittest.skip('Requires Vector Table')
 class TestLinks(TestsBase):
 
     def test_external_links(self):

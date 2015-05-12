@@ -9,6 +9,7 @@ from chsdi.lib.zadara_helpers import find_files
 
 class Test_ZadaraHelpers(unittest.TestCase):
 
+    @unittest.skip("What is the use of Zadara?")
     def test_find_files(self):
         import os
         request = testing.DummyRequest()

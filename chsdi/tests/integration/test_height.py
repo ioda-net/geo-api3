@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from chsdi.tests.integration import TestsBase
+import unittest
 
 
+@unittest.skip('Requires raster files')
 class TestHeightView(TestsBase):
 
     def setUp(self):

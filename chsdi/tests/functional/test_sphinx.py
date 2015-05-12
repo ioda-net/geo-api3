@@ -19,6 +19,7 @@ class Test_SphinxApi(unittest.TestCase):
         res = api.BuildExcerpts(docs, index, words, opts)
         self.assertFalse(res)
 
+    @unittest.skip("Search is not yet activated")
     def test_sphinx_api_query(self):
         import sys
         api = self._callFUT()

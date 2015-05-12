@@ -23,6 +23,7 @@ debugtoolbar.hosts = 0.0.0.0/0
 
 # tests
 topic_id = ${vars:test_topic_id}
+layer_id = ${vars:test_layer_id}
 
 ###
 # wsgi server configuration

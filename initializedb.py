@@ -142,7 +142,8 @@ def add_layers_config(session, config):
         type = 'wms'
         opacity = layer.opaque
         queryable = bool(layer.queryable)
-        layer_row = LayersConfig(layerBodId=layer_name, background=False, hasLegend=has_legend,
+        layer_row = LayersConfig(layerBodId=layer_name, attribution='Sigeom SA',
+                            background=False, hasLegend=has_legend,
                             format=format, type=type, opacity=opacity, queryable=queryable,
                             serverLayerName=layer_name, wmsLayers=layer_name, wmsUrl=wms_url,
                             maps='{}, {}, {}'.format(TOPIC, 'all', 'api'))

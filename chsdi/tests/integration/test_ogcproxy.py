@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import unittest
+
 from chsdi.tests.integration import TestsBase
 
 
@@ -9,6 +11,7 @@ class TestOGCproxyView(TestsBase):
         super(TestOGCproxyView, self).setUp()
         self.headers = {'X-SearchServer-Authorized': 'true'}
 
+    @unittest.skip('We disabled the need for X-SearchServer-Authorized')
     def test_proxy_forbidden(self):
         params = {'url': 'http://www.geo.admin.ch/'}
         self.testapp.get('/ogcproxy', params=params, status=403)

@@ -12,6 +12,7 @@ class TestsBase(TestCase):
         app = get_app('development.ini')
         self.testapp = TestApp(app)
         self.settings = self.testapp.app.registry.settings
+        self.default_lang = self.settings['default_lang']
         self.langs = [lang.strip() for lang in self.settings['langs_list'].split(',')]
         self.topic_id = self.settings['topic_id']
         self.topics_list = [topic.strip() for topic in self.settings['topics_list'].split(',')]

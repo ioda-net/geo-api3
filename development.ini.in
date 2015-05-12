@@ -27,6 +27,7 @@ layer_id = ${vars:test_layer_id}
 topics_list = ${vars:test_topics_list}
 layers_list = ${vars:test_layers_list}
 langs_list = ${vars:test_lang_list}
+default_lang = ${vars:test_default_lang}
 
 ###
 # wsgi server configuration

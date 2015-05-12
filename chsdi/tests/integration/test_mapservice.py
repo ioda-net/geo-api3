@@ -530,7 +530,7 @@ class TestMapServiceView(TestsBase):
 
     @unittest.skip("Requires a vector table")
     def test_layer_attributes_lang_specific(self):
-        lang = 'de'
+        lang = self.default_lang
         path = '/rest/services/all/MapServer/ch.bav.sachplan-infrastruktur-schiene_ausgangslage'
         params = {'lang': lang}
         resp = self.testapp.get(path, params=params, status=200)

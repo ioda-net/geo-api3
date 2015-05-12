@@ -11,7 +11,7 @@ class TestSearchServiceView(TestsBase):
     def test_search_layers(self):
         resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'wand', 'type': 'layers'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json['results'][0]['attrs']['lang'] == 'de')
+        self.failUnless(resp.json['results'][0]['attrs']['lang'] == self.default_lang)
 
     def test_search_layers_with_cb(self):
         resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'wand', 'type': 'layers', 'callback': 'cb'}, status=200)

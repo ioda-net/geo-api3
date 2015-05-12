@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import unittest
+
 from chsdi.tests.integration import TestsBase
 
 
@@ -101,6 +103,7 @@ class TestSitemapView(TestsBase):
         # multipart muast be >= 0
         self.testapp.get('/sitemap?content=addresses_-1', status=400)
 
+    @unittest.skip('Require the kogis vector')
     def test_addresses_index_file(self):
         resp = self.testapp.get('/sitemap?content=addresses', status=200)
         resp.content_type == 'application/xml'
@@ -118,6 +121,7 @@ class TestSitemapView(TestsBase):
         # validate scheme
         self.failUnless(0 == _validate_scheme('siteindex.xsd', resp.body))
 
+    @unittest.skip('Require the kogis vector')
     def test_addresses_file(self):
         resp = self.testapp.get('/sitemap?content=addresses_387', status=200)
         resp = self.testapp.get('/sitemap?content=addresses_0', status=200)

@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import unittest
+
 from chsdi.tests.integration import TestsBase
 
 
+@unittest.skip('Search is not enabled yet')
 class TestSearchServiceView(TestsBase):
 
     def setUp(self):

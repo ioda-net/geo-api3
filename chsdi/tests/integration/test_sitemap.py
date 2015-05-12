@@ -55,7 +55,7 @@ class TestSitemapView(TestsBase):
         resp = self.testapp.get('/sitemap?content=base', status=200)
         resp.content_type == 'application/xml'
         # contains all languages
-        for lang in ['de', 'fr', 'it', 'rm', 'en']:
+        for lang in ['de', 'fr', 'en']:
             resp.mustcontain('lang=' + lang)
         # contains correct domain
         self.failUnless(self.testapp.app.registry.settings.get('geoadminhost') in resp.body)
@@ -66,7 +66,7 @@ class TestSitemapView(TestsBase):
         resp = self.testapp.get('/sitemap?content=topics', status=200)
         resp.content_type == 'application/xml'
         # contains all languages
-        for lang in ['de', 'fr', 'it', 'rm', 'en']:
+        for lang in ['de', 'fr', 'en']:
             resp.mustcontain('lang=' + lang)
         # test for some topics
         for topic in ['blw', 'ech', 'swisstopo', 'luftbilder', 'inspire']:

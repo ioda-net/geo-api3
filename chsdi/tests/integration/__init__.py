@@ -15,6 +15,7 @@ class TestsBase(TestCase):
         self.topic_id = self.settings['topic_id']
         self.topics_list = [topic.strip() for topic in self.settings['topics_list'].split(',')]
         self.layer_id = self.settings['layer_id']
+        self.layers_list = [layer.strip() for layer in self.settings['layers_list'].split(',')]
 
     def tearDown(self):
         testing.tearDown()

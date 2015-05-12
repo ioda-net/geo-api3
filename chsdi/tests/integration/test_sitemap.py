@@ -88,7 +88,7 @@ class TestSitemapView(TestsBase):
         for topic in self.topics_list:
             resp.mustcontain('topic=' + topic)
         # test for some layers
-        for layer in ['ch.blw.bodeneignung-kulturtyp', 'ch.bafu.laerm-strassenlaerm_tag', 'ch.swisstopo-vd.spannungsarme-gebiete']:
+        for layer in self.layers_list:
             resp.mustcontain('layers=' + layer)
         # contains correct domain
         self.failUnless(self.testapp.app.registry.settings.get('geoadminhost') in resp.body)

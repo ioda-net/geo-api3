@@ -27,9 +27,17 @@ from chsdi.models.bod import (
     Topics,
     LayersConfig,
     Catalog,
+    BodLayerDe,
+    BodLayerFr,
+    BodLayerEn,
     )
 
 
+METADATA_TABLES = {
+        'view_bod_layer_info_en': BodLayerEn,
+        'view_bod_layer_info_fr': BodLayerFr,
+        'view_bod_layer_info_de': BodLayerDe
+    }
 TOPIC = 'cwdev_geojb'
 
 
@@ -81,6 +89,7 @@ def initialize_bod(engine):
     add_topics(session)
     add_layers_config(session, config)
     add_catalog(session)
+
     session.commit()
 
 
@@ -150,25 +159,37 @@ def add_layers_config(session, config):
         if layer_name == 'COUVERTUREDUSOL':
             layer_row.background = True
         session.add(layer_row)
+    add_layers_metadata(session, wms.contents.keys())
+
+
+def add_layers_metadata(session, layer_names, languages=tuple(('fr', 'en', 'de'))):
+    table_name_template = 'view_bod_layer_info_{}'
+    for layer_name in layer_names:
+        for lang in languages:
+            table_name = table_name_template.format(lang)
+            Table = METADATA_TABLES[table_name]
+            metadata = Table(layerBodId=layer_name, name=layer_name, fullName=layer_name,
+                                maps='{}, {}, {}'.format(TOPIC, 'all', 'api'), chargeable=True)
+            session.add(metadata)
 
 
 def add_catalog(session):
     root = Catalog(topic=TOPIC, category='root', depth=0, path='root')
     session.add(root)
     category = Catalog(topic=TOPIC, category='cat1', parentId=1, depth=1, path='root',
-                            selectedOpen=True, layerBodId='cat1',
-                            nameDe='cat1', nameFr='cat1',
-                            nameIt='cat1', nameRm='cat1',
-                            nameEn='cat1')
+                                selectedOpen=True, layerBodId='cat1',
+                                nameDe='cat1', nameFr='cat1',
+                                nameIt='cat1', nameRm='cat1',
+                                nameEn='cat1')
     session.add(category)
     for layer in session.query(LayersConfig):
         name = layer.layerBodId
         catalog_entry = Catalog(parentId=2, topic=TOPIC, category='layer', layerBodId=name,
-                                    nameDe=name, nameFr=name,
-                                    nameIt=name, nameRm=name,
-                                    nameEn=name,
-                                    path='root/cat1/' + name,
-                                    depth=2)
+                                        nameDe=name, nameFr=name,
+                                        nameIt=name, nameRm=name,
+                                        nameEn=name,
+                                        path='root/cat1/' + name,
+                                        depth=2)
         session.add(catalog_entry)
 
 

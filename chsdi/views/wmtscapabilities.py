@@ -72,7 +72,8 @@ class WMTSCapabilites(MapNameValidation):
         apache_entry_point = '/' if (apache_base_path == 'main' or 'localhost' in host) else '/' + apache_base_path
 
         # Default ressource
-        s3_url = sanitize_url("%s://wmts.geo.admin.ch/" % scheme)
+        wms_host = self.request.registry.settings['wms_host']
+        s3_url = sanitize_url('{}//{}'.format(scheme, wms_host))
         mapproxy_url = sanitize_url("%s://%s%s/" % (scheme, mapproxyHost, apache_entry_point))
         onlineressources = {'mapproxy': mapproxy_url, 's3': s3_url}
 

@@ -5,6 +5,10 @@ from chsdi.tests.integration import TestsBase
 
 class TestSearchServiceView(TestsBase):
 
+    def setUp(self):
+        super(TestSearchServiceView, self).setUp()
+        self.search_uri = '/rest/services/{}/SearchServer'.format(self.topic_id)
+
     def test_no_type(self):
         self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'ga'}, status=400)
 
@@ -24,12 +28,12 @@ class TestSearchServiceView(TestsBase):
             self.failUnless(resp.json['results'][0]['attrs']['lang'] == lang)
 
     def test_search_layers_for_one_layer(self):
-        resp = self.testapp.get('/rest/services/blw/SearchServer', params={'searchText': 'ch.blw.klimaeignung-spezialkulturen', 'type': 'layers'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': 'ch.blw.klimaeignung-spezialkulturen', 'type': 'layers'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json['results']) == 1)
 
     def test_search_layers_accents(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '*%+&/()=?!üäöéà$@i£$', 'type': 'layers'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': '*%+&/()=?!üäöéà$@i£$', 'type': 'layers'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json['results']) == 0)
 
@@ -57,51 +61,51 @@ class TestSearchServiceView(TestsBase):
         self.testapp.get('/rest/services/toto/SearchServer', params={'searchText': 'vd 446', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=400)
 
     def test_search_locations_lausanne(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'lausanne', 'type': 'locations'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': 'lausanne', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'lausanne vd')
 
     def test_search_locations_wil(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'wil', 'type': 'locations'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': 'wil', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['detail'][:3] == 'wil')
 
     def test_search_locations_fontenay(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'fontenay 10 lausanne', 'type': 'locations'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': 'fontenay 10 lausanne', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'chemin de fontenay 10 1007 lausanne 5586 lausanne ch vd')
 
     def test_search_locations_wilenstrasse_wil(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'wilenstrasse wil', 'type': 'locations'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': 'wilenstrasse wil', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless('wilenstrasse' in resp.json['results'][0]['attrs']['detail'])
         self.failUnless('wil' in resp.json['results'][0]['attrs']['detail'])
 
     def test_search_location_max_address(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'seftigenstrasse', 'type': 'locations'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': 'seftigenstrasse', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         results_addresses = filter(lambda x: x if x['attrs']['origin'] == 'address' else False, resp.json['results'])
         self.failUnless(len(results_addresses) <= 20)
 
     def test_search_locations_no_geometry(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'seftigenstrasse 264', 'type': 'locations', 'returnGeometry': 'false'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': 'seftigenstrasse 264', 'type': 'locations', 'returnGeometry': 'false'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless('geom_st_box2d' not in resp.json['results'][0]['attrs'].keys())
 
     def test_locations_searchtext_apostrophe(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'av mont d\'or lausanne', 'type': 'locations'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': 'av mont d\'or lausanne', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'avenue du mont-d\'or 1 1007 lausanne 5586 lausanne ch vd')
         self.failUnless(resp.json['results'][0]['attrs']['num'] == 1)
 
     def test_address_order(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'isabelle de montolieu', 'type': 'locations'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': 'isabelle de montolieu', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'chemin isabelle-de-montolieu 1 1010 lausanne 5586 lausanne ch vd')
         self.failUnless(resp.json['results'][0]['attrs']['num'] == 1)
 
     def test_search_address_with_letters(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'Rhonesand 16', 'type': 'locations'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': 'Rhonesand 16', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][1]['attrs']['detail'] == 'rhonesandstrasse 16a 3900 brig 6002 brig-glis ch vs')
 
@@ -121,7 +125,7 @@ class TestSearchServiceView(TestsBase):
         self.failUnless('geom_st_box2d' not in resp.json['results'][0]['attrs'].keys())
 
     def test_search_locations_escape_charachters(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'Biel/Bienne', 'type': 'locations'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': 'Biel/Bienne', 'type': 'locations'}, status=200)
         self.failUnless(len(resp.json['results']) > 0)
 
     def test_search_locations_authorized(self):
@@ -182,63 +186,63 @@ class TestSearchServiceView(TestsBase):
         self.testapp.get('/rest/services/inspire/SearchServer', params=params, status=400)
 
     def test_features_timeinstant(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542199,206799,542201,206801', 'timeInstant': '1981'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542199,206799,542201,206801', 'timeInstant': '1981'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
 
     def test_features_timestamp(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542199,206799,542201,206801', 'timeStamps': '1981'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542199,206799,542201,206801', 'timeStamps': '1981'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
 
     def test_features_empty_timestamp(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542199,206799,542201,206801', 'timeStamps': ''}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542199,206799,542201,206801', 'timeStamps': ''}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
 
     def test_features_multiple_timestamps(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '198', 'features': 'ch.swisstopo.lubis-luftbilder_farbe,ch.swisstopo.lubis-luftbilder_schwarzweiss', 'type': 'featuresearch', 'bbox': '542199,206799,542201,206801', 'timeStamps': '1986,1989', 'timeEnabled': 'true,true'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': '198', 'features': 'ch.swisstopo.lubis-luftbilder_farbe,ch.swisstopo.lubis-luftbilder_schwarzweiss', 'type': 'featuresearch', 'bbox': '542199,206799,542201,206801', 'timeStamps': '1986,1989', 'timeEnabled': 'true,true'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
 
     def test_features_timeInterval(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '1993034 1990-2010', 'features': 'ch.swisstopo.fixpunkte-lfp1,ch.swisstopo.lubis-luftbilder_schwarzweiss,ch.swisstopo.lubis-luftbilder_farbe', 'timeEnabled': 'false,true,true', 'type': 'featuresearch'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': '1993034 1990-2010', 'features': 'ch.swisstopo.fixpunkte-lfp1,ch.swisstopo.lubis-luftbilder_schwarzweiss,ch.swisstopo.lubis-luftbilder_farbe', 'timeEnabled': 'false,true,true', 'type': 'featuresearch'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
 
     def test_features_timeInterval_only(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '1990-2010', 'features': 'ch.swisstopo.fixpunkte-lfp1,ch.swisstopo.lubis-luftbilder_schwarzweiss,ch.swisstopo.lubis-luftbilder_farbe', 'timeEnabled': 'false,true,true', 'type': 'featuresearch'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': '1990-2010', 'features': 'ch.swisstopo.fixpunkte-lfp1,ch.swisstopo.lubis-luftbilder_schwarzweiss,ch.swisstopo.lubis-luftbilder_farbe', 'timeEnabled': 'false,true,true', 'type': 'featuresearch'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
 
     def test_features_wrong_time(self):
         params = {'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542200,206800,542200,206800', 'timeInstant': '19    522'}
-        self.testapp.get('/rest/services/ech/SearchServer', params=params, status=400)
+        self.testapp.get(self.search_uri, params=params, status=400)
 
     def test_features_wrong_time_2(self):
         params = {'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542200,206800,542200,206800', 'timeInstant': '19    52.00'}
-        self.testapp.get('/rest/services/ech/SearchServer', params=params, status=400)
+        self.testapp.get(self.search_uri, params=params, status=400)
 
     def test_features_mix_timeinstant_timestamps(self):
         params = {'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542200,206800,542200,206800', 'timeInstant': '1952', 'timeStamps': '1946'}
-        self.testapp.get('/rest/services/ech/SearchServer', params=params, status=400)
+        self.testapp.get(self.search_uri, params=params, status=400)
 
     def test_features_wrong_timestamps(self):
         params = {'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542200,206800,542200,206800', 'timeStamps': '19522'}
-        self.testapp.get('/rest/services/ech/SearchServer', params=params, status=400)
+        self.testapp.get(self.search_uri, params=params, status=400)
 
     def test_features_wrong_timestamps_2(self):
         params = {'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542200,206800,542200,206800', 'timeStamps': '1952.00'}
-        self.testapp.get('/rest/services/ech/SearchServer', params=params, status=400)
+        self.testapp.get(self.search_uri, params=params, status=400)
 
     def test_locations_search_limit(self):
         params = {'searchText': 'chalais', 'type': 'locations', 'limit': '1'}
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params=params, status=200)
+        resp = self.testapp.get(self.search_uri, params=params, status=200)
         self.failUnless(len(resp.json['results']) == 1)
 
     def test_locations_search_wrong_limit(self):
         params = {'searchText': 'chalais', 'type': 'locations', 'limit': '5.5'}
-        self.testapp.get('/rest/services/ech/SearchServer', params=params, status=400)
+        self.testapp.get(self.search_uri, params=params, status=400)
 
     def test_search_max_words(self):
         self.testapp.get('/rest/services/all/SearchServer', params={'searchText': 'this is a text with exactly 10 words, should work', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=200)

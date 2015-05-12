@@ -71,7 +71,7 @@ class TestSitemapView(TestsBase):
         for lang in ['de', 'fr', 'en']:
             resp.mustcontain('lang=' + lang)
         # test for some topics
-        for topic in ['blw', 'ech', 'swisstopo', 'luftbilder', 'inspire']:
+        for topic in self.topics_list:
             resp.mustcontain('topic=' + topic)
         # contains correct domain
         self.failUnless(self.testapp.app.registry.settings.get('geoadminhost') in resp.body)
@@ -85,7 +85,7 @@ class TestSitemapView(TestsBase):
         for lang in ['de', 'fr', 'en']:
             resp.mustcontain('lang=' + lang)
         # test for some topics
-        for topic in ['blw', 'ech', 'swisstopo', 'luftbilder', 'inspire']:
+        for topic in self.topics_list:
             resp.mustcontain('topic=' + topic)
         # test for some layers
         for layer in ['ch.blw.bodeneignung-kulturtyp', 'ch.bafu.laerm-strassenlaerm_tag', 'ch.swisstopo-vd.spannungsarme-gebiete']:

@@ -13,6 +13,7 @@ class TestsBase(TestCase):
         self.testapp = TestApp(app)
         self.settings = self.testapp.app.registry.settings
         self.topic_id = self.settings['topic_id']
+        self.topics_list = [topic.strip() for topic in self.settings['topics_list'].split(',')]
         self.layer_id = self.settings['layer_id']
 
     def tearDown(self):

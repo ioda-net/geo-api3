@@ -148,11 +148,20 @@ def add_layers_config(session, config):
 def add_catalog(session):
     root = Catalog(topic=TOPIC, category='root', depth=0, path='root')
     session.add(root)
+    category = Catalog(topic=TOPIC, category='cat1', parentId=1, depth=1, path='root',
+                            selectedOpen=True, layerBodId='cat1',
+                            nameDe='cat1', nameFr='cat1',
+                            nameIt='cat1', nameRm='cat1',
+                            nameEn='cat1')
+    session.add(category)
     for layer in session.query(LayersConfig):
         name = layer.layerBodId
-        catalog_entry = Catalog(parentId=1, topic=TOPIC, category='layer', layerBodId=name,
+        catalog_entry = Catalog(parentId=2, topic=TOPIC, category='layer', layerBodId=name,
                                     nameDe=name, nameFr=name,
-                                    nameIt=name, nameRm=name, nameEn=name, depth=1, path='root/' + name)
+                                    nameIt=name, nameRm=name,
+                                    nameEn=name,
+                                    path='root/cat1/' + name,
+                                    depth=2)
         session.add(catalog_entry)
 
 

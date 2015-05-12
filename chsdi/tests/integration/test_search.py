@@ -18,8 +18,7 @@ class TestSearchServiceView(TestsBase):
         self.failUnless(resp.content_type == 'application/javascript')
 
     def test_search_layers_all_langs(self):
-        langs = ('de', 'fr', 'it', 'en', 'rm')
-        for lang in langs:
+        for lang in self.langs:
             resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'wand', 'type': 'layers', 'lang': lang}, status=200)
             self.failUnless(resp.content_type == 'application/json')
             self.failUnless(resp.json['results'][0]['attrs']['lang'] == lang)
@@ -44,8 +43,7 @@ class TestSearchServiceView(TestsBase):
 
     def test_search_locations_all_langs(self):
         # even if not lang dependent
-        langs = ('de', 'fr', 'it', 'en', 'rm')
-        for lang in langs:
+        for lang in self.langs:
             resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'mont d\'or', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625', 'lang': lang}, status=200)
             self.failUnless(resp.content_type == 'application/json')
 

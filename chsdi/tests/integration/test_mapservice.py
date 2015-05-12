@@ -394,7 +394,7 @@ class TestMapServiceView(TestsBase):
 
     @unittest.skip("Requires a vector table")
     def test_extendedhtmlpopup_valid_langs(self):
-        for lang in ('de', 'fr', 'it', 'rm', 'en'):
+        for lang in self.langs:
             resp = self.testapp.get('/rest/services/ech/MapServer/ch.babs.kulturgueter/6967/extendedHtmlPopup', params={'lang': lang}, status=200)
             self.failUnless(resp.content_type == 'text/html')
 
@@ -439,7 +439,7 @@ class TestMapServiceView(TestsBase):
 
         try:
             for layer in getLayers(query):
-                for lang in ('de', 'fr', 'it', 'rm', 'en'):
+                for lang in self.langs:
                     link = '/rest/services/all/MapServer/' + layer + '/legend?callback=cb&lang=' + lang
                     resp = self.testapp.get(link)
                     self.failUnless(resp.status_int == 200, link)
@@ -464,7 +464,7 @@ class TestMapServiceView(TestsBase):
 
         try:
             for layer in getLayers(query):
-                for lang in ('de', 'fr', 'it', 'rm', 'en'):
+                for lang in self.langs:
                     self.failUnless((layer + '_' + lang) in legendImages, layer + lang)
         finally:
             DBSession.close()
@@ -493,7 +493,7 @@ class TestMapServiceView(TestsBase):
             DBSession.close()
 
         for f in features:
-            for lang in ('de', 'fr', 'it', 'rm', 'en'):
+            for lang in self.langs:
                 link = '/rest/services/all/MapServer/' + f[0] + '/' + f[1] + '/htmlPopup?callback=cb&lang=' + lang
                 resp = self.testapp.get(link)
                 self.failUnless(resp.status_int == 200, link)

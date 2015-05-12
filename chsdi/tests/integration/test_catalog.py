@@ -36,7 +36,7 @@ class TestCatalogService(TestsBase):
         self.failUnless('Geoid in CH1903' in resp.json['results']['root']['children'][0]['children'][0]['children'][1]['label'])
 
     def test_catalog_languages(self):
-        for lang in ('de', 'fr', 'it', 'rm', 'en'):
+        for lang in self.langs:
             link = self.catalog_uri + '?lang={}'.format(lang)
             resp = self.testapp.get(link)
             self.failUnless(resp.status_int == 200, link)

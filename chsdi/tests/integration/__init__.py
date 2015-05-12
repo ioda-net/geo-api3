@@ -11,6 +11,8 @@ class TestsBase(TestCase):
         from pyramid.paster import get_app
         app = get_app('development.ini')
         self.testapp = TestApp(app)
+        self.settings = self.testapp.app.registry.settings
+        self.topic_id = self.settings['topic_id']
 
     def tearDown(self):
         testing.tearDown()

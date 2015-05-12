@@ -12,7 +12,7 @@ class TestLinks(TestsBase):
     def test_external_links(self):
         h = httplib2.Http(timeout=10)
         for i in range(23):
-            response = self.testapp.get('/rest/services/ech/MapServer/ch.kantone.cadastralwebmap-farbe/%d/htmlPopup' % i, status=200)
+            response = self.testapp.get('/rest/services/{}/MapServer/BATIMENTS/{}/htmlPopup'.format(self.topic_id, i), status=200)
 
             soup = response.html
             for a in soup.findAll('a'):

@@ -119,7 +119,12 @@ $BODY$
 def add_topics(session):
     geojb = Topics(id=TOPIC, orderKey=0, availableLangs='fr,de,en', selectedLayers=[],
                         backgroundLayers=['COUVERTUREDUSOL'], showCatalog=True, staging='')
+    api = Topics(id='api', orderKey=1, availableLangs='fr,de,en', selectedLayers=[],
+                        backgroundLayers=[], showCatalog=False)
+    all = Topics(id='all', backgroundLayers=[], showCatalog=False)
     session.add(geojb)
+    session.add(api)
+    session.add(all)
 
 
 def add_layers_config(session, config):
@@ -139,7 +144,8 @@ def add_layers_config(session, config):
         queryable = bool(layer.queryable)
         layer_row = LayersConfig(layerBodId=layer_name, background=False, hasLegend=has_legend,
                             format=format, type=type, opacity=opacity, queryable=queryable,
-                            serverLayerName=layer_name, wmsLayers=layer_name, wmsUrl=wms_url)
+                            serverLayerName=layer_name, wmsLayers=layer_name, wmsUrl=wms_url,
+                            maps='{}, {}, {}'.format(TOPIC, 'all', 'api'))
         if layer_name == 'COUVERTUREDUSOL':
             layer_row.background = True
         session.add(layer_row)

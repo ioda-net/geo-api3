@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import unittest
+
 from chsdi.tests.integration import TestsBase
 
 
+@unittest.skip('Require raster')
 class TestProfileView(TestsBase):
 
     def setUp(self):

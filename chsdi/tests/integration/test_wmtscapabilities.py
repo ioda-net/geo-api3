@@ -1,10 +1,13 @@
 #-*- coding: utf-8 -*-
 
+import unittest
+
 from chsdi.tests.integration import TestsBase
 
 EPSGS = [21781, 4326, 4258, 2056, 3857]
 
 
+@unittest.skip('This works with WTMS server and we have WMS')
 class TestWmtsCapabilitiesView(TestsBase):
 
     def test_valid_wmtscapabilities(self):

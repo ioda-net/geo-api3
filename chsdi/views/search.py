@@ -93,7 +93,7 @@ class Search(SearchValidation):
 
         searchList = []
         if len(self.searchText) >= 1:
-            searchText = self._query_fields('@detail')
+            searchText = self._query_fields('@(detail,ofs_arr)')
             searchList.append(searchText)
 
         if self.bbox is not None:
@@ -183,7 +183,7 @@ class Search(SearchValidation):
 
         timeFilter = self._get_time_filter()
         if self.searchText:
-            searchdText = self._query_fields('@detail')
+            searchdText = self._query_fields('@(detail,ofs,ofs_arr)')
         else:
             searchdText = ''
         self._add_feature_queries(searchdText, timeFilter)

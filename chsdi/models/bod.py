@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from sqlalchemy import Column, Text, Integer, Boolean
+from sqlalchemy import Column, Text, Integer, Boolean, BigInteger
 from sqlalchemy.dialects import postgresql
 
 from chsdi.lib.helpers import make_agnostic
@@ -11,6 +11,7 @@ Base = bases['bod']
 
 class Bod(object):
     __dbname__ = 'bod'
+    bgdiId = Column('bgdi_id', BigInteger, primary_key=True)
     layerBodId = Column('bod_layer_id', Text, primary_key=True)
     idGeoCat = Column('geocat_uuid', Text)
     name = Column('kurzbezeichnung', Text)

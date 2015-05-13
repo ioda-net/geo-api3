@@ -133,16 +133,6 @@ class BodLayerFr(Base, Bod):
     __table_args__ = ({'schema': 're3'})
 
 
-class BodLayerIt(Base, Bod):
-    __tablename__ = 'view_bod_layer_info_it'
-    __table_args__ = ({'schema': 're3'})
-
-
-class BodLayerRm(Base, Bod):
-    __tablename__ = 'view_bod_layer_info_rm'
-    __table_args__ = ({'schema': 're3'})
-
-
 class BodLayerEn(Base, Bod):
     __tablename__ = 'view_bod_layer_info_en'
     __table_args__ = ({'schema': 're3'})

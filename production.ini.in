@@ -28,6 +28,7 @@ dtm_base_path = /var/local/profile/
 zadara_dir = ${vars:zadara_dir}
 geodata_staging = ${geodata_staging}
 sphinxhost = ${sphinxhost}
+sphinxport = ${sphinxport}
 wmshost = ${wmshost}
 mapproxyhost = ${mapproxyhost}
 geoadminhost = ${geoadminhost}

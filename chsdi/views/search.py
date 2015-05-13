@@ -24,7 +24,7 @@ class Search(SearchValidation):
         self.quadtree = msk.QuadTree(
             msk.BBox(420000, 30000, 900000, 510000), 20)
         self.sphinx = sphinxapi.SphinxClient()
-        self.sphinx.SetServer(request.registry.settings['sphinxhost'], 9312)
+        self.sphinx.SetServer(request.registry.settings['sphinxhost'], request.registry.settings['sphinxport'])
         self.sphinx.SetMatchMode(sphinxapi.SPH_MATCH_EXTENDED)
 
         self.mapName = request.matchdict.get('map')

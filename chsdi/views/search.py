@@ -67,11 +67,10 @@ class Search(SearchValidation):
             self.searchText = format_search_text(
                 self.request.params.get('searchText', '')
             )
-            # swiss search
-            self._swiss_search()
+            self._location_search()
         return self.results
 
-    def _swiss_search(self):
+    def _location_search(self):
         if len(self.searchText) < 1 and self.bbox is None:
             raise exc.HTTPBadRequest('You must at least provide a bbox or a searchText parameter')
         limit = self.limit if self.limit and self.limit <= self.LIMIT else self.LIMIT
@@ -108,7 +107,7 @@ class Search(SearchValidation):
 
         if len(searchList) != 0:
             try:
-                temp = self.sphinx.Query(searchTextFinal, index='swisssearch')
+                temp = self.sphinx.Query(searchTextFinal, index='geojb_locations')
             except IOError:
                 raise exc.HTTPGatewayTimeout()
             temp = temp['matches'] if temp is not None else temp
@@ -132,7 +131,7 @@ class Search(SearchValidation):
         self.sphinx.SetLimits(0, layerLimit)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC')
-        index_name = 'layers_%s' % self.lang
+        index_name = 'geojb_layers_%s' % self.lang
         mapName = self.mapName if self.mapName != 'all' else ''
         # Whitelist hack
         if mapName in ('api'):

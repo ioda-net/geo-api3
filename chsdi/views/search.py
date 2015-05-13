@@ -42,8 +42,6 @@ class Search(SearchValidation):
         self.typeInfo = request.params.get('type')
         self.limit = request.params.get('limit')
         self.varnish_authorized = request.headers.get('X-SearchServer-Authorized', 'false').lower() == 'true'
-
-        self.geodataStaging = request.registry.settings['geodata_staging']
         self.results = {'results': []}
         self.request = request
 
@@ -144,7 +142,6 @@ class Search(SearchValidation):
         searchText = ' '.join((
             self._query_fields('@(detail,layer)'),
             '& @topics %s' % (topicFilter),  # Filter by to topic if string not empty, ech whitelist hack
-            '& @staging prod'                  # Only layers in prod are searched
         ))
         try:
             temp = self.sphinx.Query(searchText, index=index_name)

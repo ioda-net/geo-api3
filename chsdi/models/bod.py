@@ -27,7 +27,6 @@ class Bod(object):
     wmsContactAbbreviation = Column('wms_kontakt_abkuerzung', Text)
     wmsContactName = Column('wms_kontakt_name', Text)
     wmsUrlResource = Column('wms_resource', Text)
-    staging = Column('staging', Text)
     urlDetails = Column('url', Text)
     inspireUpperAbstract = Column('inspire_oberthema_abstract', Text)
     inspireUpperName = Column('inspire_oberthema_name', Text)
@@ -39,7 +38,7 @@ class Bod(object):
 
     def layerMetadata(self):
         primaryAttrs = ('layerBodId', 'idGeoCat', 'name', 'fullName')
-        excludedAttrs = ('staging', 'searchText', 'chargeable')
+        excludedAttrs = ('searchText', 'chargeable')
         meta = {'attributes': {}}
         for k in self.__dict__.keys():
             if k != '_sa_instance_state':
@@ -77,7 +76,6 @@ class LayersConfig(Base):
     timeBehaviour = Column('time_behaviour', Text)
     maps = Column('topics', Text)
     chargeable = Column('chargeable', Boolean)
-    staging = Column('staging', Text)
     wmsLayers = Column('wms_layers', Text)
     wmsUrl = Column('wms_url', Text)
 
@@ -87,8 +85,7 @@ class LayersConfig(Base):
         wmsHost = params.request.registry.settings['wmshost']
         for k in self.__dict__.keys():
             if not k.startswith("_") and \
-                self.__dict__[k] is not None and \
-                    k not in ('staging'):
+                self.__dict__[k] is not None:
                 if k == 'maps':
                     config['topics'] = self.__dict__[k]
                 elif k == 'layerBodId':
@@ -103,13 +100,11 @@ class LayersConfig(Base):
                 else:
                     config[k] = self.__dict__[k]
 
-        layerStaging = self.__dict__['staging']
         if config['type'] == 'wmts':
             del config['singleTile']
         if config['type'] == 'wms':
-            if layerStaging != 'prod':
-                config['wmsUrl'] = make_agnostic(
-                    config['wmsUrl'].replace('wms.geo.admin.ch', wmsHost))
+            config['wmsUrl'] = make_agnostic(
+                config['wmsUrl'].replace('wms.geo.admin.ch', wmsHost))
         # sublayers don't have attributions
         if 'attribution' in config:
             config['attributionUrl'] = translate(self.__dict__['attribution'] + '.url')
@@ -146,7 +141,6 @@ class GetCap(object):
     timestamp = Column('timestamp', Text)
     sswmts = Column('sswmts', Integer)
     bod_layer_id = Column('bod_layer_id', Text)
-    staging = Column('staging', Text)
     bezeichnung = Column('bezeichnung', Text)
     kurzbezeichnung = Column('kurzbezeichnung', Text)
     abstract = Column('abstract', Text)
@@ -304,7 +298,6 @@ class Topics(Base):
     selectedLayers = Column('selected_layers', postgresql.ARRAY(Text))
     backgroundLayers = Column('background_layers', postgresql.ARRAY(Text))
     showCatalog = Column('show_catalog', Boolean)
-    staging = Column('staging', Text)
 
 
 class Catalog(Base):
@@ -325,7 +318,6 @@ class Catalog(Base):
     selectedOpen = Column('selected_open', Boolean)
     path = Column('path', Text)
     depth = Column('depth', Integer)
-    staging = Column('staging', Text)
 
     def to_dict(self, lang):
 

@@ -435,7 +435,9 @@ class TestMapServiceView(TestsBase):
         valnone = None
         valtrue = True
         # Get a list of all layers in prod, exclude sub-layers
-        query = DBSession.query(distinct(LayersConfig.layerBodId)).filter(LayersConfig.staging == 'prod').filter(LayersConfig.parentLayerId == valnone).filter(LayersConfig.hasLegend == valtrue)
+        query = DBSession.query(distinct(LayersConfig.layerBodId))\
+                    .filter(LayersConfig.parentLayerId == valnone)\
+                    .filter(LayersConfig.hasLegend == valtrue)
 
         try:
             for layer in getLayers(query):
@@ -446,6 +448,7 @@ class TestMapServiceView(TestsBase):
         finally:
             DBSession.close()
 
+    @unittest.skip('Require images for legends')
     def test_all_legends_images(self):
         import os
         from chsdi.models.bod import LayersConfig
@@ -460,7 +463,9 @@ class TestMapServiceView(TestsBase):
         DBSession = scoped_session(sessionmaker())
         valnone = None
         valtrue = True
-        query = DBSession.query(distinct(LayersConfig.layerBodId)).filter(LayersConfig.staging == 'prod').filter(LayersConfig.parentLayerId == valnone).filter(LayersConfig.hasLegend == valtrue)
+        query = DBSession.query(distinct(LayersConfig.layerBodId))\
+                    .filter(LayersConfig.parentLayerId == valnone)\
+                    .filter(LayersConfig.hasLegend == valtrue)
 
         try:
             for layer in getLayers(query):
@@ -469,6 +474,7 @@ class TestMapServiceView(TestsBase):
         finally:
             DBSession.close()
 
+    @unittest.skip('Require search')
     def test_all_htmlpopups(self):
         from chsdi.models import models_from_name
         from chsdi.models.bod import LayersConfig
@@ -476,7 +482,8 @@ class TestMapServiceView(TestsBase):
         from sqlalchemy.orm import scoped_session, sessionmaker
         val = True
         DBSession = scoped_session(sessionmaker())
-        query = DBSession.query(distinct(LayersConfig.layerBodId)).filter(LayersConfig.queryable == val).filter(LayersConfig.staging == 'prod')
+        query = DBSession.query(distinct(LayersConfig.layerBodId))\
+                    .filter(LayersConfig.queryable == val)
         features = []
         try:
             for layer in getLayers(query):

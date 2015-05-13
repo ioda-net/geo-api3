@@ -33,7 +33,6 @@ class FeatureParams(MapServiceValidation):
         self.hasMap(request.db, self.mapName)
         self.cbName = request.params.get('callback')
         self.lang = request.lang
-        self.geodataStaging = request.registry.settings['geodata_staging']
         self.returnGeometry = request.params.get('returnGeometry')
         self.translate = request.translate
         self.request = request

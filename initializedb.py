@@ -127,7 +127,7 @@ $BODY$
 
 def add_topics(session):
     geojb = Topics(id=TOPIC, orderKey=0, availableLangs='fr,de,en', selectedLayers=[],
-                        backgroundLayers=['COUVERTUREDUSOL'], showCatalog=True, staging='')
+                        backgroundLayers=['COUVERTUREDUSOL'], showCatalog=True)
     api = Topics(id='api', orderKey=1, availableLangs='fr,de,en', selectedLayers=[],
                         backgroundLayers=[], showCatalog=False)
     all = Topics(id='all', backgroundLayers=[], showCatalog=False)

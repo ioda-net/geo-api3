@@ -14,7 +14,7 @@ from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from chsdi.lib.validation.mapservice import MapServiceValidation
 from chsdi.models import models_from_name
 from chsdi.models.bod import LayersConfig, get_bod_model, computeHeader
-from chsdi.lib.filters import full_text_search, filter_by_geodata_staging, filter_by_map_name
+from chsdi.lib.filters import full_text_search, filter_by_map_name
 
 SAMPLE_SIZE = 100
 MAX_ATTRIBUTES_VALUES = 5
@@ -33,7 +33,6 @@ class LayersParams(MapServiceValidation):
         self.searchText = request.params.get('searchText')
         # Not to be published in doc
         self.chargeable = request.params.get('chargeable')
-        self.geodataStaging = request.registry.settings['geodata_staging']
 
         self.translate = request.translate
         self.request = request
@@ -212,11 +211,6 @@ def get_layers_metadata_for_params(params, query, model, layerIds=None):
         model,
         params.mapName
     )
-    query = filter_by_geodata_staging(
-        query,
-        model.staging,
-        params.geodataStaging
-    )
     if layerIds is not None:
         for layerId in layerIds:
             layer = get_layer(query, model, layerId)
@@ -234,11 +228,6 @@ def get_layers_config_for_params(params, query, model, layerIds=None):
         query,
         model,
         params.mapName
-    )
-    query = filter_by_geodata_staging(
-        query,
-        model.staging,
-        params.geodataStaging
     )
     if layerIds is not None:
         for layerId in layerIds:

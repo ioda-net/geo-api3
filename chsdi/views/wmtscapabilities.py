@@ -6,7 +6,7 @@ from pyramid.httpexceptions import HTTPBadRequest, HTTPNotFound
 from chsdi.models.bod import get_wmts_models
 from chsdi.lib.helpers import sanitize_url
 from chsdi.lib.validation import MapNameValidation
-from chsdi.lib.filters import filter_by_geodata_staging, filter_by_map_name
+from chsdi.lib.filters import filter_by_map_name
 
 
 DEFAULT_TILEMATRIXSET = {0: [4000, 1, 1, 14285714.2857],
@@ -64,7 +64,6 @@ class WMTSCapabilites(MapNameValidation):
         scheme = self.request.headers.get(
             'X-Forwarded-Proto',
             self.request.scheme)
-        staging = self.request.registry.settings['geodata_staging']
         host = self.request.headers.get(
             'X-Forwarded-Host', self.request.host)
         mapproxyHost = self.request.registry.settings['mapproxyhost']
@@ -78,11 +77,6 @@ class WMTSCapabilites(MapNameValidation):
         onlineressources = {'mapproxy': mapproxy_url, 's3': s3_url}
 
         layers_query = self.request.db.query(self.models['GetCap'])
-        layers_query = filter_by_geodata_staging(
-            layers_query,
-            self.models['GetCap'].staging,
-            staging
-        )
         if self.mapName != 'all':
             layers_query = filter_by_map_name(layers_query, self.models['GetCap'], self.mapName)
         layers = layers_query.all()

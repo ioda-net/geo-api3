@@ -8,12 +8,9 @@ from pyramid.paster import get_app
 
 app = get_app('development.ini')
 
-geodata_staging = 'prod'
-
 try:
     api_url = "http:" + app.registry.settings['api_url']
     base_url = "http://" + app.registry.settings['wmshost'] + '/'
-    geodata_staging = app.registry.settings['geodata_staging']
 except KeyError as e:
     base_url = 'http://wms.geo.admin.ch'
 
@@ -53,8 +50,7 @@ def check_status_code(url):
     resp = requests.get(url)
     assert resp.status_code in [200, 204, 304]
     assert resp.headers['content-type'] in ['image/png', 'image/jpeg']
-    if geodata_staging == 'prod':
-        assert 'wms-bod' not in url
+    assert 'wms-bod' not in url
 
 
 def test_generator():

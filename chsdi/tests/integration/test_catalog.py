@@ -63,9 +63,6 @@ class TestCatalogService(TestsBase):
         from chsdi.models.bod import Catalog
         from sqlalchemy.orm import scoped_session, sessionmaker
         DBSession = scoped_session(sessionmaker())
-        old_staging = self.testapp.app.registry.settings['geodata_staging']
-        # We fix staging for next calls to prod
-        self.testapp.app.registry.settings['geodata_staging'] = 'prod'
         try:
             topics = self.testapp.get('/rest/services', status=200)
             for t in topics.json['topics']:
@@ -73,14 +70,12 @@ class TestCatalogService(TestsBase):
                 # Get catalog
                 catalog = self.testapp.get('/rest/services/' + topic + '/CatalogServer', status=200)
                 # Get flat catalog table entries
-                query = DBSession.query(Catalog).filter(Catalog.topic == topic).filter(Catalog.staging == 'prod')
+                query = DBSession.query(Catalog).filter(Catalog.topic == topic)
                 entries = query.all()
                 # Check if every node in the catalog is in view_catalog of db
                 self.failUnless(existInList(catalog.json['results']['root'], entries))
 
         finally:
-            # reset staging to previous setting
-            self.testapp.app.registry.settings['geodata_staging'] = old_staging
             DBSession.close()
 
     def test_catalogs_with_layersconfig(self):
@@ -107,9 +102,6 @@ class TestCatalogService(TestsBase):
 
         from sqlalchemy.orm import scoped_session, sessionmaker
         DBSession = scoped_session(sessionmaker())
-        old_staging = self.testapp.app.registry.settings['geodata_staging']
-        # We fix staging for next calls to prod
-        self.testapp.app.registry.settings['geodata_staging'] = 'prod'
         try:
             topics = self.testapp.get('/rest/services', status=200)
             for t in topics.json['topics']:
@@ -122,6 +114,4 @@ class TestCatalogService(TestsBase):
                 self.failUnless(existInList(catalog.json['results']['root'], layersconf.json), 'For Topic: ' + topic)
 
         finally:
-            # reset staging to previous setting
-            self.testapp.app.registry.settings['geodata_staging'] = old_staging
             DBSession.close()

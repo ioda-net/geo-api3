@@ -16,19 +16,6 @@ def full_text_search(query, ormColumns, searchText):
     ))
 
 
-def filter_by_geodata_staging(query, ormColumn, staging):
-    ''' Applies a filter on geodata based on application
-    staging '''
-    return {
-        'test': query,
-        'integration': query.filter(or_(
-                                    ormColumn == 'integration',
-                                    ormColumn == 'prod'
-                                    )),
-        'prod': query.filter(ormColumn == staging)
-    }[staging]
-
-
 def filter_by_map_name(query, model, mapName):
     ''' Applies a map/topic filter '''
     if mapName != 'all':

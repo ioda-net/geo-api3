@@ -45,6 +45,9 @@ class Search(SearchValidation):
         self.request = request
         self.addressOrigins = [origin.strip() for origin in
                                 request.registry.settings['search.address_origins'].split(',')]
+        originAndRanks = [originRank.split(':') for originRank in
+                            request.registry.settings['search.origins_to_ranks'].split(',')]
+        self.originsToRanks = {origin.strip(): int(rank) for origin, rank in originAndRanks}
         self.topicId = get_topic_id_from_request(request)
 
     @view_config(route_name='search', renderer='jsonp')
@@ -279,16 +282,7 @@ class Search(SearchValidation):
             return None
 
     def _origins_to_ranks(self, origins):
-        origin2Rank = {
-            'zipcode': 1,
-            'gg25': 2,
-            'district': 3,
-            'kantone': 4,
-            'sn25': 5,
-            'address': 6,
-            'parcel': 10
-        }
-        buildRanksList = lambda x: origin2Rank[x]
+        buildRanksList = lambda x: self.originsToRanks[x]
         try:
             ranks = map(buildRanksList, origins)
         except KeyError:

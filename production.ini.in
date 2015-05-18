@@ -44,6 +44,7 @@ shortener.allowed_hosts = ${shortener_allowed_hosts}
 shortener.allowed_domains = ${shortener_allowed_domains}
 
 search.address_origins = ${search_address_origins}
+search.origins_to_ranks = ${search_origins_to_ranks}
 
 wms_host = ${wms_host}
 

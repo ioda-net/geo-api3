@@ -2,7 +2,6 @@
 
 from chsdi.lib.validation.height import HeightValidation
 from chsdi.lib.raster.georaster import get_raster
-from chsdi.lib.decorators import requires_authorization
 
 from pyramid.view import view_config
 
@@ -27,7 +26,6 @@ class Height(HeightValidation):
             self.layers = ['DTM25']
         self.request = request
 
-    @requires_authorization()
     @view_config(route_name='height', renderer='jsonp', http_cache=0)
     def height(self):
         rasters = [get_raster(layer) for layer in self.layers]

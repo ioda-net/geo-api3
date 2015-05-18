@@ -8,7 +8,6 @@ from pyramid.view import view_config
 
 from pyramid.httpexceptions import HTTPBadRequest, HTTPBadGateway, HTTPNotAcceptable
 from pyramid.response import Response
-from chsdi.lib.decorators import requires_authorization
 
 
 from StringIO import StringIO
@@ -28,7 +27,6 @@ class OgcProxy:
     def __init__(self, request):
         self.request = request
 
-    @requires_authorization()
     @view_config(route_name='ogcproxy')
     def ogcproxy(self):
 

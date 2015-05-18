@@ -1,8 +1,6 @@
 #-*- coding: utf-8 -*-
 
 
-from chsdi.lib.decorators import requires_authorization
-
 import json
 import os
 import errno
@@ -43,7 +41,6 @@ class DownloadKML:
         self.tmpdir = request.registry.settings['print_temp_dir'] + '/kml'
         self.host = request.registry.settings['api_url'] + '/kml'
 
-    @requires_authorization()
     @view_config(route_name='downloadkml', renderer='jsonp')
     def downloadkml(self):
 

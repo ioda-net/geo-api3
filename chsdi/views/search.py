@@ -41,7 +41,6 @@ class Search(SearchValidation):
         self.timeStamps = request.params.get('timeStamps')
         self.typeInfo = request.params.get('type')
         self.limit = request.params.get('limit')
-        self.varnish_authorized = request.headers.get('X-SearchServer-Authorized', 'false').lower() == 'true'
         self.results = {'results': []}
         self.request = request
         self.topicId = get_topic_id_from_request(request)
@@ -326,7 +325,7 @@ class Search(SearchValidation):
             self.sphinx.AddQuery(queryText, index=str(index))
 
     def _parse_address(self, res):
-        if not (self.varnish_authorized and self.returnGeometry):
+        if not self.returnGeometry:
             attrs2Del = ['x', 'y', 'lon', 'lat', 'geom_st_box2d']
             popAtrrs = lambda x: res.pop(x) if x in res else x
             map(popAtrrs, attrs2Del)

@@ -38,7 +38,7 @@ METADATA_TABLES = {
         'view_bod_layer_info_fr': BodLayerFr,
         'view_bod_layer_info_de': BodLayerDe
     }
-TOPIC = 'cwdev_geojb'
+TOPIC = 'geojb'
 
 
 def usage(argv):

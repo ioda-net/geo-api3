@@ -94,7 +94,7 @@ class Search(SearchValidation):
 
         searchList = []
         if len(self.searchText) >= 1:
-            searchText = self._query_fields('@(detail,ofs_arr)')
+            searchText = self._query_fields('@(detail,ofs_arr,ofs)')
             searchList.append(searchText)
 
         if self.bbox is not None:

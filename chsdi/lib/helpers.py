@@ -228,3 +228,9 @@ def transformCoordinate(wkt, srid_from, srid_to):
     geom.AssignSpatialReference(srid_in)
     geom.TransformTo(srid_out)
     return geom
+
+
+def get_topic_id_from_request(request):
+    path_elements = request.current_route_path().split('/')
+    if path_elements[2] == 'services':
+        return path_elements[3]

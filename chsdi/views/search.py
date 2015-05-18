@@ -8,7 +8,7 @@ import pyramid.httpexceptions as exc
 from shapely.geometry import box, Point
 
 from chsdi.lib.validation.search import SearchValidation
-from chsdi.lib.helpers import format_search_text, transformCoordinate
+from chsdi.lib.helpers import format_search_text, transformCoordinate, get_topic_id_from_request
 from chsdi.lib.sphinxapi import sphinxapi
 from chsdi.lib import mortonspacekey as msk
 
@@ -44,6 +44,7 @@ class Search(SearchValidation):
         self.varnish_authorized = request.headers.get('X-SearchServer-Authorized', 'false').lower() == 'true'
         self.results = {'results': []}
         self.request = request
+        self.topicId = get_topic_id_from_request(request)
 
     @view_config(route_name='search', renderer='jsonp')
     def search(self):
@@ -107,7 +108,7 @@ class Search(SearchValidation):
 
         if len(searchList) != 0:
             try:
-                temp = self.sphinx.Query(searchTextFinal, index='geojb_locations')
+                temp = self.sphinx.Query(searchTextFinal, index='{}_locations'.format(self.topicId))
             except IOError:
                 raise exc.HTTPGatewayTimeout()
             temp = temp['matches'] if temp is not None else temp
@@ -131,7 +132,7 @@ class Search(SearchValidation):
         self.sphinx.SetLimits(0, layerLimit)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC')
-        index_name = 'geojb_layers_%s' % self.lang
+        index_name = '{}_layers_{}'.format(self.topicId, self.lang)
         mapName = self.mapName if self.mapName != 'all' else ''
         # Whitelist hack
         if mapName in ('api'):

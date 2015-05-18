@@ -43,6 +43,8 @@ class Search(SearchValidation):
         self.limit = request.params.get('limit')
         self.results = {'results': []}
         self.request = request
+        self.addressOrigins = [origin.strip() for origin in
+                                request.registry.settings['search.address_origins'].split(',')]
         self.topicId = get_topic_id_from_request(request)
 
     @view_config(route_name='search', renderer='jsonp')
@@ -303,7 +305,7 @@ class Search(SearchValidation):
                 self.sphinx.SetFilter('rank', self._origins_to_ranks(['parcel']))
                 del self.searchText[0]
             elif firstWord in ADDRESS_KEYWORDS:
-                self.sphinx.SetFilter('rank', self._origins_to_ranks(['address']))
+                self.sphinx.SetFilter('rank', self._origins_to_ranks(self.addressOrigins))
                 del self.searchText[0]
 
     def _filter_locations_by_origins(self):
@@ -343,7 +345,7 @@ class Search(SearchValidation):
             else:
                 res['attrs'].pop('layerBodId', None)
             res['attrs'].pop('feature_id', None)
-            if origin == 'address':
+            if origin in self.addressOrigins:
                 if nb_address < 20:
                     if not self.bbox or self._bbox_intersection(self.bbox, res['attrs']['geom_st_box2d']):
                         res['attrs'] = self._parse_address(res['attrs'])

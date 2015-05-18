@@ -43,6 +43,8 @@ http_proxy = ${http_proxy}
 shortener.allowed_hosts = ${shortener_allowed_hosts}
 shortener.allowed_domains = ${shortener_allowed_domains}
 
+search.address_origins = ${search_address_origins}
+
 wms_host = ${wms_host}
 
 ###

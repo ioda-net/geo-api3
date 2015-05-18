@@ -2,8 +2,9 @@
 # Search locations
 source src_geojb_locations : def_pgsql
 {
-    sql_db = geojb_dev
+    sql_db = geojb_${db_staging}
 }
+
 source src_geojb_communes : src_geojb_locations
 {
     sql_attr_bigint = commune_gid
@@ -17,6 +18,7 @@ source src_geojb_communes : src_geojb_locations
     sql_query = \
         SELECT \
             commune_gid::bigint \
+	    , commune_gid \
             , '<b>'||commune_nom||'</b>' as label \
             , 10 as rank \
             , 'communes' as origin \
@@ -43,7 +45,9 @@ source src_geojb_streets : src_geojb_locations
     sql_field_string = detail
     sql_query = \
         SELECT \
-       	    cast(nomderue_id as bigint) as nomderue_id \
+	    nomderue_gid::bigint \
+	    , cast(nomderue_id as bigint) as nomderue_id \
+       	    , nomderue_id \
             , '<b>' || nomderue_commune || ', ' || nomderue_strassenname || ', ' || nomderue_strassennummer || '</b>' as label \
             , 20 as rank \
             , 'nomderue' as origin \

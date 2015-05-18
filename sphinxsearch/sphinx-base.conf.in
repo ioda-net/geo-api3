@@ -1,6 +1,6 @@
 searchd
 {
-        listen                  = 127.0.0.1:9312
+        listen                  = ${sphinxhost}:${sphinxport}
 	log			= /var/log/sphinx/searchd.log
 	query_log		= /var/log/sphinx/query.log
 	read_timeout		= 5

@@ -1,0 +1,9 @@
+source def_pgsql
+{
+    type = pgsql
+    sql_host = ${sphinx_sql_host}
+    sql_user = ${sphinx_sql_user}
+    sql_pass = ${sphinx_sql_pass}
+    sql_port = ${sphinx_sql_port}
+    sql_query_pre = SET NAMES 'UTF8'
+}

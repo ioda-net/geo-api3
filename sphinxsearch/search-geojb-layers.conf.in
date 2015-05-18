@@ -2,7 +2,7 @@
 # Search layers
 source geojb_layers : def_pgsql
 {
-    sql_db = bod_dev
+    sql_db = bod_${db_staging}
     sql_attr_bigint = bgdi_id
     sql_attr_string = label
     sql_attr_string = origin
@@ -17,6 +17,7 @@ source src_geojb_layers_de : geojb_layers
     sql_query = \
         SELECT \
             bgdi_id::bigint \
+	    , bgdi_id \
             , '<b>'||kurzbezeichnung||'</b>' as label \
             , 'layer' as origin \
             , 'de' as lang \
@@ -32,6 +33,7 @@ source src_geojb_layers_fr : geojb_layers
     sql_query = \
         SELECT \
             bgdi_id::bigint \
+	    , bgdi_id \
             , '<b>'||kurzbezeichnung||'</b>' as label \
             , 'layer' as origin \
             , 'fr' as lang \
@@ -46,7 +48,8 @@ source src_geojb_layers_en : geojb_layers
 {
     sql_query = \
         SELECT \
-            bgdi_id::bigint as bgdi_id \
+            bgdi_id::bigint \
+	    , bgdi_id \
             , '<b>'||kurzbezeichnung||'</b>' as label \
             , 'layer' as origin \
             , 'en' as lang \

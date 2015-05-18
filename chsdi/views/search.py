@@ -87,7 +87,7 @@ class Search(SearchValidation):
             self.sphinx.SetGeoAnchor('lat', 'lon', geoAnchor.GetY(), geoAnchor.GetX())
         else:
             self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
-            self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, 'rank ASC')
+            self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, 'rank ASC, detail ASC')
 
         # Filter by origins if needed
         if self.origins is None:

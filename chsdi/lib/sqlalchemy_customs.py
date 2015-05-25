@@ -10,4 +10,4 @@ class remove_accents(FunctionElement):
 
 @compiles(remove_accents)
 def compile(element, compiler, **kw):
-    return " unaccent(%s)" % compiler.process(element.clauses)
+    return " remove_accents(%s)" % compiler.process(element.clauses)

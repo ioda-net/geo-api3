@@ -2,7 +2,7 @@
 # Search locations
 source src_geojb_locations : def_pgsql
 {
-    sql_db = geojb_${db_staging}
+    sql_db = sit_${db_staging}
 }
 
 source src_geojb_communes : src_geojb_locations

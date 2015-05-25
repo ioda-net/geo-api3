@@ -127,7 +127,7 @@ $BODY$
 
 def add_topics(session):
     geojb = Topics(id=TOPIC, orderKey=0, availableLangs='fr,de,en', selectedLayers=[],
-                        backgroundLayers=['COUVERTUREDUSOL'], showCatalog=True)
+                        backgroundLayers=['ORTHOPHOTOS_2011','ORTHOPHOTOS_2008','UP5'], showCatalog=True)
     api = Topics(id='api', orderKey=1, availableLangs='fr,de,en', selectedLayers=[],
                         backgroundLayers=[], showCatalog=False)
     all = Topics(id='all', backgroundLayers=[], showCatalog=False)
@@ -156,7 +156,7 @@ def add_layers_config(session, config):
                             format=format, type=type, opacity=opacity, queryable=queryable,
                             serverLayerName=layer_name, wmsLayers=layer_name, wmsUrl=wms_url,
                             maps='{}, {}, {}'.format(TOPIC, 'all', 'api'))
-        if layer_name == 'COUVERTUREDUSOL':
+        if layer_name in ('ORTHOPHOTOS_2011', 'ORTHOPHOTOS_2008', 'UP5'):
             layer_row.background = True
         session.add(layer_row)
     add_layers_metadata(session, wms.contents.keys())

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
 import decimal
 import datetime
 
@@ -89,10 +88,7 @@ def legend(request):
             status = layerMetadata['attributes']['dataStatus']
             if status == u'bgdi_created':
                 layerMetadata['attributes']['dataStatus'] = params.translate('None') + params.translate('Datenstand')
-    legend = {
-        'layer': layerMetadata,
-        'hasLegend': _has_legend(layerId, params.lang)
-    }
+    legend = _get_legend(layerId, layerMetadata, params)
     response = render_to_response(
         'chsdi:templates/legend.mako',
         {'legend': legend},
@@ -172,11 +168,26 @@ def feature_attributes(request):
     return {'id': layerId, 'name': params.translate(layerId), 'fields': fields}
 
 
-def _has_legend(layerId, lang):
-    legendsDir = os.path.join(os.path.dirname(__file__), '../static/images/legends')
-    image = "%s_%s.png" % (layerId, lang)
-    imageFullPath = os.path.abspath(os.path.join(legendsDir, image))
-    return os.path.exists(imageFullPath)
+def _get_legend(layerId, layerMetadata, params):
+    query = params.request.db.query(LayersConfig)
+    try:
+        layer = query.filter(LayersConfig.layerBodId == layerId).one()
+    except (NoResultFound, MultipleResultsFound):
+        raise exc.HTTPBadRequest('Wrong layer id: {}.'.format(layerId))
+    else:
+        return {
+            'layer': layerMetadata,
+            'hasLegend': layer.hasLegend,
+            'legendUrl': _get_legend_url(layer, params.lang)
+        }
+
+
+def _get_legend_url(layer, lang):
+    if lang:
+        langParam = '&LANG={}'.format(lang)
+    else:
+        langParam = ''
+    return layer.legendUrl + langParam
 
 
 def _filter_on_chargeable_attr(params, query, model):

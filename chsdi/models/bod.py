@@ -56,6 +56,7 @@ class LayersConfig(Base):
     attribution = Column('attribution', Text)
     background = Column('backgroundlayer', Boolean)
     hasLegend = Column('haslegend', Boolean)
+    legendUrl = Column('legend_url', Text)
     format = Column('image_format', Text)
     gutter = Column('wms_gutter', Integer)
     type = Column('layertype', Text)

@@ -130,6 +130,7 @@ def add_layers_config(session, config):
             attribution='Sigeom SA',
             background=False,
             hasLegend=has_legend,
+            legendUrl=legend,
             format=format,
             type=type,
             opacity=opacity,

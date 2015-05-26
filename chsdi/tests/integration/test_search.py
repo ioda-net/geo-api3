@@ -135,7 +135,7 @@ class TestSearchServiceView(TestsBase):
     def test_search_locations_authorized_no_geometry(self):
         params = {'searchText': 'moutier', 'type': 'locations', 'returnGeometry': 'false'}
         resp = self.testapp.get(self.search_uri, params=params,
-                    headers=dict(HTTP_X_SEARCHSERVER_AUTHORIZED='true'), status=200)
+                                headers=dict(HTTP_X_SEARCHSERVER_AUTHORIZED='true'), status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless('geom_st_box2d' not in resp.json['results'][0]['attrs'].keys())
 

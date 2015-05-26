@@ -45,7 +45,13 @@ class TestMapServiceView(TestsBase):
         self.testapp.get('/rest/services/{}/MapServer/identify'.format(self.topic_id), status=400)
 
     def test_identify_without_geometry(self):
-        params = {'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1', 'layers': 'all'}
+        params = {
+            'geometryType': 'esriGeometryEnvelope',
+            'imageDisplay': '500,600,96',
+            'mapExtent': '548945.5,147956,549402,148103.5',
+            'tolerance': '1',
+            'layers': 'all'
+        }
         resp = self.testapp.get('/rest/services/{}/MapServer/identify'.format(self.topic_id), params=params, status=400)
         resp.mustcontain('Please provide the parameter geometry')
 
@@ -327,7 +333,7 @@ class TestMapServiceView(TestsBase):
     @unittest.skip("Requires a vector table")
     def test_feature_geojson(self):
         resp = self.testapp.get('/rest/services/{}/MapServer/{}/362'.format(self.topic_id, self.layer_id),
-                    params={'geometryFormat': 'geojson'}, status=200)
+                                params={'geometryFormat': 'geojson'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless('properties' in resp.json['feature'])
         self.failUnless('geometry' in resp.json['feature'])
@@ -336,19 +342,19 @@ class TestMapServiceView(TestsBase):
     @unittest.skip("Requires a vector table")
     def test_several_features(self):
         resp = self.testapp.get('{}/{}/362,363'.format(self.mapserver_uri, self.layer_id),
-                status=200)
+                                status=200)
         self.failUnless(len(resp.json['features']) == 2)
 
     @unittest.skip("Requires a vector table")
     def test_several_features_geojson(self):
         resp = self.testapp.get('{}/{}/362,363'.format(self.mapserver_uri, self.layer_id),
-                    params={'geometryFormat': 'geojson'}, status=200)
+                                params={'geometryFormat': 'geojson'}, status=200)
         self.failUnless(len(resp.json['features']) == 2)
 
     @unittest.skip("Requires a vector table")
     def test_feature_with_callback(self):
         resp = self.testapp.get('/rest/services/{}/MapServer/{}/362'.format(self.topic_id, self.layer_id),
-                    params={'callback': 'cb'}, status=200)
+                                params={'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'text/javascript')
         resp.mustcontain('cb({')
 
@@ -361,7 +367,7 @@ class TestMapServiceView(TestsBase):
     @unittest.skip("Requires a vector table")
     def test_htmlpopup_cadastralwebmap(self):
         resp = self.testapp.get('/rest/services/{}/MapServer/{}/14/htmlPopup'.format(self.topic_id, self.layer_id),
-                params={'mapExtent': '485412.34375,109644.67,512974.44,135580.01999999999', 'imageDisplay': '600,400,96'}, status=200)
+                                params={'mapExtent': '485412.34375,109644.67,512974.44,135580.01999999999', 'imageDisplay': '600,400,96'}, status=200)
         self.failUnless(resp.content_type == 'text/html')
         resp.mustcontain('<table')
 
@@ -374,7 +380,7 @@ class TestMapServiceView(TestsBase):
     @unittest.skip("Requires a vector table")
     def test_htmlpopup_valid_with_callback(self):
         resp = self.testapp.get('/rest/services/{}/MapServer/{}/362/htmlPopup'.format(self.topic_id, self.layer_id),
-                                    params={'callback': 'cb'}, status=200)
+                                params={'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
 
     @unittest.skip("Requires a vector table")
@@ -384,7 +390,7 @@ class TestMapServiceView(TestsBase):
     @unittest.skip("Requires a vector table")
     def test_extendedhtmlpopup_valid(self):
         resp = self.testapp.get('/rest/services/{}/MapServer/{}/11/extendedHtmlPopup'.format(self.topic_id, self.layer_id),
-                                    status=200)
+                                status=200)
         self.failUnless(resp.content_type == 'text/html')
 
     @unittest.skip("Requires a vector table")
@@ -401,7 +407,7 @@ class TestMapServiceView(TestsBase):
     @unittest.skip("Requires a vector table")
     def test_extendedhtmlpopup_valid_with_callback(self):
         resp = self.testapp.get('/rest/services/{}/MapServer/{}/12/extendedHtmlPopup'.format(self.topic_id, self.layer_id),
-                                        params={'callback': 'cb'}, status=200)
+                                params={'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
 
     @unittest.skip("Requires a vector table")
@@ -436,8 +442,8 @@ class TestMapServiceView(TestsBase):
         valtrue = True
         # Get a list of all layers in prod, exclude sub-layers
         query = DBSession.query(distinct(LayersConfig.layerBodId))\
-                    .filter(LayersConfig.parentLayerId == valnone)\
-                    .filter(LayersConfig.hasLegend == valtrue)
+            .filter(LayersConfig.parentLayerId == valnone)\
+            .filter(LayersConfig.hasLegend == valtrue)
 
         try:
             for layer in getLayers(query):
@@ -464,8 +470,8 @@ class TestMapServiceView(TestsBase):
         valnone = None
         valtrue = True
         query = DBSession.query(distinct(LayersConfig.layerBodId))\
-                    .filter(LayersConfig.parentLayerId == valnone)\
-                    .filter(LayersConfig.hasLegend == valtrue)
+            .filter(LayersConfig.parentLayerId == valnone)\
+            .filter(LayersConfig.hasLegend == valtrue)
 
         try:
             for layer in getLayers(query):
@@ -483,7 +489,7 @@ class TestMapServiceView(TestsBase):
         val = True
         DBSession = scoped_session(sessionmaker())
         query = DBSession.query(distinct(LayersConfig.layerBodId))\
-                    .filter(LayersConfig.queryable == val)
+            .filter(LayersConfig.queryable == val)
         features = []
         try:
             for layer in getLayers(query):

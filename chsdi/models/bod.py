@@ -85,7 +85,7 @@ class LayersConfig(Base):
         wmsHost = params.request.registry.settings['wmshost']
         for k in self.__dict__.keys():
             if not k.startswith("_") and \
-                self.__dict__[k] is not None:
+                    self.__dict__[k] is not None:
                 if k == 'maps':
                     config['topics'] = self.__dict__[k]
                 elif k == 'layerBodId':
@@ -364,10 +364,6 @@ class OerebMetadata(Base):
 def get_bod_model(lang):
     if lang == 'fr':
         return BodLayerFr
-    elif lang == 'it':
-        return BodLayerIt
-    elif lang == 'rm':
-        return BodLayerRm
     elif lang == 'en':
         return BodLayerEn
     else:

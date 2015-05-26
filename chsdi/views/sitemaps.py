@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import json
-import math
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPNotFound, HTTPInternalServerError
 from pyramid.renderers import render_to_response
@@ -33,8 +32,7 @@ def sitemap(request):
         'index': index,
         'base': base,
         'topics': topics,
-        'layers': layers,
-        'addresses': addresses
+        'layers': layers
     }
     if params.content not in funcs:
         raise HTTPNotFound('Missing function definition')
@@ -85,46 +83,6 @@ def layers(params):
         layerlinks = map(buildlink, query.all())
         paths.extend(toAllLanguages(topic['langs'].split(','), layerlinks, '&', ''))
 
-    return asXml(params, paths)
-
-
-def addresses(params):
-    # index file
-    if params.multi_part is None:
-        return address_index(params)
-    else:
-        return address_part(params)
-
-
-def address_index(params):
-    session = params.request.db
-    count = session.query(SitemapGebaeuderegister).count()
-    max_index = int(math.ceil(count / __MAX_NUM_URLS__))
-    names = lambda x: params.basename + '_addresses_' + str(x) + '.xml'
-    data = {
-        'host': params.host,
-        'sitemaps': map(names, range(max_index))
-    }
-    response = render_to_response(
-        'chsdi:templates/sitemapindex.mako',
-        data,
-        request=params.request)
-    response.content_type = 'application/xml'
-    return response
-
-
-def address_part(params):
-    session = params.request.db
-    query = (session.query(SitemapGebaeuderegister)
-             .order_by(SitemapGebaeuderegister.id)
-             .offset(params.multi_part)
-             .limit(__MAX_NUM_URLS__))
-    paths = []
-    for res in query.all():
-        paths.append('?' + res.__bodId__ + '=' + res.id +
-                     '&X=' + str(int(res.X)) +
-                     '&Y=' + str(int(res.Y)) +
-                     '&zoom=9')
     return asXml(params, paths)
 
 

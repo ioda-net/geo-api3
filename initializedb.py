@@ -18,7 +18,7 @@ from owslib.wms import WebMapService
 from pyramid.paster import (
     get_appsettings,
     setup_logging,
-    )
+)
 
 from pyramid.scripts.common import parse_vars
 
@@ -30,14 +30,14 @@ from chsdi.models.bod import (
     BodLayerDe,
     BodLayerFr,
     BodLayerEn,
-    )
+)
 
 
 METADATA_TABLES = {
-        'view_bod_layer_info_en': BodLayerEn,
-        'view_bod_layer_info_fr': BodLayerFr,
-        'view_bod_layer_info_de': BodLayerDe
-    }
+    'view_bod_layer_info_en': BodLayerEn,
+    'view_bod_layer_info_fr': BodLayerFr,
+    'view_bod_layer_info_de': BodLayerDe
+}
 TOPIC = 'geojb'
 
 
@@ -72,7 +72,7 @@ def schema_exists(engine, schema_name):
         WHERE schema_name = $1)
         """)
     return engine.execute('EXECUTE schema_exists(%s)', (schema_name, ))\
-                .fetchone()[0]
+        .fetchone()[0]
 
 
 def initialize_bod(engine):
@@ -93,10 +93,17 @@ def initialize_bod(engine):
 
 
 def add_topics(session):
-    geojb = Topics(id=TOPIC, orderKey=0, availableLangs='fr,de,en', selectedLayers=[],
-                        backgroundLayers=['ORTHOPHOTOS_2011','ORTHOPHOTOS_2008','UP5'], showCatalog=True)
-    api = Topics(id='api', orderKey=1, availableLangs='fr,de,en', selectedLayers=[],
-                        backgroundLayers=[], showCatalog=False)
+    geojb = Topics(
+        id=TOPIC,
+        orderKey=0,
+        availableLangs='fr,de,en',
+        selectedLayers=[],
+        backgroundLayers=['ORTHOPHOTOS_2011', 'ORTHOPHOTOS_2008', 'UP5'],
+        showCatalog=True
+    )
+    api = Topics(
+        id='api', orderKey=1, availableLangs='fr,de,en', selectedLayers=[],
+        backgroundLayers=[], showCatalog=False)
     all = Topics(id='all', backgroundLayers=[], showCatalog=False)
     session.add(geojb)
     session.add(api)
@@ -118,45 +125,58 @@ def add_layers_config(session, config):
         type = 'wms'
         opacity = layer.opaque
         queryable = bool(layer.queryable)
-        layer_row = LayersConfig(layerBodId=layer_name, attribution='Sigeom SA',
-                            background=False, hasLegend=has_legend,
-                            format=format, type=type, opacity=opacity, queryable=queryable,
-                            serverLayerName=layer_name, wmsLayers=layer_name, wmsUrl=wms_url,
-                            maps='{}, {}, {}'.format(TOPIC, 'all', 'api'))
+        layer_row = LayersConfig(
+            layerBodId=layer_name,
+            attribution='Sigeom SA',
+            background=False,
+            hasLegend=has_legend,
+            format=format,
+            type=type,
+            opacity=opacity,
+            queryable=queryable,
+            serverLayerName=layer_name,
+            wmsLayers=layer_name,
+            wmsUrl=wms_url,
+            maps='{}, {}, {}'.format(TOPIC, 'all', 'api')
+        )
         if layer_name in ('ORTHOPHOTOS_2011', 'ORTHOPHOTOS_2008', 'UP5'):
             layer_row.background = True
         session.add(layer_row)
     add_layers_metadata(session, wms.contents.keys())
 
 
-def add_layers_metadata(session, layer_names, languages=tuple(('fr', 'en', 'de'))):
+def add_layers_metadata(
+        session, layer_names, languages=tuple(('fr', 'en', 'de'))):
     table_name_template = 'view_bod_layer_info_{}'
     for layer_name in layer_names:
         for lang in languages:
             table_name = table_name_template.format(lang)
             Table = METADATA_TABLES[table_name]
-            metadata = Table(layerBodId=layer_name, name=layer_name, fullName=layer_name,
-                                maps='{}, {}, {}'.format(TOPIC, 'all', 'api'), chargeable=True)
+            metadata = Table(
+                layerBodId=layer_name, name=layer_name, fullName=layer_name,
+                maps='{}, {}, {}'.format(TOPIC, 'all', 'api'), chargeable=True)
             session.add(metadata)
 
 
 def add_catalog(session):
     root = Catalog(topic=TOPIC, category='root', depth=0, path='root')
     session.add(root)
-    category = Catalog(topic=TOPIC, category='cat1', parentId=1, depth=1, path='root',
-                                selectedOpen=True, layerBodId='cat1',
-                                nameDe='cat1', nameFr='cat1',
-                                nameIt='cat1', nameRm='cat1',
-                                nameEn='cat1')
+    category = Catalog(
+        topic=TOPIC, category='cat1', parentId=1, depth=1, path='root',
+        selectedOpen=True, layerBodId='cat1',
+        nameDe='cat1', nameFr='cat1',
+        nameIt='cat1', nameRm='cat1',
+        nameEn='cat1')
     session.add(category)
     for layer in session.query(LayersConfig):
         name = layer.layerBodId
-        catalog_entry = Catalog(parentId=2, topic=TOPIC, category='layer', layerBodId=name,
-                                        nameDe=name, nameFr=name,
-                                        nameIt=name, nameRm=name,
-                                        nameEn=name,
-                                        path='root/cat1/' + name,
-                                        depth=2)
+        catalog_entry = Catalog(
+            parentId=2, topic=TOPIC, category='layer', layerBodId=name,
+            nameDe=name, nameFr=name,
+            nameIt=name, nameRm=name,
+            nameEn=name,
+            path='root/cat1/' + name,
+            depth=2)
         session.add(catalog_entry)
 
 

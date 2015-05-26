@@ -44,9 +44,9 @@ class Search(SearchValidation):
         self.results = {'results': []}
         self.request = request
         self.addressOrigins = [origin.strip() for origin in
-                                request.registry.settings['search.address_origins'].split(',')]
+                               request.registry.settings['search.address_origins'].split(',')]
         originAndRanks = [originRank.split(':') for originRank in
-                            request.registry.settings['search.origins_to_ranks'].split(',')]
+                          request.registry.settings['search.origins_to_ranks'].split(',')]
         self.originsToRanks = {origin.strip(): int(rank) for origin, rank in originAndRanks}
         self.topicId = get_topic_id_from_request(request)
 

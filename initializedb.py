@@ -123,11 +123,12 @@ def add_layers_config(session, config):
         has_legend = bool(legend)
         format = 'PNG'
         type = 'wms'
+        attribution = 'Sigeom SA'
         opacity = layer.opaque
         queryable = bool(layer.queryable)
         layer_row = LayersConfig(
             layerBodId=layer_name,
-            attribution='Sigeom SA',
+            attribution=attribution,
             background=False,
             hasLegend=has_legend,
             legendUrl=legend,
@@ -140,9 +141,25 @@ def add_layers_config(session, config):
             wmsUrl=wms_url,
             maps='{}, {}, {}'.format(TOPIC, 'all', 'api')
         )
-        if layer_name in ('ORTHOPHOTOS_2011', 'ORTHOPHOTOS_2008', 'UP5'):
+        if layer_name in ('ORTHOPHOTOS_2011', 'ORTHOPHOTOS_2008'):
             layer_row.background = True
         session.add(layer_row)
+    up5 = LayersConfig(
+        layerBodId='UP5',
+        attribution='Berne',
+        background=True,
+        hasLegend=False,
+        legendUrl='',
+        format='png',
+        type='wms',
+        opacity=0,
+        queryable=False,
+        serverLayerName='UP5',
+        wmsLayers='GEODB.UP5_SITU5_MOSAIC',
+        wmsUrl='http://www.geoservice.apps.be.ch/geoservice/services/a4p/a4p_basiswms_d_fk_s/MapServer/WMSServer?',
+        maps='{}, {}, {}'.format(TOPIC, 'all', 'api')
+    )
+    session.add(up5)
     add_layers_metadata(session, wms.contents.keys())
 
 

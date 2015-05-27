@@ -84,21 +84,23 @@ def initialize_bod(engine):
 
     config = configparser.ConfigParser()
     config.read('buildout_config.cfg')
+    background_layer_ids = [layer_id.strip()
+                            for layer_id in config.get('initdb', 'background_layer_ids').split(',')]
 
-    add_topics(session)
-    add_layers_config(session, config)
+    add_topics(session, background_layer_ids)
+    add_layers_config(session, background_layer_ids, config)
     add_catalog(session)
 
     session.commit()
 
 
-def add_topics(session):
+def add_topics(session, background_layer_ids):
     geojb = Topics(
         id=TOPIC,
         orderKey=0,
         availableLangs='fr,de,en',
         selectedLayers=[],
-        backgroundLayers=['ORTHOPHOTOS_2011', 'ORTHOPHOTOS_2008', 'UP5'],
+        backgroundLayers=background_layer_ids,
         showCatalog=True
     )
     api = Topics(
@@ -110,7 +112,7 @@ def add_topics(session):
     session.add(all)
 
 
-def add_layers_config(session, config):
+def add_layers_config(session, background_layer_ids, config):
     wms_url = config.get('initdb', 'wms_url')
     wms_version = config.get('initdb', 'wms_version')
     wms = WebMapService(wms_url, version=wms_version)
@@ -141,7 +143,7 @@ def add_layers_config(session, config):
             wmsUrl=wms_url,
             maps='{}, {}, {}'.format(TOPIC, 'all', 'api')
         )
-        if layer_name in ('ORTHOPHOTOS_2011', 'ORTHOPHOTOS_2008'):
+        if layer_name in background_layer_ids:
             layer_row.background = True
         session.add(layer_row)
     up5 = LayersConfig(

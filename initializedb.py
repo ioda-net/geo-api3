@@ -3,6 +3,7 @@
 
 import os
 import sys
+import json
 
 try:
     import configparser
@@ -146,23 +147,18 @@ def add_layers_config(session, background_layer_ids, config):
         if layer_name in background_layer_ids:
             layer_row.background = True
         session.add(layer_row)
-    up5 = LayersConfig(
-        layerBodId='UP5',
-        attribution='Berne',
-        background=True,
-        hasLegend=False,
-        legendUrl='',
-        format='png',
-        type='wms',
-        opacity=0,
-        queryable=False,
-        serverLayerName='UP5',
-        wmsLayers='GEODB.UP5_SITU5_MOSAIC',
-        wmsUrl='http://www.geoservice.apps.be.ch/geoservice/services/a4p/a4p_basiswms_d_fk_s/MapServer/WMSServer?',
-        maps='{}, {}, {}'.format(TOPIC, 'all', 'api')
-    )
-    session.add(up5)
+    add_complementary_layers(session)
     add_layers_metadata(session, wms.contents.keys())
+
+
+def add_complementary_layers(session):
+    with open('complementary_layers.json') as complementary_layers_file:
+        complementary_layers = json.load(complementary_layers_file)
+    for layer_params in complementary_layers.values():
+        # In current schema, maps must be a text, not an array
+        layer_params['maps'] = ', '.join(layer_params['maps'])
+        layer = LayersConfig(**layer_params)
+        session.add(layer)
 
 
 def add_layers_metadata(

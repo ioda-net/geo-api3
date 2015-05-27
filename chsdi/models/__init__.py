@@ -54,7 +54,4 @@ def oereb_models_from_bodid(bodId):
 
 def models_from_name(name):
     models = models_from_bodid(name)
-    if models is not None:
-        return models
-    else:
-        return None
+    return models

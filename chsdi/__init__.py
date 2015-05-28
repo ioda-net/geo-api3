@@ -58,7 +58,7 @@ def main(global_config, **settings):
     config.add_route('print_progress', '/printprogress')
     config.add_route('print_cancel', '/printcancel')
     config.add_route('dev', '/dev')
-    config.add_route('ga_api', '/uncached_loader.js')
+    config.add_route('ga_api', '/loader.js')
     config.add_route('testi18n', '/testi18n')
     config.add_route('topics', '/rest/services')
     config.add_route('mapservice', '/rest/services/{map}/MapServer')
@@ -87,6 +87,8 @@ def main(global_config, **settings):
     config.add_route('checker', '/checker')
     config.add_route('checker_dev', '/checker_dev')
     config.add_route('downloadkml', '/downloadkml')
+    config.add_route('files_collection', '/files')
+    config.add_route('files', '/files/{id}')
 
     # Some views for specific routes
     config.add_view(route_name='dev', renderer='chsdi:templates/index.mako')
@@ -100,6 +102,7 @@ def main(global_config, **settings):
     config.add_static_view('static', 'chsdi:static')
     config.add_static_view('images', 'chsdi:static/images')
     config.add_static_view('examples', 'chsdi:static/doc/examples')
+    config.add_static_view('vectorStyles', 'chsdi:static/vectorStyles')
     # keep this the last one
     config.add_static_view('/', 'chsdi:static/doc/build')
 

@@ -903,25 +903,25 @@ msgid "ch.are.bauzonen"
 msgstr "Building zones Switzerland (harm.)"
 
 msgid "ch.are.belastung-gueterverkehr-bahn"
-msgstr ""
+msgstr "Güterverkehr Schiene"
 
 msgid "ch.are.belastung-gueterverkehr-bahn-2008"
 msgstr "Freight traffic 2008"
 
 msgid "ch.are.belastung-gueterverkehr-strasse"
-msgstr ""
+msgstr "Güterverkehr Strasse"
 
 msgid "ch.are.belastung-gueterverkehr-strasse-2008"
 msgstr "Heavy goods traffic 2008"
 
 msgid "ch.are.belastung-personenverkehr-bahn"
-msgstr ""
+msgstr "Personenverkehr ÖV"
 
 msgid "ch.are.belastung-personenverkehr-bahn-2008"
 msgstr "Passenger traffic 2008"
 
 msgid "ch.are.belastung-personenverkehr-strasse"
-msgstr ""
+msgstr "Personenverkehr Strasse"
 
 msgid "ch.are.belastung-personenverkehr-strasse-2008"
 msgstr "Passenger traffic 2008"
@@ -1196,6 +1196,54 @@ msgstr "Micro-zoning"
 msgid "ch.bafu.gefahren-spektral"
 msgstr "Spectral micro-zoning"
 
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet"
+msgstr "Badegewässerqualität"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.aeussereraspekt"
+msgstr "Äusserer Aspekt"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.bwid"
+msgstr "Badeplatz ID"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.bwname"
+msgstr "Name"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.ch1903x"
+msgstr "Koordinaten X"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.ch1903y"
+msgstr "Koordinaten Y"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.groupid"
+msgstr "Badeplatzgruppe"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.kanton"
+msgstr "Kanton"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.latbw"
+msgstr "Koordinaten Y (ETRS 89)"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.lonbw"
+msgstr "Koordinaten X (ETRS 89)"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.nwunitname"
+msgstr "Gewässer"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.qualitaetklasse"
+msgstr "Qualität (Klassierung nach EUA)"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.rbdname"
+msgstr "Flussgebietseinheit (WRRL)"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.rbdsuname"
+msgstr "Flussgebiet"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.url"
+msgstr "Link"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.yearbw"
+msgstr "Jahr"
+
 msgid "ch.bafu.gewaesserschutzbereiche"
 msgstr "Water protection regions"
 
@@ -1229,8 +1277,113 @@ msgstr "Station number"
 msgid "ch.bafu.hydrologie-hintergrundkarte"
 msgstr "Background map hydrol. data"
 
+msgid "ch.bafu.hydrologie-hochwasserstatistik"
+msgstr "HQStat"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.coordX"
+msgstr "X-Koordinate"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.coordY"
+msgstr "Y-Koordinate"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.dimension"
+msgstr "Dimension"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.einzugsgebietsflaeche"
+msgstr "Einzugsgebietsfläche [km2]"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.hq10"
+msgstr "HQ10"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.hq100"
+msgstr "HQ100"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.hq2"
+msgstr "HQ2"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.hq30"
+msgstr "HQ30"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.hq300"
+msgstr "HQ300"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.hq5"
+msgstr "HQ5"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.hq50"
+msgstr "HQ50"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.kenn_nr"
+msgstr "Nummer"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.mittlerehoehe"
+msgstr "Mittlere Höhe [m ü.M.]"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.name"
+msgstr "Name der Station"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.regimename"
+msgstr "Abflussregime"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.statj_anf"
+msgstr "Periodenbeginn"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.statj_end"
+msgstr "Periodenende"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.statj_tot"
+msgstr "Anzahl Jahre"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.url"
+msgstr "Link in Deutsch"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.urlhq"
+msgstr "Hochwasserwahrscheinlichkeiten"
+
 msgid "ch.bafu.hydrologie-hydromessstationen"
 msgstr "Hydrological gauging stations"
+
+msgid "ch.bafu.hydrologie-niedrigwasserstatistik"
+msgstr "NQSTAT"
+
+msgid "ch.bafu.hydrologie-q347"
+msgstr "Q347"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen"
+msgstr "HUG-Messstationen"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.betriebsbeginn"
+msgstr "Messbeginn"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.einzugsgebietsflaeche"
+msgstr "Einzugsgebietsfläche [km2]"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.flussgebiet"
+msgstr "Flussgebiet"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.hochwert"
+msgstr "Koordinaten Y"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.hoehe"
+msgstr "Stationshöhe [m ü.M.]"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.mittlerehoehe"
+msgstr "Mittlere Höhe [m ü.M.]"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.name"
+msgstr "Name der Station"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.rechtswert"
+msgstr "Koordinaten X"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.stationierung"
+msgstr "Entfernung von der Mündung oder Landesgrenze [km]"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.url"
+msgstr "Link deutsch"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.vergletscherung"
+msgstr "Vergletscherung [%]"
 
 msgid "ch.bafu.hydrologie-wassertemperaturmessstationen"
 msgstr "Temperature monitoring stations"
@@ -1240,6 +1393,27 @@ msgstr "Station number"
 
 msgid "ch.bafu.hydrologie-wassertemperaturmessstationen.name"
 msgstr "Station name"
+
+msgid "ch.bafu.hydroweb-messstationen_gefahren"
+msgstr "Hochwasser Gefahrenstufen"
+
+msgid "ch.bafu.hydroweb-messstationen_grundwasser"
+msgstr "NAQUA monitoring network"
+
+msgid "ch.bafu.hydroweb-messstationen_temperatur"
+msgstr "Water temperature rivers"
+
+msgid "ch.bafu.hydroweb-messstationen_vorhersage"
+msgstr "Stations hydrological forecasts"
+
+msgid "ch.bafu.hydroweb-messstationen_zustand"
+msgstr "Lage Fliessgewässer und Seen"
+
+msgid "ch.bafu.hydroweb-warnkarte_national"
+msgstr "Flood alert map"
+
+msgid "ch.bafu.hydroweb-warnkarte_regional"
+msgstr "Flood alert small catchments"
 
 msgid "ch.bafu.kt"
 msgstr "FOEN + canton"
@@ -1388,6 +1562,111 @@ msgstr "Rockfall"
 msgid "ch.bafu.silvaprotect-uebersarung"
 msgstr "Overbank sedimentation"
 
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer"
+msgstr "Strukturgüte Linkes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.datenherkunft"
+msgstr "BUWAL/LfU Karlsruhe"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.lufer"
+msgstr "linkes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.lumfeld"
+msgstr "linkes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.rufer"
+msgstr "rechtes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.rumfeld"
+msgstr "rechtes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.sohle"
+msgstr "Sohle"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld"
+msgstr "Strukturgüte Linkes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.datenherkunft"
+msgstr "BUWAL/LfU Karlsruhe"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.lufer"
+msgstr "linkes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.lumfeld"
+msgstr "linkes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.rufer"
+msgstr "rechtes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.rumfeld"
+msgstr "rechtes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.sohle"
+msgstr "Sohle"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer"
+msgstr "Strukturgüte Rechtes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.datenherkunft"
+msgstr "BUWAL/LfU Karlsruhe"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.lufer"
+msgstr "linkes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.lumfeld"
+msgstr "linkes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.rufer"
+msgstr "rechtes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.rumfeld"
+msgstr "rechtes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.sohle"
+msgstr "Sohle"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld"
+msgstr "Strukturgüte Rechtes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.datenherkunft"
+msgstr "BUWAL/LfU Karlsruhe"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.lufer"
+msgstr "linkes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.lumfeld"
+msgstr "linkes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.rufer"
+msgstr "rechtes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.rumfeld"
+msgstr "rechtes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.sohle"
+msgstr "Sohle"
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle"
+msgstr "Strukturgüte Sohle"
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.datenherkunft"
+msgstr "BUWAL/LfU Karlsruhe"
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.lufer"
+msgstr "linkes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.lumfeld"
+msgstr "linkes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.rufer"
+msgstr "rechtes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.rumfeld"
+msgstr "rechtes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.sohle"
+msgstr "Sohle"
+
 msgid "ch.bafu.sturm-boeenspitzen_100"
 msgstr "Windstorm Gusts 100"
 
@@ -1414,6 +1693,9 @@ msgstr "Windstorm Dynamic Pressure 50"
 
 msgid "ch.bafu.swissprtr"
 msgstr "Pollutant releases (SwissPRTR)"
+
+msgid "ch.bafu.typisierung-fliessgewaesser"
+msgstr "River Typology"
 
 msgid "ch.bafu.unesco-weltnaturerbe"
 msgstr "UNESCO World natural heritage"
@@ -1471,6 +1753,9 @@ msgstr "40km2 sub catchment areas"
 
 msgid "ch.bafu.wasser-vorfluter"
 msgstr "Receiving watercourses"
+
+msgid "ch.bafu.wasserbau-vermessungsstrecken"
+msgstr "Vermessungsstrecken"
 
 msgid "ch.bafu.wege-wildruhezonen-jagdbanngebiete"
 msgstr "Permitted paths and trails"
@@ -1709,6 +1994,30 @@ msgstr "Polluted sites civil aerodromes"
 
 msgid "ch.bazl.kataster-belasteter-standorte-zivilflugplaetze.katasternummer"
 msgstr "BAZL Standortnummer"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_erste-nachtstunde"
+msgstr "Noise exp. 1st night hour"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter"
+msgstr "Noise exp. helicopters Lr"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter-maximalpegel"
+msgstr "Noise exp. helicopters Lmax"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_klein-grossflugzeuge"
+msgstr "Noise exp. light / large aircrafts"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_kleinluftfahrzeuge"
+msgstr "Noise exp. light aircrafts"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_letzte-nachtstunde"
+msgstr "Noise exp. last night hour"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_militaer-gesamt"
+msgstr "Noise exp. milit. aerodr. (tot.)"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_zweite-nachtstunde"
+msgstr "Noise exp. 2nd night hour"
 
 msgid "ch.bazl.landschaftsruhezonen"
 msgstr "Sanctuaries for silence: aviation"
@@ -2035,6 +2344,18 @@ msgstr "http://www.bafu.admin.ch/index.html?lang=en"
 msgid "ch.lw"
 msgstr "AF"
 
+msgid "ch.nagra.aeromagnetische-karte_1100"
+msgstr "Aeromagnetik Aargau 1100 m 100"
+
+msgid "ch.nagra.aeromagnetische-karte_1100.aeromagnetisme"
+msgstr "Aeromagnetic anomalies Aargau, 1100 m [nT]"
+
+msgid "ch.nagra.aeromagnetische-karte_1500"
+msgstr "Aeromagnetik Aargau 1500 m 100"
+
+msgid "ch.nagra.aeromagnetische-karte_1500.aeromagnetisme"
+msgstr "Aeromagnetic anomalies Aargau, 1500 m [nT]"
+
 msgid "ch.pronatura"
 msgstr "Pronatura"
 
@@ -2064,6 +2385,12 @@ msgstr "Minimum Intervention"
 
 msgid "ch.pronatura.waldreservate.tt_pronatura_e3"
 msgstr "Conservation through active management"
+
+msgid "ch.sgpk.maechtigkeit-lockergesteine"
+msgstr "Sediment thickness"
+
+msgid "ch.sgpk.maechtigkeit-lockergesteine.epaisseur"
+msgstr "Sediment thickness [m]"
 
 msgid "ch.swisstopo"
 msgstr "swisstopo"
@@ -2657,6 +2984,222 @@ msgstr "Territorial regions"
 
 msgid "ch.vbs.url"
 msgstr "http://www.vbs.admin.ch/internet/vbs/en/home.html"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.Anz_Jahre"
+msgstr "Anzahl Jahre"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.Beeinflussung"
+msgstr "Beeinflussung NQ"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.Beginn"
+msgstr "Periodenbeginn"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.Ende"
+msgstr "Periodenende"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.GEBFLAECHE"
+msgstr "Einzugsgebietsfläche [km2]"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.Genauigkeit"
+msgstr "Genauigkeit NQ"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.KOORDX"
+msgstr "x-Koordinate"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.KOORDY"
+msgstr "y-Koordinate"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.KennNr"
+msgstr "Nummer"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NAME"
+msgstr "Name der Station"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q10"
+msgstr "NM14Q10"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q100"
+msgstr "NM14Q100"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q2"
+msgstr "NM14Q2"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q20"
+msgstr "NM14Q20"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q5"
+msgstr "NM14Q5"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q50"
+msgstr "NM14Q50"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q10"
+msgstr "NM1Q10"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q100"
+msgstr "NM1Q100"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q2"
+msgstr "NM1Q2"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q20"
+msgstr "NM1Q20"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q5"
+msgstr "NM1Q5"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q50"
+msgstr "NM1Q50"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q10"
+msgstr "NM30Q10"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q100"
+msgstr "NM30Q100"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q2"
+msgstr "NM30Q2"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q20"
+msgstr "NM30Q20"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q5"
+msgstr "NM30Q5"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q50"
+msgstr "NM30Q50"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q10"
+msgstr "NM7Q10"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q100"
+msgstr "NM7Q100"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q2"
+msgstr "NM7Q2"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q20"
+msgstr "NM7Q20"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q5"
+msgstr "NM7Q5"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q50"
+msgstr "NM7Q50"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.hyperlink"
+msgstr "Link deutsch"
+
+msgid "ch_bafu_hydrologie_q347.BasisID"
+msgstr "Nr. Basisgebiet"
+
+msgid "ch_bafu_hydrologie_q347.BilanzID"
+msgstr "Nr. Bilanzgebiet"
+
+msgid "ch_bafu_hydrologie_q347.ID"
+msgstr "ID"
+
+msgid "ch_bafu_hydrologie_q347.P"
+msgstr "Messperiode P"
+
+msgid "ch_bafu_hydrologie_q347.QP"
+msgstr "Q347 (P) [l/s]"
+
+msgid "ch_bafu_hydrologie_q347.Q_84_93"
+msgstr "Q347 (1984-93) [l/s]"
+
+msgid "ch_bafu_hydrologie_q347.Qmod"
+msgstr "Q347 (Modell) [l/s]"
+
+msgid "ch_bafu_hydrologie_q347.bemerkung"
+msgstr "Bemerkungen"
+
+msgid "ch_bafu_hydrologie_q347.flaeche"
+msgstr "Fläche [km2]"
+
+msgid "ch_bafu_hydrologie_q347.gewaesser"
+msgstr "Name"
+
+msgid "ch_bafu_hydrologie_q347.lhg"
+msgstr "Nr. HADES 5.1"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.abfluss"
+msgstr "Abfluss"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.aehnlichkeit"
+msgstr "zugewiesen zu"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.biogeo"
+msgstr "Biogeographische Region"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.code"
+msgstr "Merkmalskombination"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.gefaelle"
+msgstr "Gefälle"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.geo"
+msgstr "Geologie"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.gewaessertyp"
+msgstr "Fliessgewässertyp"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.grosserfluss"
+msgstr "Grosser Fluss"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.hoehe"
+msgstr "Höhe"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.name"
+msgstr "Name des Fliessgewässertyps"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.objectid_gwn25"
+msgstr "Gewässernetz-ID"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.shape_length"
+msgstr "Länge des Abschnittes"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.url_portraits"
+msgstr "URL zu Typenporträt"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.url_uebersicht"
+msgstr "URL zu Übersicht"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.anfangsmass"
+msgstr "Anfangsmass"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.anzahl_profile"
+msgstr "Anzahl_Profile"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.aufnahme_intervall"
+msgstr "Aufnahme_Intervall"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.aufnahme_letzte"
+msgstr "Aufnahme_Letzte"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.bemerkung"
+msgstr "Bemerkung"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.bezeichnung"
+msgstr "Bezeichnung"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.endmass"
+msgstr "Endmass"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.gewaessernummer"
+msgstr "Gewaessernummer"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.gwlnr"
+msgstr "Gewässerlaufnummer"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.laenge_km"
+msgstr "Laenge_KM"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.routeid"
+msgstr "Route_ID"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.streckenid"
+msgstr "StreckenID"
 
 msgid "city_name"
 msgstr "Name der Ortschaft"
@@ -3986,7 +4529,7 @@ msgid "rotation key apple"
 msgstr "Use \u2325 + Shift + drag to rotate the image"
 
 msgid "rotordurchmesser"
-msgstr "Rotordurchmesser"
+msgstr "Rotor- durchmesser"
 
 msgid "routentypid"
 msgstr "Routentyp ID für Ausnahmetransporte"
@@ -4362,6 +4905,24 @@ msgstr "Obstacle type"
 
 msgid "tt_ch.bazl.kartnummer"
 msgstr "Map number [NM100]"
+
+msgid "tt_ch.bazl.laermbelastungskataster.documentlink"
+msgstr "Detaillierte Beschreibung "
+
+msgid "tt_ch.bazl.laermbelastungskataster.editor"
+msgstr "Herausgeber (zuständige Behörde)"
+
+msgid "tt_ch.bazl.laermbelastungskataster.exposuretype"
+msgstr "Lärmbelastungstyp"
+
+msgid "tt_ch.bazl.laermbelastungskataster.level_db"
+msgstr "Beurteilungspegel dB(A)"
+
+msgid "tt_ch.bazl.laermbelastungskataster.registername"
+msgstr "Bezeichnung des Katasters"
+
+msgid "tt_ch.bazl.laermbelastungskataster.validfrom"
+msgstr "Publikationsdatum"
 
 msgid "tt_ch.bazl.markierung"
 msgstr "Marking / navigation lights"

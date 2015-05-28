@@ -529,6 +529,18 @@ class TestMapServiceView(TestsBase):
         self.failUnless('label' in resp.json[self.layer_id])
         self.failUnless('background' in resp.json[self.layer_id])
 
+    def test_layersconfig_geojson_layer(self):
+        resp = self.testapp.get('/rest/services/all/MapServer/layersConfig', status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        jsonData = resp.json
+        if 'ch.bafu.hydroweb-messstationen_gefahren' in jsonData:
+            layer = jsonData['ch.bafu.hydroweb-messstationen_gefahren']
+            self.failUnless(layer['type'] == 'geojson')
+            self.failUnless('geojsonUrl' in layer)
+            self.failUnless('geojsonUrlDe' not in layer)
+            self.failUnless('styleUrl' in layer)
+            self.failUnless('updateDelay' in layer)
+
     def test_layersconfig_with_callback(self):
         resp = self.testapp.get(self.mapserver_uri, params={'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')

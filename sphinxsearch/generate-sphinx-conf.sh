@@ -12,14 +12,12 @@ cd "sphinxsearch"
 cat sphinx-base.conf db.conf search*.conf > sphinx.conf
 
 if ! indextool --checkconfig -c sphinx.conf > /dev/null 2>&1; then
-    indextool --checkconfig -c sphinx.conf
-#   If we have missing indexes we will never
-#   create the first configuration
-#    exit 1
+    number_missed_index=$(indextool --checkconfig -c sphinx.conf | grep "^missed index(es)" | wc -l)
+    if (( ${number_missed_index} == 0 )); then
+        indextool --checkconfig -c sphinx.conf
+        exit 1
+    fi
 fi
 
 chmod 0640 sphinx.conf
-sudo cp -a sphinx.conf /etc/sphinx/sphinx.conf
-sudo chown sphinx:sphinx /etc/sphinx/sphinx.conf
-sudo systemctl restart searchd.service
-
+su -c "./deploy-sphinx-conf.sh"

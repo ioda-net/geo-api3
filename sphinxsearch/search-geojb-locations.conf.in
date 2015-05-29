@@ -12,6 +12,8 @@ source src_geojb_communes : src_geojb_locations
     sql_attr_uint = rank
     sql_attr_string = origin
     sql_attr_string = geom_st_box2d
+    sql_attr_uint = x
+    sql_attr_uint = y
     sql_field_string = ofs
     sql_field_string = ofs_arr
     sql_field_string = detail
@@ -23,6 +25,8 @@ source src_geojb_communes : src_geojb_locations
             , 10 as rank \
             , 'communes' as origin \
             , box2d(the_geom) as geom_st_box2d \
+            , st_x(st_centroid(st_curvetoline(the_geom))) as y \
+            , st_y(st_centroid(st_curvetoline(the_geom))) as x \
             , cast(ofs as text) as ofs \
             , cast(ofs_arr as text) as ofs_arr \
             , remove_accents(nom) as detail \
@@ -37,6 +41,8 @@ source src_geojb_buildings : src_geojb_locations
     sql_attr_uint = rank
     sql_attr_string = origin
     sql_attr_string = geom_st_box2d
+    sql_attr_uint = x
+    sql_attr_uint = y
     sql_attr_string = commune
     sql_attr_string = adresse
     sql_field_string = ofs
@@ -51,6 +57,8 @@ source src_geojb_buildings : src_geojb_locations
             , 20 as rank \
             , 'nomderue' as origin \
             , box2d(the_geom) as geom_st_box2d \
+            , st_x(st_centroid(st_curvetoline(the_geom))) as y \
+            , st_y(st_centroid(st_curvetoline(the_geom))) as x \
             , commune as commune \
             , adresse as adresse \
             , cast(ofs as text) as ofs \

@@ -139,6 +139,7 @@ def add_layers_config(session, background_layer_ids, config):
             type=type,
             opacity=opacity,
             queryable=queryable,
+            selectbyrectangle=queryable,
             serverLayerName=layer_name,
             wmsLayers=layer_name,
             wmsUrl=wms_url,
@@ -169,8 +170,13 @@ def add_layers_metadata(
             table_name = table_name_template.format(lang)
             Table = METADATA_TABLES[table_name]
             metadata = Table(
-                layerBodId=layer_name, name=layer_name, fullName=layer_name,
-                maps='{}, {}, {}'.format(TOPIC, 'all', 'api'), chargeable=True)
+                layerBodId=layer_name,
+                name=layer_name,
+                fullName=layer_name,
+                dataOwner='Sigeom SA',
+                maps='{}, {}, {}'.format(TOPIC, 'all', 'api'),
+                chargeable=True
+            )
             session.add(metadata)
 
 

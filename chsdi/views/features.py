@@ -260,6 +260,8 @@ def _identify(request):
     maxFeatures = 201
     features = []
     for feature in _get_features_for_filters(params, models, maxFeatures=maxFeatures, where=params.where):
+        if feature is None:
+            continue
         f = _process_feature(feature, params)
         features.append(f)
         if len(features) > maxFeatures:

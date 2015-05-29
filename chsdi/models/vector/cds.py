@@ -13,9 +13,8 @@ Base = bases['sit']
 class CDS(Base, Vector):
     __tablename__ = 'cds'
     __table_args__ = ({'schema': 'vector', 'autoload': False})
-    #__template__ = 'templates/htmlpopup/swissmap_online_feuerstellen.mako'
+    __template__ = 'templates/htmlpopup/cds.mako'
     __bodId__ = 'COUVERTUREDUSOL'
-    #__label__ = 'gemeinde'
     id = Column('id', Integer, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
                                dimension=2, srid=21781))

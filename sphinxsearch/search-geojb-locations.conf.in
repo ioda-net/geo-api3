@@ -12,8 +12,8 @@ source src_geojb_communes : src_geojb_locations
     sql_attr_uint = rank
     sql_attr_string = origin
     sql_attr_string = geom_st_box2d
-    sql_attr_uint = x
-    sql_attr_uint = y
+    sql_attr_float = x
+    sql_attr_float = y
     sql_field_string = ofs
     sql_field_string = ofs_arr
     sql_field_string = detail
@@ -41,8 +41,8 @@ source src_geojb_buildings : src_geojb_locations
     sql_attr_uint = rank
     sql_attr_string = origin
     sql_attr_string = geom_st_box2d
-    sql_attr_uint = x
-    sql_attr_uint = y
+    sql_attr_float = x
+    sql_attr_float = y
     sql_attr_string = commune
     sql_attr_string = adresse
     sql_field_string = ofs

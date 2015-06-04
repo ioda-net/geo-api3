@@ -67,7 +67,7 @@ settings = get_appsettings(config_uri)
 
 def getLayersConfigs():
 
-    engine = engine_from_config(settings, 'sqlalchemy.bod.')
+    engine = engine_from_config(settings, 'sqlalchemy.sit.')
     DBSession = scoped_session(sessionmaker())
     DBSession.configure(bind=engine)
 

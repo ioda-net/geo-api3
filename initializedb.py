@@ -56,9 +56,9 @@ def main(argv=sys.argv):
     options = parse_vars(argv[2:])
     setup_logging(config_uri)
     settings = get_appsettings(config_uri, options=options)
-    engine = engine_from_config(settings, 'sqlalchemy.bod.')
+    engine = engine_from_config(settings, 'sqlalchemy.sit.')
 
-    create_schema(engine, 're3')
+    create_schema(engine, 'api3')
     initialize_bod(engine)
 
 

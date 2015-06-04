@@ -6,11 +6,11 @@ from sqlalchemy.dialects import postgresql
 from chsdi.lib.helpers import make_agnostic
 from chsdi.models import bases
 
-Base = bases['bod']
+Base = bases['sit']
 
 
 class Bod(object):
-    __dbname__ = 'bod'
+    __dbname__ = 'sit'
     bgdiId = Column('bgdi_id', BigInteger, primary_key=True)
     layerBodId = Column('bod_layer_id', Text, primary_key=True)
     idGeoCat = Column('geocat_uuid', Text)
@@ -51,7 +51,7 @@ class Bod(object):
 
 class LayersConfig(Base):
     __tablename__ = 'view_layers_js'
-    __table_args__ = ({'schema': 're3', 'autoload': False})
+    __table_args__ = ({'schema': 'api3', 'autoload': False})
     layerBodId = Column('layer_id', Text, primary_key=True)
     attribution = Column('attribution', Text)
     background = Column('backgroundlayer', Boolean)
@@ -138,17 +138,17 @@ class LayersConfig(Base):
 
 class BodLayerDe(Base, Bod):
     __tablename__ = 'view_bod_layer_info_de'
-    __table_args__ = ({'schema': 're3'})
+    __table_args__ = ({'schema': 'api3'})
 
 
 class BodLayerFr(Base, Bod):
     __tablename__ = 'view_bod_layer_info_fr'
-    __table_args__ = ({'schema': 're3'})
+    __table_args__ = ({'schema': 'api3'})
 
 
 class BodLayerEn(Base, Bod):
     __tablename__ = 'view_bod_layer_info_en'
-    __table_args__ = ({'schema': 're3'})
+    __table_args__ = ({'schema': 'api3'})
 
 
 class GetCap(object):
@@ -179,12 +179,12 @@ class GetCap(object):
 
 class GetCapFr(Base, GetCap):
     __tablename__ = 'view_bod_wmts_getcapabilities_fr'
-    __table_args__ = ({'schema': 're3', 'autoload': False})
+    __table_args__ = ({'schema': 'api3', 'autoload': False})
 
 
 class GetCapDe(Base, GetCap):
     __tablename__ = 'view_bod_wmts_getcapabilities_de'
-    __table_args__ = ({'schema': 're3', 'autoload': False})
+    __table_args__ = ({'schema': 'api3', 'autoload': False})
 
 
 class GetCapThemes(object):
@@ -201,12 +201,12 @@ class GetCapThemes(object):
 
 class GetCapThemesFr(Base, GetCapThemes):
     __tablename__ = 'view_bod_wmts_getcapabilities_themes_fr'
-    __table_args__ = ({'schema': 're3', 'autoload': False})
+    __table_args__ = ({'schema': 'api3', 'autoload': False})
 
 
 class GetCapThemesDe(Base, GetCapThemes):
     __tablename__ = 'view_bod_wmts_getcapabilities_themes_de'
-    __table_args__ = ({'schema': 're3', 'autoload': False})
+    __table_args__ = ({'schema': 'api3', 'autoload': False})
 
 
 class ServiceMetadata(object):
@@ -238,12 +238,12 @@ class ServiceMetadata(object):
 
 class ServiceMetadataDe(Base, ServiceMetadata):
     __tablename__ = 'view_wms_service_metadata_de'
-    __table_args__ = ({'schema': 're3', 'autoload': False})
+    __table_args__ = ({'schema': 'api3', 'autoload': False})
 
 
 class ServiceMetadataFr(Base, ServiceMetadata):
     __tablename__ = 'view_wms_service_metadata_fr'
-    __table_args__ = ({'schema': 're3', 'autoload': False})
+    __table_args__ = ({'schema': 'api3', 'autoload': False})
 
 
 # TODO use GetCap model to fill that up instead
@@ -309,7 +309,7 @@ def computeHeader(mapName):
 
 class Topics(Base):
     __tablename__ = 'topics'
-    __table_args__ = ({'schema': 're3', 'autoload': False})
+    __table_args__ = ({'schema': 'api3', 'autoload': False})
     id = Column('topic', Text, primary_key=True)
     orderKey = Column('order_key', Integer)
     availableLangs = Column('lang', Text)
@@ -321,7 +321,7 @@ class Topics(Base):
 class Catalog(Base):
     __dbname__ = 'bod'
     __tablename__ = 'view_catalog'
-    __table_args__ = ({'schema': 're3', 'autoload': False})
+    __table_args__ = ({'schema': 'api3', 'autoload': False})
     id = Column('bgdi_id', Integer, primary_key=True)
     parentId = Column('parent_id', Integer)
     topic = Column('topic', Text)
@@ -371,7 +371,7 @@ class Catalog(Base):
 
 class OerebMetadata(Base):
     __tablename__ = 'oereb_interlis_metadata'
-    __table_args__ = ({'schema': 're3', 'autoload': False})
+    __table_args__ = ({'schema': 'api3', 'autoload': False})
     layerBodId = Column('layer_id', Text, primary_key=True)
     header = Column('header', Text)
     footer = Column('footer', Text)

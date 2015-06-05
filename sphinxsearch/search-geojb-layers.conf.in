@@ -2,7 +2,7 @@
 # Search layers
 source geojb_layers : def_pgsql
 {
-    sql_db = bod_${db_staging}
+    sql_db = sit_${db_staging}
     sql_attr_bigint = bgdi_id
     sql_attr_string = label
     sql_attr_string = origin
@@ -25,7 +25,7 @@ source src_geojb_layers_de : geojb_layers
             , bod_layer_id as layer \
             , remove_accents(bezeichnung) as detail \
         from \
-            re3.view_bod_layer_info_de
+            api3.view_bod_layer_info_de
 }
 
 source src_geojb_layers_fr : geojb_layers
@@ -41,7 +41,7 @@ source src_geojb_layers_fr : geojb_layers
             , bod_layer_id as layer \
             , remove_accents(bezeichnung) as detail \
         from \
-            re3.view_bod_layer_info_fr
+            api3.view_bod_layer_info_fr
 }
 
 source src_geojb_layers_en : geojb_layers
@@ -57,7 +57,7 @@ source src_geojb_layers_en : geojb_layers
             , bod_layer_id as layer \
             , remove_accents(bezeichnung) as detail \
         from \
-            re3.view_bod_layer_info_en
+            api3.view_bod_layer_info_en
 }
 
 

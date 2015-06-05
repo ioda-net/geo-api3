@@ -2,7 +2,7 @@
 
 from chsdi.models import bases
 from chsdi.models import register
-from chsdi.models.vector import Vector
+from chsdi.models.features import Feature
 from geoalchemy2.types import Geometry
 from sqlalchemy import Column
 from sqlalchemy import Float
@@ -13,9 +13,9 @@ from sqlalchemy import Text
 Base = bases['sit']
 
 
-class BATIMENTS(Base, Vector):
+class BATIMENTS(Base, Feature):
     __tablename__ = 'batiments'
-    __table_args__ = ({'schema': 'vector', 'autoload': False})
+    __table_args__ = ({'schema': 'feature', 'autoload': False})
     __template__ = 'templates/htmlpopup/batiments.mako'
     __bodId__ = 'BATIMENTS'
     id = Column('id', BigInteger, primary_key=True)

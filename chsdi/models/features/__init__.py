@@ -46,7 +46,7 @@ def getToleranceMeters(imageDisplay, mapExtent, tolerance):
     return 0.0
 
 
-class Vector(GeoInterface):
+class Feature(GeoInterface):
     __minscale__ = 0
     __maxscale__ = maxsize
     __minresolution__ = 0

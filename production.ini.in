@@ -41,11 +41,9 @@ print_temp_dir=${print_temp_dir}
 http_proxy = ${http_proxy}
 geoadmin_file_storage_bucket = ${geoadmin_file_storage_bucket}
 
-shortener.allowed_hosts = ${shortener.allowed_hosts}
-shortener.allowed_domains = ${shortener.allowed_domains}
-
 shortener.allowed_hosts = ${shortener_allowed_hosts}
 shortener.allowed_domains = ${shortener_allowed_domains}
+shortener.host = ${shortener_host}
 
 search.address_origins = ${search_address_origins}
 search.origins_to_ranks = ${search_origins_to_ranks}

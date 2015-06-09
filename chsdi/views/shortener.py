@@ -44,9 +44,12 @@ def shortener(request):
         url = request.headers['origin']
 
     short_url = _add_item(request, url)
-
     return {
-        'shorturl': '{}/shorten/{}'.format(request.registry.settings['shortener.host'], short_url)
+        'shorturl': '{}://{}/shorten/{}'.format(
+            request.scheme,
+            request.registry.settings['shortener.host'],
+            short_url
+        )
     }
 
 

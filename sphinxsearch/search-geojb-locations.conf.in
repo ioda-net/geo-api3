@@ -25,9 +25,9 @@ source src_geojb_communes : src_geojb_locations
             , '<b>' || nom || '</b>' as label \
             , 10 as rank \
             , 'communes' as origin \
-            , box2d(the_geom) as geom_st_box2d \
-            , st_x(st_centroid(st_curvetoline(the_geom))) as y \
-            , st_y(st_centroid(st_curvetoline(the_geom))) as x \
+            , geom_st_box2d \
+            , y \
+            , x \
             , weight \
             , cast(ofs as text) as ofs \
             , cast(ofs_arr as text) as ofs_arr \
@@ -59,9 +59,9 @@ source src_geojb_buildings : src_geojb_locations
             , '<b>' || adresse || '</b>' as label \
             , 20 as rank \
             , 'nomderue' as origin \
-            , box2d(the_geom) as geom_st_box2d \
-            , st_x(st_centroid(st_curvetoline(the_geom))) as y \
-            , st_y(st_centroid(st_curvetoline(the_geom))) as x \
+            , geom_st_box2d \
+            , y \
+            , x \
             , weight \
             , commune as commune \
             , adresse as adresse \

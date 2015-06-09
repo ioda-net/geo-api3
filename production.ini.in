@@ -48,6 +48,8 @@ shortener.host = ${shortener_host}
 search.address_origins = ${search_address_origins}
 search.origins_to_ranks = ${search_origins_to_ranks}
 
+kml.storage_path = ${kml_storage_path}
+
 wms_host = ${wms_host}
 
 ###

@@ -14,3 +14,12 @@ class UrlShortener(Base):
     short_url = Column(String(10), primary_key=True)
     url = Column(String(URL_MAX_LENGTH), nullable=False)
     timestamp = Column(DateTime)
+
+
+class Files(Base):
+    __dbname__ = 'sit_dev'
+    __tablename__ = 'files'
+    __table_args__ = ({'schema': 'api3', 'autoload': False})
+    admin_id = Column(String(24), primary_key=True)
+    file_id = Column(String(24), primary_key=True)
+    mime_type = Column(String(50), nullable=False)

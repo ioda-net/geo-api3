@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pyramid.view import view_config
+from sqlalchemy.orm.exc import NoResultFound
 from datetime import datetime
 
 import pyramid.httpexceptions as exc
@@ -28,11 +29,25 @@ def _add_item(request, url):
 
 
 def _get_short_url(request, url):
-    shorten_url = request.db.query(UrlShortener)\
-        .filter(UrlShortener.url == url)\
-        .first()
-    if shorten_url is not None:
+    try:
+        shorten_url = request.db.query(UrlShortener)\
+            .filter(UrlShortener.url == url)\
+            .one()
+    except NoResultFound:
+        return None
+    else:
         return shorten_url.short_url
+
+
+def _get_url(request, short_url):
+    try:
+        url = request.db.query(UrlShortener)\
+            .filter(UrlShortener.short_url == short_url)\
+            .one()
+    except NoResultFound:
+        return None
+    else:
+        return url.url
 
 
 @view_config(route_name='shorten', renderer='jsonp')
@@ -59,11 +74,7 @@ def shorten_redirect(request):
     if short_url is None:
         raise exc.HTTPBadRequest('Please provide an id')
 
-    shorten_url = request.db.query(UrlShortener)\
-        .filter(UrlShortener.short_url == short_url)\
-        .first()
-    if shorten_url is not None:
-        url = shorten_url.url
-    else:
+    url = _get_url(request, short_url)
+    if url is None:
         raise exc.HTTPBadRequest('This short url doesn\'t exist: http://{}/{}'.format(request.registry.settings['shortener.host'], short_url))
     raise exc.HTTPMovedPermanently(location=url)

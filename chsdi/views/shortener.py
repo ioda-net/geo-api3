@@ -6,7 +6,7 @@ from datetime import datetime
 import pyramid.httpexceptions as exc
 import time
 
-from chsdi.models.shortener import UrlShortener
+from chsdi.models.utilities import UrlShortener
 from chsdi.lib.helpers import check_url
 
 

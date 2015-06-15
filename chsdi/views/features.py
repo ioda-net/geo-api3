@@ -88,11 +88,6 @@ def _get_attributes_params(request):
     return params
 
 
-@view_config(route_name='identify', request_param='geometryFormat=interlis')
-def identify_oereb(request):
-    return _identify_oereb(request)
-
-
 @view_config(route_name='identify', renderer='geojson', request_param='geometryFormat=geojson')
 def identify_geojson(request):
     return _identify(request)
@@ -190,19 +185,6 @@ def _get_features(params, extended=False):
         feature = _process_feature(feature, params)
         feature = {'feature': feature}
         yield feature, vectorModel
-
-
-def _render_feature_template(vectorModel, feature, request, extended=False):
-    hasExtendedInfo = True if hasattr(vectorModel, '__extended_info__') else False
-    if extended and not hasExtendedInfo:
-        raise exc.HTTPNotFound('No extended info has been found for %s' % vectorModel.__bodId__)
-    return render_to_response(
-        'chsdi:%s' % vectorModel.__template__,
-        {
-            'feature': feature,
-            'hasExtendedInfo': hasExtendedInfo
-        },
-        request=request)
 
 
 def _get_features_for_filters(params, models, maxFeatures=None, where=None):

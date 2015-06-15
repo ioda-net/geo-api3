@@ -8,7 +8,7 @@ import pyramid.httpexceptions as exc
 from shapely.geometry import box, Point
 
 from chsdi.lib.validation.search import SearchValidation
-from chsdi.lib.helpers import format_search_text, transformCoordinate, get_topic_id_from_request
+from chsdi.lib.helpers import format_search_text, transformCoordinate
 from chsdi.lib.sphinxapi import sphinxapi
 from chsdi.lib import mortonspacekey as msk
 

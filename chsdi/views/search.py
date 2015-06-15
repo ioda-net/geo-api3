@@ -27,7 +27,7 @@ class Search(SearchValidation):
         self.sphinx.SetServer(request.registry.settings['sphinxhost'], request.registry.settings['sphinxport'])
         self.sphinx.SetMatchMode(sphinxapi.SPH_MATCH_EXTENDED)
 
-        self.mapName = request.matchdict.get('map')
+        self.portalName = request.matchdict.get('map')
         self.lang = request.lang
         self.cbName = request.params.get('callback')
         self.bbox = request.params.get('bbox')
@@ -47,7 +47,6 @@ class Search(SearchValidation):
         originAndRanks = [originRank.split(':') for originRank in
                           request.registry.settings['search.origins_to_ranks'].split(',')]
         self.originsToRanks = {origin.strip(): int(rank) for origin, rank in originAndRanks}
-        self.topicId = get_topic_id_from_request(request)
 
     @view_config(route_name='search', renderer='jsonp')
     def search(self):
@@ -110,7 +109,7 @@ class Search(SearchValidation):
 
         if len(searchList) != 0:
             try:
-                temp = self.sphinx.Query(searchTextFinal, index='{}_locations'.format(self.topicId))
+                temp = self.sphinx.Query(searchTextFinal, index='{}_locations'.format(self.portalName))
             except IOError:
                 raise exc.HTTPGatewayTimeout()
             temp = temp['matches'] if temp is not None else temp
@@ -143,8 +142,8 @@ class Search(SearchValidation):
         self.sphinx.SetLimits(0, layerLimit)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC')
-        index_name = '{}_layers_{}'.format(self.topicId, self.lang)
-        mapName = self.mapName if self.mapName != 'all' else ''
+        index_name = '{}_layers_{}'.format(self.portalName, self.lang)
+        mapName = self.portalName if self.portalName != 'all' else ''
         # Whitelist hack
         if mapName in ('api'):
             topicFilter = 'api'

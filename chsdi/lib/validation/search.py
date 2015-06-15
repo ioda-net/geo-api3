@@ -6,7 +6,7 @@ from pyramid.httpexceptions import HTTPBadRequest
 MAX_SPHINX_INDEX_LENGTH = 63
 MAX_SEARCH_TERMS = 10
 
-class SearchValidation:
+class SearchValidation(object):
 
     def __init__(self):
         super(SearchValidation, self).__init__()

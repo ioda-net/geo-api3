@@ -5,10 +5,7 @@ import datetime
 
 
 from pyramid.view import view_config
-from pyramid.renderers import render_to_response
 import pyramid.httpexceptions as exc
-
-from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 from chsdi.lib.validation.mapservice import MapServiceValidation
 from chsdi.models import models_from_name
@@ -32,36 +29,6 @@ class LayersParams(MapServiceValidation):
 
         self.translate = request.translate
         self.request = request
-
-
-@view_config(route_name='legend', renderer='jsonp')
-def legend(request):
-    params = LayersParams(request)
-    layerId = request.matchdict.get('layerId')
-    model = get_bod_model(params.lang)
-    query = params.request.db.query(model)
-    layerMetadata = next(get_layers_metadata_for_params(
-        params,
-        query,
-        model,
-        layerIds=[layerId]
-    ))
-    # FIXME datenstand if not defined
-    # should be available in view_bod_layer_info
-    if 'attributes' in layerMetadata:
-        if 'dataStatus' in layerMetadata['attributes']:
-            status = layerMetadata['attributes']['dataStatus']
-            if status == u'bgdi_created':
-                layerMetadata['attributes']['dataStatus'] = params.translate('None') + params.translate('Datenstand')
-    legend = _get_legend(layerId, layerMetadata, params)
-    response = render_to_response(
-        'chsdi:templates/legend.mako',
-        {'legend': legend},
-        request=request
-    )
-    if params.cbName is None:
-        return response
-    return response.body
 
 
 def _find_type(model, colProp):
@@ -131,28 +98,6 @@ def feature_attributes(request):
                         fields[fieldsIndex] = insertValueAt(field, attrName, value)
 
     return {'id': layerId, 'name': params.translate(layerId), 'fields': fields}
-
-
-def _get_legend(layerId, layerMetadata, params):
-    query = params.request.db.query(LayersConfig)
-    try:
-        layer = query.filter(LayersConfig.layerBodId == layerId).one()
-    except (NoResultFound, MultipleResultsFound):
-        raise exc.HTTPBadRequest('Wrong layer id: {}.'.format(layerId))
-    else:
-        return {
-            'layer': layerMetadata,
-            'hasLegend': layer.hasLegend,
-            'legendUrl': _get_legend_url(layer, params.lang)
-        }
-
-
-def _get_legend_url(layer, lang):
-    if lang:
-        langParam = '&LANG={}'.format(lang)
-    else:
-        langParam = ''
-    return layer.legendUrl + langParam
 
 
 def _filter_on_chargeable_attr(params, query, model):

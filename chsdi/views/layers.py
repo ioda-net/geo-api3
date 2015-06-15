@@ -10,23 +10,19 @@ import pyramid.httpexceptions as exc
 
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
-from chsdi.lib.validation.mapservice import MapServiceValidation
 from chsdi.models import models_from_name
-from chsdi.models.bod import LayersConfig, get_bod_model, computeHeader
-from chsdi.lib.filters import full_text_search, filter_by_map_name
 
 SAMPLE_SIZE = 100
 MAX_ATTRIBUTES_VALUES = 5
 
 
-class LayersParams(MapServiceValidation):
+class LayersParams:
 
     def __init__(self, request):
         super(LayersParams, self).__init__()
 
         # Map and topic represent the same resource
         self.mapName = request.matchdict.get('map')
-        self.hasMap(request.db, self.mapName)
         self.cbName = request.params.get('callback')
         self.lang = request.lang
         self.searchText = request.params.get('searchText')
@@ -35,38 +31,6 @@ class LayersParams(MapServiceValidation):
 
         self.translate = request.translate
         self.request = request
-
-
-@view_config(route_name='mapservice', renderer='jsonp')
-def metadata(request):
-    params = LayersParams(request)
-    model = get_bod_model(params.lang)
-    query = params.request.db.query(model)
-    query = _filter_on_chargeable_attr(params, query, model)
-    if params.searchText is not None:
-        query = full_text_search(
-            query,
-            [
-                model.fullTextSearch,
-                model.layerBodId,
-                model.idGeoCat
-            ],
-            params.searchText
-        )
-    results = computeHeader(params.mapName)
-    for layer in get_layers_metadata_for_params(params, query, model):
-        results['layers'].append(layer)
-    return results
-
-
-@view_config(route_name='layersConfig', renderer='jsonp')
-def layers_config(request):
-    params = LayersParams(request)
-    query = params.request.db.query(LayersConfig)
-    layers = {}
-    for layer in get_layers_config_for_params(params, query, LayersConfig):
-        layers = dict(layers.items() + layer.items())
-    return layers
 
 
 @view_config(route_name='legend', renderer='jsonp')
@@ -195,55 +159,3 @@ def _filter_on_chargeable_attr(params, query, model):
     if params.chargeable is not None:
         return query.filter(model.chargeable == params.chargeable)
     return query
-
-
-def get_layer(query, model, layerId):
-    ''' Returns exactly one layer or raises
-    an exception. This function can be used with
-    both a layer config model or a layer metadata
-    model. '''
-    query = query.filter(model.layerBodId == layerId)
-
-    try:
-        layer = query.one()
-    except NoResultFound:
-        raise exc.HTTPNotFound('No layer with id %s' % layerId)
-    except MultipleResultsFound:
-        raise exc.HTTPInternalServerError('Multiple layers found for the same id %s' % layerId)
-
-    return layer
-
-
-def get_layers_metadata_for_params(params, query, model, layerIds=None):
-    ''' Returns a generator function that yields
-    layer metadata dictionaries. '''
-    query = filter_by_map_name(
-        query,
-        model,
-        params.mapName
-    )
-    if layerIds is not None:
-        for layerId in layerIds:
-            layer = get_layer(query, model, layerId)
-            yield layer.layerMetadata()
-
-    for q in query:
-        yield q.layerMetadata()
-
-
-def get_layers_config_for_params(params, query, model, layerIds=None):
-    ''' Returns a generator function that yields
-    layer config dictionaries. '''
-    model = LayersConfig
-    query = filter_by_map_name(
-        query,
-        model,
-        params.mapName
-    )
-    if layerIds is not None:
-        for layerId in layerIds:
-            layer = get_layer(query, model, layerId)
-            yield layer.layerConfig(params)
-
-    for q in query:
-        yield q.layerConfig(params)

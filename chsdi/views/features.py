@@ -3,8 +3,6 @@
 import re
 
 from pyramid.view import view_config
-from pyramid.renderers import render, render_to_response
-from pyramid.response import Response
 import pyramid.httpexceptions as exc
 
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
@@ -13,24 +11,17 @@ from sqlalchemy import Text, Integer, Boolean, Numeric, Date
 from sqlalchemy import text
 from geoalchemy2.types import Geometry
 
-from chsdi.lib.validation.mapservice import MapServiceValidation
 from chsdi.lib.helpers import format_query
 from chsdi.lib.filters import full_text_search
-from chsdi.models import models_from_name, oereb_models_from_bodid
-from chsdi.models.bod import OerebMetadata, get_bod_model
-from chsdi.views.layers import get_layer, get_layers_metadata_for_params
-
-PROTECTED_GEOMETRY_LAYERS = ['ch.bfs.gebaeude_wohnungs_register']
 
 
 # For several features
-class FeatureParams(MapServiceValidation):
+class FeatureParams:
 
     def __init__(self, request):
         super(FeatureParams, self).__init__()
         # Map and topic represent the same resource
         self.mapName = request.matchdict.get('map')
-        self.hasMap(request.db, self.mapName)
         self.cbName = request.params.get('callback')
         self.lang = request.lang
         self.returnGeometry = request.params.get('returnGeometry')
@@ -105,11 +96,6 @@ def identify_geojson(request):
     return _identify(request)
 
 
-@view_config(route_name='identify', renderer='esrijson')
-def identify_esrijson(request):
-    return _identify(request)
-
-
 @view_config(route_name='feature', renderer='geojson',
              request_param='geometryFormat=geojson')
 def view_get_feature_geojson(request):
@@ -138,117 +124,10 @@ def view_attribute_values_geojson(request):
     return _attributes(request)
 
 
-@view_config(route_name='htmlPopup', renderer='jsonp')
-def htmlpopup(request):
-    params = _get_feature_params(request)
-    params.returnGeometry = False
-    feature, vectorModel = next(_get_features(params))
-
-    layerModel = get_bod_model(params.lang)
-    layer = next(get_layers_metadata_for_params(
-        params,
-        request.db.query(layerModel),
-        layerModel,
-        layerIds=[params.layerId]
-    ))
-    feature.update({'attribution': layer.get('attributes')['dataOwner']})
-    feature.update({'fullName': layer.get('fullName')})
-    feature.update({'extended': False})
-
-    response = _render_feature_template(vectorModel, feature, request)
-
-    if params.cbName is None:
-        return response
-    return response.body
-
-
-@view_config(route_name='extendedHtmlPopup', renderer='jsonp')
-def extendedhtmlpopup(request):
-    params = _get_feature_params(request)
-    params.returnGeometry = True
-    feature, vectorModel = next(_get_features(params))
-
-    layerModel = get_bod_model(params.lang)
-    layer = next(get_layers_metadata_for_params(
-        params,
-        request.db.query(layerModel),
-        layerModel,
-        layerIds=[params.layerId]
-    ))
-    feature.update({'attribution': layer.get('attributes')['dataOwner']})
-    feature.update({'fullName': layer.get('fullName')})
-    feature.update({'extended': True})
-
-    response = _render_feature_template(vectorModel, feature, request, True)
-
-    if params.cbName is None:
-        return response
-    return response.body
-
-
-def _identify_oereb(request):
-    def insertTimestamps(header, comments):
-        pos = re.search(r'\?>', header).end()
-        return ''.join((
-            header[:pos],
-            comments,
-            header[pos:]
-        ))
-
-    params = _get_features_params(request)
-    # At the moment only one layer at a time and no support of all
-    if params.layers == 'all' or len(params.layers) > 1:
-        raise exc.HTTPBadRequest('Please specify the id of the layer you want to query')
-    layerBodId = params.layers[0]
-    query = params.request.db.query(OerebMetadata)
-    layerMetadata = get_layer(
-        query,
-        OerebMetadata,
-        layerBodId
-    )
-    header = layerMetadata.header
-    footer = layerMetadata.footer
-    data_created = layerMetadata.data_created
-    data_imported = layerMetadata.data_imported
-
-    comments = render(
-        'chsdi:templates/oereb_timestamps.mako',
-        {
-            'data_imported': data_imported,
-            'data_created': data_created
-        }
-    )
-    header = insertTimestamps(header, comments)
-
-    # Only relation 1 to 1 is needed at the moment
-    layerVectorModel = [[oereb_models_from_bodid(layerBodId)[0]]]
-    features = []
-    for feature in _get_features_for_filters(params, layerVectorModel):
-        temp = feature.xmlData.split('##')
-        for fragment in temp:
-            if fragment not in features:
-                features.append(fragment)
-    results = ''.join((
-        header,
-        ''.join(features),
-        footer
-    ))
-    response = Response(results)
-    response.content_type = 'text/xml'
-    return response
-
-
 def _identify(request):
     params = _get_features_params(request)
 
-    if params.layers == 'all':
-        model = get_bod_model(params.lang)
-        query = params.request.db.query(model)
-        layerIds = []
-        for layer in get_layers_metadata_for_params(params, query, model):
-            layerIds.append(layer['layerBodId'])
-    else:
-        layerIds = params.layers
+    layerIds = params.layers
     models = [
         models_from_name(layerId) for
         layerId in layerIds
@@ -491,15 +370,6 @@ def _process_feature(feature, params):
     # TODO find a way to use translate directly in the model
     if params.returnGeometry:
         f = feature.__geo_interface__
-        # Filter out this layer individually, disregarding of the global returnGeometry
-        # setting
-        if not params.varnish_authorized:
-            if hasattr(params, 'layers') and feature.__bodId__ in PROTECTED_GEOMETRY_LAYERS:
-                f = feature.__interface__
-            if hasattr(params, 'layer') and params.layer in PROTECTED_GEOMETRY_LAYERS:
-                f = feature.__interface__
-            if hasattr(params, 'layerId') and params.layerId in PROTECTED_GEOMETRY_LAYERS:
-                f = feature.__interface__
     else:
         f = feature.__interface__
     if hasattr(f, 'extra'):

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from chsdi.models import bases
-from chsdi.models import register
 from chsdi.models.features import Feature
 from geoalchemy2.types import Geometry
 from sqlalchemy import Column
@@ -24,6 +23,3 @@ class BATIMENTS(Base, Feature):
     commune = Column(Text())
     adresse = Column(Text())
     surface = Column(Float())
-
-
-register('BATIMENTS', BATIMENTS)

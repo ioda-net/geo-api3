@@ -2,12 +2,11 @@
 
 from pyramid.httpexceptions import HTTPBadRequest
 
-from chsdi.lib.validation import MapNameValidation
 
 MAX_SPHINX_INDEX_LENGTH = 63
 MAX_SEARCH_TERMS = 10
 
-class SearchValidation(MapNameValidation):
+class SearchValidation:
 
     def __init__(self):
         super(SearchValidation, self).__init__()

@@ -28,7 +28,6 @@ class Search(SearchValidation):
         self.sphinx.SetMatchMode(sphinxapi.SPH_MATCH_EXTENDED)
 
         self.mapName = request.matchdict.get('map')
-        self.hasMap(request.db, self.mapName)
         self.lang = request.lang
         self.cbName = request.params.get('callback')
         self.bbox = request.params.get('bbox')

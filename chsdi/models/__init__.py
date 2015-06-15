@@ -8,8 +8,6 @@ dbs = ['sit']
 
 engines = {}
 bases = {}
-bodmap = {}
-oerebmap = {}
 
 for db in dbs:
     bases[db] = declarative_base()
@@ -28,28 +26,9 @@ def initialize_sql(settings):
         bases[db].metadata.bind = engine
 
 
-def register(name, klass):
-    name = unicode(name)
-    bodmap.setdefault(name, []).append(klass)
-
-
 def register_oereb(name, klass):
     name = unicode(name)
     oerebmap.setdefault(name, []).append(klass)
-
-
-def models_from_bodid(bodId):
-    if bodId in bodmap:
-        return bodmap[bodId]
-    else:
-        return None
-
-
-def oereb_models_from_bodid(bodId):
-    if bodId in oerebmap:
-        return oerebmap[bodId]
-    else:
-        return None
 
 
 def models_from_name(name):

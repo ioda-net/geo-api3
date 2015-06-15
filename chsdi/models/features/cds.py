@@ -3,7 +3,7 @@
 from sqlalchemy import Column, Text, Float
 from geoalchemy2.types import Geometry
 
-from chsdi.models import register, bases
+from chsdi.models import bases
 from chsdi.models.features import Feature
 
 
@@ -21,6 +21,3 @@ class CDS(Base, Feature):
     commune = Column(Text())
     cds = Column(Text())
     surface = Column(Float())
-
-
-register('COUVERTUREDUSOL', CDS)

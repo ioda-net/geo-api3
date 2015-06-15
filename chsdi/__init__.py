@@ -57,10 +57,6 @@ def main(global_config, **settings):
     config.add_route('dev', '/dev')
     config.add_route('ga_api', '/loader.js')
     config.add_route('testi18n', '/testi18n')
-    config.add_route('topics', '/rest/services')
-    config.add_route('mapservice', '/rest/services/{map}/MapServer')
-    config.add_route('layersConfig', '/rest/services/{map}/MapServer/layersConfig')
-    config.add_route('catalog', '/rest/services/{map}/CatalogServer')
     config.add_route('identify', '/rest/services/{map}/MapServer/identify')
     config.add_route('find', '/rest/services/{map}/MapServer/find')
     config.add_route('attribute_values', '/rest/services/{map}/MapServer/{layerId}/attributes/{attribute}')
@@ -71,7 +67,6 @@ def main(global_config, **settings):
     config.add_route('htmlPopup', '/rest/services/{map}/MapServer/{layerId}/{featureId}/htmlPopup')
     config.add_route('extendedHtmlPopup', '/rest/services/{map}/MapServer/{layerId}/{featureId}/extendedHtmlPopup')
     config.add_route('search', '/rest/services/{map}/SearchServer')
-    config.add_route('wmtscapabilities', '/rest/services/{map}/1.0.0/WMTSCapabilities.xml')
     config.add_route('profile_json', '/rest/services/profile.json')
     config.add_route('profile_csv', '/rest/services/profile.csv')
     config.add_route('height', '/rest/services/height')
@@ -79,7 +74,6 @@ def main(global_config, **settings):
     config.add_route('owschecker_bykvp', '/owschecker/bykvp')
     config.add_route('owschecker_form', '/owschecker/form')
     config.add_route('qrcodegenerator', '/qrcodegenerator')
-    config.add_route('sitemap', '/sitemap')
     config.add_route('luftbilder', '/luftbilder/viewer.html')
     config.add_route('checker', '/checker')
     config.add_route('checker_dev', '/checker_dev')
@@ -104,5 +98,5 @@ def main(global_config, **settings):
     config.add_static_view('/', 'chsdi:static/doc/build')
 
     # required to find code decorated by view_config
-    config.scan(ignore=['chsdi.tests', 'chsdi.models.bod', 'chsdi.models.vector'])
+    config.scan(ignore=['chsdi.tests', 'chsdi.models.vector'])
     return config.make_wsgi_app()

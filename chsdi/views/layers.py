@@ -10,13 +10,14 @@ import pyramid.httpexceptions as exc
 
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
+from chsdi.lib.validation.mapservice import MapServiceValidation
 from chsdi.models import models_from_name
 
 SAMPLE_SIZE = 100
 MAX_ATTRIBUTES_VALUES = 5
 
 
-class LayersParams:
+class LayersParams(MapServiceValidation):
 
     def __init__(self, request):
         super(LayersParams, self).__init__()

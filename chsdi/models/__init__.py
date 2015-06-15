@@ -8,9 +8,14 @@ dbs = ['sit']
 
 engines = {}
 bases = {}
+registered_features = {}
 
 for db in dbs:
     bases[db] = declarative_base()
+
+
+def register(name, class_name):
+    registered_features.setdefault(name, []).append(class_name)
 
 
 def initialize_sql(settings):
@@ -26,11 +31,6 @@ def initialize_sql(settings):
         bases[db].metadata.bind = engine
 
 
-def register_oereb(name, klass):
-    name = unicode(name)
-    oerebmap.setdefault(name, []).append(klass)
-
-
 def models_from_name(name):
-    models = models_from_bodid(name)
-    return models
+    if name in registered_features:
+        return registered_features[name]

@@ -11,12 +11,14 @@ from sqlalchemy import Text, Integer, Boolean, Numeric, Date
 from sqlalchemy import text
 from geoalchemy2.types import Geometry
 
+from chsdi.models import models_from_name
 from chsdi.lib.helpers import format_query
 from chsdi.lib.filters import full_text_search
+from chsdi.lib.validation.mapservice import MapServiceValidation
 
 
 # For several features
-class FeatureParams:
+class FeatureParams(MapServiceValidation):
 
     def __init__(self, request):
         super(FeatureParams, self).__init__()

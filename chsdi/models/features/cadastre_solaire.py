@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from chsdi.models import bases
+from chsdi.models import register
 from chsdi.models.features import Feature
 from geoalchemy2.types import Geometry
 from sqlalchemy import Column
@@ -25,3 +26,6 @@ class CADASTRE_SOLAIRE(Base, Feature):
     surface = Column(Float())
     orientation = Column(BigInteger())
     pente = Column(BigInteger())
+
+
+register('CADASTRESOLAIRE', CADASTRE_SOLAIRE)

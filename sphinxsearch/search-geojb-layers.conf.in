@@ -1,89 +1,18 @@
 # Geojb
 # Search layers
-source geojb_layers : def_pgsql
+source geojb_layers
 {
-    sql_db = sit_${db_staging}
-    sql_attr_bigint = bgdi_id
-    sql_attr_string = label
-    sql_attr_string = origin
-    sql_attr_string = lang
-    sql_field_string = topics
-    sql_field_string = layer
-    sql_field_string = detail
+	type = tsvpipe
+	tsvpipe_command = cat ../../mapinfra/json/geojb/layers_search.tsv
+	tsvpipe_field = layer
+	tsvpipe_field = label
+        tsvpipe_attr_string = layer
+        tsvpipe_attr_string = label
 }
-
-source src_geojb_layers_de : geojb_layers
-{
-    sql_query = \
-        SELECT \
-            bgdi_id::bigint \
-	    , bgdi_id \
-            , '<b>'||kurzbezeichnung||'</b>' as label \
-            , 'layer' as origin \
-            , 'de' as lang \
-            , topics \
-            , bod_layer_id as layer \
-            , remove_accents(bezeichnung) as detail \
-        from \
-            api3.view_bod_layer_info_de
-}
-
-source src_geojb_layers_fr : geojb_layers
-{
-    sql_query = \
-        SELECT \
-            bgdi_id::bigint \
-	    , bgdi_id \
-            , '<b>'||kurzbezeichnung||'</b>' as label \
-            , 'layer' as origin \
-            , 'fr' as lang \
-            , topics \
-            , bod_layer_id as layer \
-            , remove_accents(bezeichnung) as detail \
-        from \
-            api3.view_bod_layer_info_fr
-}
-
-source src_geojb_layers_en : geojb_layers
-{
-    sql_query = \
-        SELECT \
-            bgdi_id::bigint \
-	    , bgdi_id \
-            , '<b>'||kurzbezeichnung||'</b>' as label \
-            , 'layer' as origin \
-            , 'en' as lang \
-            , topics \
-            , bod_layer_id as layer \
-            , remove_accents(bezeichnung) as detail \
-        from \
-            api3.view_bod_layer_info_en
-}
-
 
 index geojb_layers
 {
-    type = plain
-    docinfo = extern
-    min_infix_len = 2
-    infix_fields = detail, layer, topics, staging
-}
-
-
-index geojb_layers_de : geojb_layers
-{
-    source = src_geojb_layers_de
-    path = /var/lib/sphinx/data/index/geojb_layers_de
- }
-
-index geojb_layers_fr : geojb_layers
-{
-    source = src_geojb_layers_fr
-    path = /var/lib/sphinx/data/index/geojb_layers_fr
-}
-
-index geojb_layers_en : geojb_layers
-{
-    source = src_geojb_layers_en
-    path = /var/lib/sphinx/data/index/geojb_layers_en
+    source 		= geojb_layers
+    min_prefix_len      = 2
+    path 		= /var/lib/sphinx/data/index/geojb_layers
 }

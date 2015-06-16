@@ -142,17 +142,8 @@ class Search(SearchValidation):
         self.sphinx.SetLimits(0, layerLimit)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC')
-        index_name = '{}_layers_{}'.format(self.portalName, self.lang)
-        mapName = self.portalName if self.portalName != 'all' else ''
-        # Whitelist hack
-        if mapName in ('api'):
-            topicFilter = 'api'
-        else:
-            topicFilter = '(%s | ech)' % mapName
-        searchText = ' '.join((
-            self._query_fields('@(detail,layer)'),
-            '& @topics %s' % (topicFilter),  # Filter by to topic if string not empty, ech whitelist hack
-        ))
+        index_name = '{}_layers'.format(self.portalName)
+        searchText = self._query_fields('@(layer,label)')
         try:
             temp = self.sphinx.Query(searchText, index=index_name)
         except IOError:

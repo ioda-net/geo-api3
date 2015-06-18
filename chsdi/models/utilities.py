@@ -13,7 +13,7 @@ class UrlShortener(Base):
     URL_MAX_LENGTH = 2048
     short_url = Column(String(10), primary_key=True)
     url = Column(String(URL_MAX_LENGTH), nullable=False)
-    timestamp = Column(DateTime)
+    createtime = Column(DateTime)
 
 
 class Files(Base):
@@ -23,3 +23,4 @@ class Files(Base):
     admin_id = Column(String(24), primary_key=True)
     file_id = Column(String(24), primary_key=True)
     mime_type = Column(String(50), nullable=False)
+    createtime = Column(DateTime)

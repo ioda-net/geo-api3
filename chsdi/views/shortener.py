@@ -19,7 +19,7 @@ def _add_item(request, url):
         t = int(time.time() * 1000) - 1000000000000
         short_url = '{:x}'.format(t)
         try:
-            shorten_url = UrlShortener(url=url, short_url=short_url, timestamp=datetime.now())
+            shorten_url = UrlShortener(url=url, short_url=short_url, createtime=datetime.now())
             request.db.add(shorten_url)
             request.db.commit()
         except Exception as e:

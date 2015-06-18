@@ -4,6 +4,7 @@ import os
 import os.path
 import uuid
 import base64
+from datetime import datetime
 
 from pyramid.view import view_config, view_defaults
 import pyramid.httpexceptions as exc
@@ -82,7 +83,8 @@ class FileView(object):
             file = Files(
                 admin_id=self.admin_id,
                 file_id=self.file_id,
-                mime_type=mime_type
+                mime_type=mime_type,
+                createtime=datetime.now()
             )
             self.db.add(file)
             self.db.commit()

@@ -66,7 +66,7 @@ class Search(SearchValidation):
                 self.request.params.get('searchText')
             )
             self._feature_search()
-        elif self.typeInfo == 'locations':
+        elif self.typeInfo == 'locations' or self.typeInfo == 'locations_preview':
             self.searchText = format_search_text(
                 self.request.params.get('searchText', '')
             )
@@ -118,7 +118,10 @@ class Search(SearchValidation):
             # which should be more fuzzy in its results
             if temp is None or len(temp) <= 0:
                 try:
-                    temp = self.sphinx.Query(searchTextFinal, index='swisssearch_fuzzy')
+                    if self.typeInfo == 'locations_preview':
+                        temp = self.sphinx.Query(searchTextFinal, index='swisssearch_preview_fuzzy')
+                    else:
+                        temp = self.sphinx.Query(searchTextFinal, index='swisssearch_fuzzy')
                 except IOError:
                     raise exc.HTTPGatewayTimeout()
                 temp = temp['matches'] if temp is not None else temp

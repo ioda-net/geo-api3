@@ -113,8 +113,8 @@ class FileView(object):
                 self._save_kml(data, mime, update=True)
 
                 return {'adminId': self.admin_id, 'fileId': self.file_id, 'status': 'updated'}
-            except:
-                raise exc.HTTPInternalServerError('Cannot update file with id=%s' % self.admin_id)
+            except Exception as e:
+                raise exc.HTTPInternalServerError('Cannot update file with id=%s %s' % (self.admin_id, e))
         else:
             # Fork file, get new file ids
             self.file_id = self._get_uuid()
@@ -132,8 +132,8 @@ class FileView(object):
             try:
                 self._delete_file()
                 return {'success': True}
-            except:
-                raise exc.HTTPInternalServerError('Error while deleting file %s' % self.file_id)
+            except Exception as e:
+                raise exc.HTTPInternalServerError('Error while deleting file %s. %e' % (self.file_id, e))
         else:
             raise exc.HTTPUnauthorized('You are not authorized to delete file %s' % self.file_id)
 
@@ -148,5 +148,6 @@ class FileView(object):
         # TODO: doesn't seem to be applied
         self.request.response.headers.update({
             'Access-Control-Allow-Methods': 'POST,GET,DELETE,OPTIONS',
-            'Access-Control-Allow-Credentials': 'true'})
+            'Access-Control-Allow-Credentials': 'true'
+        })
         return ''

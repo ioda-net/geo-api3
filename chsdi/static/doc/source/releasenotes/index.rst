@@ -9,6 +9,251 @@
 Release Notes
 =============
 
+.. _releasenotes_20150708:
+
+Release 20150708 - Wednesday, July 8th 2015
+------------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150701...r_150708>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Official release of new drawing and measuring function
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150701...r_150708>`__
+
+
+Geodata
+*******
+
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Geographical Names swissNAMES3D <//map.geo.admin.ch/?bgLayer=ch.swisstopo.swissnames3d>`__ (ch.swisstopo.swissnames3d)                           |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Hydrogeological sketch <//map.geo.admin.ch/?layers=ch.bafu.hydrogeologie-uebersichtskarte>`__ (ch.bafu.hydrogeologie-uebersichtskarte)           |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Agricultural zones boundaries <//map.geo.admin.ch/?layers=ch.blw.landwirtschaftliche-zonengrenzen>`__ (ch.blw.landwirtschaftliche-zonengrenzen)  |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Water & migrant bird reserves <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-vogelreservate>`__ (ch.bafu.bundesinventare-vogelreservate)    |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Number of connection providers <//map.geo.admin.ch/?layers=ch.bakom.anbieter-eigenes_festnetz>`__ (ch.bakom.anbieter-eigenes_festnetz)           |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Download ≥ 1 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.downlink1>`__ (ch.bakom.downlink1)                                                      |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Download ≥ 2 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.downlink2>`__ (ch.bakom.downlink2)                                                      |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Download ≥ 10 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.downlink10>`__ (ch.bakom.downlink10)                                                   |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Download ≥ 20 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.downlink20>`__ (ch.bakom.downlink20)                                                   |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Download ≥ 50 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.downlink50>`__ (ch.bakom.downlink50)                                                   |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Download ≥ 100 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.downlink100>`__ (ch.bakom.downlink100)                                                |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Availability HDTV fixed netw. <//map.geo.admin.ch/?layers=ch.bakom.verfuegbarkeit-hdtv>`__ (ch.bakom.verfuegbarkeit-hdtv)                        |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Availability TV fixed network <//map.geo.admin.ch/?layers=ch.bakom.verfuegbarkeit-tv>`__ (ch.bakom.verfuegbarkeit-tv)                            |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Upload ≥ 1 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.uplink1>`__ (ch.bakom.uplink1)                                                            |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Upload ≥ 2 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.uplink2>`__ (ch.bakom.uplink2)                                                            |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Upload ≥ 10 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.uplink10>`__ (ch.bakom.uplink10)                                                         |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Upload ≥ 20 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.uplink20>`__ (ch.bakom.uplink20)                                                         |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Upload ≥ 50 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.uplink50>`__ (ch.bakom.uplink50)                                                         |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Upload ≥ 100 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.uplink100>`__ (ch.bakom.uplink100)                                                      |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Optical fibre <//map.geo.admin.ch/?layers=ch.bakom.anschlussart-glasfaser>`__ (ch.bakom.anschlussart-glasfaser)                                  |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Coaxial cable <//map.geo.admin.ch/?layers=ch.bakom.anschlussart-koaxialkabel>`__ (ch.bakom.anschlussart-koaxialkabel)                            |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Copper wire <//map.geo.admin.ch/?layers=ch.bakom.anschlussart-kupferdraht>`__ (ch.bakom.anschlussart-kupferdraht)                                |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+
+.. _releasenotes_20150701:
+
+Release 20150617 - Wednesday, July 1st 2015
+------------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Extending TileMatrixSet (zoom level 18 and 19)  for WMTS EPSG:3857
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150624...r_150701>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150624...r_150701>`__
+
+
+Geodata
+*******
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Gewässer der Übersichtskarte 1:2 Mio <//map.geo.admin.ch/?layers=ch.bafu.vec25-gewaessernetz_2000>`__ (ch.bafu.vec25-gewaessernetz_2000)                                                                                 |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Seen <//map.geo.admin.ch/?layers=ch.bafu.vec25-seen>`__ (ch.bafu.vec25-seen)                                                                                                                                             |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Basisgebiete (Einzugsgebiete) HADES <//map.geo.admin.ch/?layers=ch.bafu.hydrologischer-atlas_basisgebiete>`__ (ch.bafu.hydrologischer-atlas_basisgebiete)                                                                |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Bilanzgebiete (Einzugsgebiete) HADES <//map.geo.admin.ch/?layers=ch.bafu.hydrologischer-atlas_bilanzgebiete>`__ (ch.bafu.hydrologischer-atlas_bilanzgebiete)                                                             |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Flussgebiete (Einzugsgebiete) HADES <//map.geo.admin.ch/?layers=ch.bafu.hydrologischer-atlas_flussgebiete>`__ (ch.bafu.hydrologischer-atlas_flussgebiete)                                                                |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `River Typology for Switzerland <//map.geo.admin.ch/?layers=ch.bafu.typisierung-fliessgewaesser>`__ (ch.bafu.typisierung-fliessgewaesser)                                                                                 |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Mean runoff and flow regime types for the river network of Switzerland <//map.geo.admin.ch/?layers=ch.bafu.mittlere-abfluesse>`__ (ch.bafu.mittlere-abfluesse)                                                           |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Grundlagen zur Bestimmung der Abflussmenge Q347 <//map.geo.admin.ch/?layers=ch.bafu.hydrologie-q347>`__ (ch.bafu.hydrologie-q347)                                                                                        |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Niedrigwasserstatistik NQStat <//map.geo.admin.ch/?layers=ch.bafu.hydrologie-niedrigwasserstatistik>`__ (ch.bafu.hydrologie-niedrigwasserstatistik)                                                                      |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `HQStat Hochwasserstatistik <//map.geo.admin.ch/?layers=ch.bafu.hydrologie-hochwasserstatistik>`__ (ch.bafu.hydrologie-hochwasserstatistik)                                                                               |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `HWGWP Hochwassergrenzwertpegel <//map.geo.admin.ch/?layers=ch.bafu.hydrologie-hochwassergrenzwertpegel>`__ (ch.bafu.hydrologie-hochwassergrenzwertpegel)                                                                 |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `HADES 5.1.2 (kantonale Messstationen) <//map.geo.admin.ch/?layers=ch.bafu.hydrologischer-atlas_kantonale-messstationen>`__ (ch.bafu.hydrologischer-atlas_kantonale-messstationen)                                        |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Messstationen der hydrologischen Untersuchungsgebiete <//map.geo.admin.ch/?layers=ch.bafu.hydrologie-untersuchungsgebiete_stationen>`__ (ch.bafu.hydrologie-untersuchungsgebiete_stationen)                              |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Hydrologische Untersuchungsgebiete <//map.geo.admin.ch/?layers=ch.bafu.hydrologie-untersuchungsgebiete>`__ (ch.bafu.hydrologie-untersuchungsgebiete)                                                                     |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Datenbank Geschiebefrachten (Bund) <//map.geo.admin.ch/?layers=ch.bafu.feststoffe-geschiebemessnetz>`__ (ch.bafu.feststoffe-geschiebemessnetz)                                                                           |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Datenbank Querprofile (QP) - Vermessungsstrecken <//map.geo.admin.ch/?layers=ch.bafu.wasserbau-vermessungsstrecken>`__ (ch.bafu.wasserbau-vermessungsstrecken)                                                           |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Vermessungsstrecken - Querprofilmarke <//map.geo.admin.ch/?layers=ch.bafu.wasserbau-querprofilmarken>`__ (ch.bafu.wasserbau-querprofilmarken)                                                                            |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Badegewässerqualität <//map.geo.admin.ch/?layers=ch.bafu.gewaesserschutz-badewasserqualitaet>`__ (ch.bafu.gewaesserschutz-badewasserqualitaet)                                                                           |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Kläranlagendatenbank (ARA-DB) - Prozentanteil Abwasser im Vorfluter bei Niedrigwasser <//map.geo.admin.ch/?layers=ch.bafu.gewaesserschutz-klaeranlagen_anteilq347>`__ (ch.bafu.gewaesserschutz-klaeranlagen_anteilq347)  |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Kläranlagendatenbank (ARA-DB) - Ausbaugrösse (EGW) <//map.geo.admin.ch/?layers=ch.bafu.gewaesserschutz-klaeranlagen_ausbaugroesse>`__ (ch.bafu.gewaesserschutz-klaeranlagen_ausbaugroesse)                               |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Kläranlagendatenbank (ARA-DB) - Reinigungstyp <//map.geo.admin.ch/?layers=ch.bafu.gewaesserschutz-klaeranlagen_reinigungstyp>`__ (ch.bafu.gewaesserschutz-klaeranlagen_reinigungstyp)                                    |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Nationale Daueruntersuchung der schweizerischen Fliessgewässer <//map.geo.admin.ch/?layers=ch.bafu.hydrologie-daueruntersuchung_fliessgewaesser>`__ (ch.bafu.hydrologie-daueruntersuchung_fliessgewaesser)               |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Strukturgüte Hochrhein (2020) <//map.geo.admin.ch/?layers=ch.bafu.strukturguete-hochrhein_linkesufer>`__ (ch.bafu.strukturguete-hochrhein_linkesufer)                                                                    |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Strukturgüte Hochrhein (2020) <//map.geo.admin.ch/?layers=ch.bafu.strukturguete-hochrhein_linkesumfeld>`__ (ch.bafu.strukturguete-hochrhein_linkesumfeld)                                                                |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Strukturgüte Hochrhein (2020) <//map.geo.admin.ch/?layers=ch.bafu.strukturguete-hochrhein_rechtesufer>`__ (ch.bafu.strukturguete-hochrhein_rechtesufer)                                                                  |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Strukturgüte Hochrhein (2020) <//map.geo.admin.ch/?layers=ch.bafu.strukturguete-hochrhein_rechtesumfeld>`__ (ch.bafu.strukturguete-hochrhein_rechtesumfeld)                                                              |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Strukturgüte Hochrhein (2020) <//map.geo.admin.ch/?layers=ch.bafu.strukturguete-hochrhein_sohle>`__ (ch.bafu.strukturguete-hochrhein_sohle)                                                                              |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `PDO plant products <//map.geo.admin.ch/?layers=ch.blw.ursprungsbezeichnungen-konditoreiwaren>`__ (ch.blw.ursprungsbezeichnungen-konditoreiwaren)                                                                         |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Building generalized VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-building>`__ (ch.swisstopo.vec200-building)                                                                                               |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Elevations VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-miscellaneous-geodpoint>`__ (ch.swisstopo.vec200-miscellaneous-geodpoint)                                                                           |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Hydrology VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-hydrography>`__ (ch.swisstopo.vec200-hydrography)                                                                                                    |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Land cover VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-landcover>`__ (ch.swisstopo.vec200-landcover)                                                                                                       |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Names VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-names-namedlocation>`__ (ch.swisstopo.vec200-names-namedlocation)                                                                                        |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Public Transportation VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-transportation-oeffentliche-verkehr>`__ (ch.swisstopo.vec200-transportation-oeffentliche-verkehr)                                        |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Road system VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-transportation-strassennetz>`__ (ch.swisstopo.vec200-transportation-strassennetz)                                                                  |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Single objects VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-miscellaneous>`__ (ch.swisstopo.vec200-miscellaneous)                                                                                           |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Forested areas <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-landcover-wald>`__ (ch.swisstopo.vec200-landcover-wald)                                                                                                   |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Geologische Gutachten (10-100km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-10to100km2>`__ (ch.swisstopo.geologie-gisgeol-flaechen-10to100km2)                                                  |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Geologische Gutachten (100-1000km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2>`__ (ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2)                                            |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Geologische Gutachten (1000-21000km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-1000to21000km2>`__ (ch.swisstopo.geologie-gisgeol-flaechen-1000to21000km2)                                      |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `PDO spirits <//map.geo.admin.ch/?layers=ch.blw.ursprungsbezeichnungen-spirituosen>`__ (ch.blw.ursprungsbezeichnungen-spirituosen)                                                                                        |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `PDO cheese <//map.geo.admin.ch/?layers=ch.blw.ursprungsbezeichnungen-kaese>`__ (ch.blw.ursprungsbezeichnungen-kaese)                                                                                                     |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+.. _releasenotes_20150617:
+
+Release 20150617 - Wednesday, June 17th 2015
+------------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Add preview version of GeoAdmin API with Openlayers 3.6.0
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150603...r_150617>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150603...r_150617>`__
+
+
+Geodata
+*******
+
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Swissimage <//map.geo.admin.ch/?bgLayer=ch.swisstopo.swissimage>`__ (ch.swisstopo.swissimage)                                                                                                                       |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+.. _releasenotes_20150603:
+
+Release 20150603 - Wednesday, June 3rd 2015
+------------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Vector layer and styling example
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150528...r_150603>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Enhanced background layer selector
+- Enhanced share menu
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150528...r_150603>`__
+
+
+Geodata
+*******
+
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Sachplan Übertragungsleitungen (SÜL) <//map.geo.admin.ch/?layers=ch.bfe.sachplan-uebertragungsleitungen_kraft>`__ (ch.bfe.sachplan-uebertragungsleitungen_kraft)                                                    |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Sediment thickness <//map.geo.admin.ch/?layers=ch.sgpk.maechtigkeit-lockergesteine>`__ (ch.sgpk.maechtigkeit-lockergesteine)                                                                                        |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Journey through time <//map.geo.admin.ch/?layers=ch.swisstopo.zeitreihen>`__ (ch.swisstopo.zeitreihen)                                                                                                              |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `swissTLM-Map (gray) <//map.geo.admin.ch/?layers=ch.swisstopo.swisstlm3d-karte-grau>`__ (ch.swisstopo.swisstlm3d-karte-grau)                                                                                         |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `swissTLM-Map (color) <//map.geo.admin.ch/?layers=ch.swisstopo.swisstlm3d-karte-farbe>`__ (ch.swisstopo.swisstlm3d-karte-farbe)                                                                                      |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Federal Inventory ISOS <//map.geo.admin.ch/?layers=ch.bak.bundesinventar-schuetzenswerte-ortsbilder>`__ (ch.bak.bundesinventar-schuetzenswerte-ortsbilder)                                                          |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Ibex colonies <//map.geo.admin.ch/?layers=ch.bafu.fauna-steinbockkolonien)>`__ (ch.bafu.fauna-steinbockkolonien)                                                                                                    |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
 .. _releasenotes_20150528:
 
 Release 20150528 - Thursday, May 28th 2015
@@ -29,7 +274,7 @@ API & applications
 - Add warning for third party geodata
 - Improved search function
 - Bug fixes
-- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150520..r_150528>`__
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150520...r_150528>`__
 
 .. _releasenotes_20150520:
 

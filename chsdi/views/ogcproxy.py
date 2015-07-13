@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import re
 from urlparse import urlparse
-from httplib2 import Http
+import requests
 
 from pyramid.view import view_config
 
@@ -40,19 +39,20 @@ class OgcProxy:
             raise HTTPBadRequest()
 
         # forward request to target (without Host Header)
-        http = Http(disable_ssl_certificate_validation=True)
         h = dict(self.request.headers)
         h.pop("Host", h)
         try:
-            resp, content = http.request(url, method=self.request.method,
-                                         body=self.request.body, headers=h)
+            resp = requests.request(self.request.method, url,
+                                    data=self.request.body, headers=h,
+                                    verify=False)
+            content = resp.text
         except:
             raise HTTPBadGateway()
 
         #  All content types are allowed
-        if "content-type" in resp:
-            ct = resp["content-type"]
-            if resp["content-type"] == "application/vnd.google-earth.kmz":
+        if "content-type" in resp.headers:
+            ct = resp.headers["content-type"]
+            if ct == "application/vnd.google-earth.kmz":
                 zipfile = None
                 try:
                     zipurl = urlopen(url)
@@ -69,9 +69,9 @@ class OgcProxy:
         else:
             raise HTTPNotAcceptable()
 
-        if content.find('encoding=') > 0:
-            m = re.search("encoding=\"(.*?)\\\"", content)
-            doc_encoding = m.group(1)
+        if resp.encoding:
+            doc_encoding = resp.encoding
+            print(doc_encoding)
             if doc_encoding.lower() != DEFAULT_ENCODING:
                 try:
                     data = content.decode(doc_encoding, "replace")
@@ -80,7 +80,7 @@ class OgcProxy:
                 content = data.encode(DEFAULT_ENCODING)
                 content = content.replace(doc_encoding, DEFAULT_ENCODING)
 
-        response = Response(content, status=resp.status,
+        response = Response(content, status=resp.status_code,
                             headers={"Content-Type": ct})
 
         return response

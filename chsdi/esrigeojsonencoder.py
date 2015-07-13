@@ -5,7 +5,6 @@ import datetime
 import functools
 from operator import add
 
-from json import dumps as _dumps
 import geojson
 import json
 from geojson.codec import GeoJSONEncoder

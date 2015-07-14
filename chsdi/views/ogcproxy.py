@@ -45,7 +45,7 @@ class OgcProxy:
             resp = requests.request(self.request.method, url,
                                     data=self.request.body, headers=h,
                                     verify=False)
-            content = resp.text
+            content = resp.content
         except:
             raise HTTPBadGateway()
 

@@ -107,7 +107,6 @@ class FileView(object):
     def update_file(self):
         data = self.request.body
         mime = self.request.content_type
-
         if self.admin_id is not None:
             try:
                 self._save_kml(data, mime, update=True)
@@ -122,7 +121,7 @@ class FileView(object):
 
             del self.key
 
-            self._save_to_s3(data, mime)
+            self._save_kml(data, mime)
 
             return {'adminId': self.admin_id, 'fileId': self.file_id, 'status': 'copied'}
 

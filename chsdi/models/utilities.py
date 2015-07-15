@@ -1,6 +1,7 @@
 # -*- coding: utf-8
 
-from sqlalchemy import Column, String, DateTime
+from sqlalchemy import Column, String, DateTime, Integer
+from geoalchemy2.types import Geometry
 from chsdi.models import bases
 
 Base = bases['sit']
@@ -24,3 +25,11 @@ class Files(Base):
     file_id = Column(String(24), primary_key=True)
     mime_type = Column(String(50), nullable=False)
     createtime = Column(DateTime)
+
+
+class Communes(Base):
+    __tablename__ = 'communes'
+    __table_args__ = ({'schema': 'userdata', 'autoload': False})
+    gid = Column(Integer, primary_key=True)
+    nom = Column(String)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY', srid=21781, dimension=2))

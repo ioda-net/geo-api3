@@ -71,7 +71,6 @@ class OgcProxy:
 
         if resp.encoding:
             doc_encoding = resp.encoding
-            print(doc_encoding)
             if doc_encoding.lower() != DEFAULT_ENCODING:
                 try:
                     data = content.decode(doc_encoding, "replace")

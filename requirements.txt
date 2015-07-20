@@ -1,4 +1,5 @@
 autopep8
+Babel
 c2c.recipe.msgfmt==0.2.1
 collective.recipe.cmd==0.11
 collective.recipe.modwsgi==1.7

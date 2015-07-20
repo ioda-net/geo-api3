@@ -11,6 +11,7 @@ log = logging.getLogger('chsdi')
 _rasters = {}
 _rasterfiles = {}
 
+
 def get_raster(name):
     global _rasters
     result = _rasters.get(name, None)
@@ -19,12 +20,11 @@ def get_raster(name):
         _rasters[name] = result
     return result
 
+
 def init_rasterfiles(datapath, preloadtypes):
     global _rasterfiles
     _rasterfiles = {
-        'DTM25': datapath + 'dhm25_25_matrix/mm0001.shp',
-        'DTM2': datapath + 'swissalti3d/2m/index.shp',
-        'COMB': datapath + 'swissalti3d/kombo_2m_dhm25/index.shp'
+         'DTM25': datapath + 'bt/DTM25.shp'
     }
     try:
         for pt in preloadtypes:

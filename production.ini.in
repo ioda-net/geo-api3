@@ -24,7 +24,7 @@ sqlalchemy.sit.url = postgresql://${vars:dbhost}:${vars:dbport}/sit_${vars:db_st
 # Mako specific
 mako.directories = chsdi:templates
 
-dtm_base_path = /var/local/profile/
+dtm_base_path = ${vars:dtm_base_path}
 zadara_dir = ${vars:zadara_dir}
 sphinxhost = ${sphinxhost}
 sphinxport = ${sphinxport}

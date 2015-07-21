@@ -10,22 +10,26 @@ help:
 	@echo "Usage: make <target>"
 	@echo
 	@echo "Possible targets:"
-	@echo "- venv: install deps in a venv"
+	@echo "- init: install python deps in a venv and get node modules in bin"
 	@echo "- clean"
 	@echo "- serve"
 	@echo "- test"
 	@echo "- translate"
 
 
-.PHONY: venv
-venv: requirements.txt setup.py
+.PHONY: init
+init: requirements.txt setup.py
 	virtualenv .venv
 	${PYTHON_CMD} setup.py develop
+	cd bin && npm install
 
 
 .PHONY: serve
-serve:
+serve: development.ini
 	PYTHONPATH=${PYTHONPATH} ${PSERVE_CMD} development.ini --reload
+
+development.ini:
+	cd bin && ./node_modules/gulp/bin/gulp.js build-config
 
 
 .PHONY: test
@@ -35,12 +39,12 @@ test:
 
 .PHONY: lint
 lint:
-	./lint.sh
+	./bin/lint.sh
 
 
 .PHONY: translate
 translate:
-	./translate.sh
+	./bin/translate.sh
 
 
 .PHONY: clean

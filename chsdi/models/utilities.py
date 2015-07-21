@@ -27,7 +27,7 @@ class Files(Base):
 
 class Communes(Base):
     __tablename__ = 'communes'
-    __table_args__ = ({'schema': 'userdata', 'autoload': False})
+    __table_args__ = ({'schema': 'api3', 'autoload': False})
     gid = Column(Integer, primary_key=True)
     nom = Column(String)
     the_geom = Column(Geometry(geometry_type='GEOMETRY', srid=21781, dimension=2))

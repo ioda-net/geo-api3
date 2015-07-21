@@ -13,17 +13,18 @@ from sqlalchemy import Text
 Base = bases['sit']
 
 
-class BATIMENTS(Base, Feature):
+class Batiments(Base, Feature):
     __tablename__ = 'batiments'
-    __table_args__ = ({'schema': 'feature', 'autoload': False})
-    __template__ = 'templates/htmlpopup/batiments.mako'
+    __table_args__ = ({'schema': 'features', 'autoload': False})
     __bodId__ = 'BATIMENTS'
-    id = Column('id', BigInteger, primary_key=True)
+    id = Column('gid', BigInteger, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
                       dimension=2, srid=21781))
-    commune = Column(Text())
-    adresse = Column(Text())
+    adresse = Column(Text(440))
+    commune = Column('nom', Text(440))
     surface = Column(Float())
+    genre_fr = Column(Text(100))
+    genre_de = Column(Text(100))
 
 
-register('BATIMENTS', BATIMENTS)
+register('BATIMENTS', Batiments)

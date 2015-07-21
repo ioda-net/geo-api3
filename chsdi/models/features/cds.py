@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from sqlalchemy import Column, Text, Float
+from sqlalchemy import Column, Text, Integer
 from geoalchemy2.types import Geometry
 
 from chsdi.models import bases
@@ -13,15 +13,14 @@ Base = bases['sit']
 
 class CDS(Base, Feature):
     __tablename__ = 'cds'
-    __table_args__ = ({'schema': 'feature', 'autoload': False})
-    __template__ = 'templates/htmlpopup/cds.mako'
+    __table_args__ = ({'schema': 'features', 'autoload': False})
     __bodId__ = 'COUVERTUREDUSOL'
-    id = Column('id', Text, primary_key=True)
+    id = Column('gid', Integer, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
                                dimension=2, srid=21781))
-    commune = Column(Text())
-    cds = Column(Text())
-    surface = Column(Float())
+    nom = Column(Text(440))
+    genre_fr = Column(Text(100))
+    genre_de = Column(Text(100))
 
 
 register('COUVERTUREDUSOL', CDS)

@@ -45,7 +45,8 @@ class Search(SearchValidation):
         self.addressOrigins = [origin.strip() for origin in
                                request.registry.settings['search.address_origins'].split(',')]
         originAndRanks = [originRank.split(':') for originRank in
-                          request.registry.settings['search.origins_to_ranks'].split(',')]
+                          request.registry.settings['search.origins_to_ranks'].split(',')
+                          if originRank]
         self.originsToRanks = {origin.strip(): int(rank) for origin, rank in originAndRanks}
 
     @view_config(route_name='search', renderer='jsonp')

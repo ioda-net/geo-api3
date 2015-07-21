@@ -1,0 +1,25 @@
+{
+  "name": "geo-api3",
+  "version": "0.0.0",
+  "description": "API for geo-front3",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ioda-net/geo-api3.git"
+  },
+  "author": "Swisstopo, Ioda-Net",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/ioda-net/geo-api3/issues"
+  },
+  "devDependencies": {
+    "toml": "~2.3.0",
+    "gulp": "~3.9.0",
+    "gulp-data": "~1.2.0",
+    "gulp-ext-replace": "~0.2.0",
+    "gulp-nunjucks-render": "~0.2.1"
+  }
+}

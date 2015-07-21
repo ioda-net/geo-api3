@@ -5,7 +5,8 @@
 
 [app:main]
 use = config:production.ini
-app_version = ${app_version}
+# app version is the date and is generated in gulp file
+app_version = {{ app_version }}
 
 pyramid.reload_templates = true
 pyramid.debug_authorization = true
@@ -19,23 +20,15 @@ mako.imports =
 
 # By default, the toolbar only appears for clients from IP addresses
 # '127.0.0.1' and '::1'.
-debugtoolbar.hosts = 0.0.0.0/0
-
-# tests
-topic_id = ${vars:test_topic_id}
-layer_id = ${vars:test_layer_id}
-topics_list = ${vars:test_topics_list}
-layers_list = ${vars:test_layers_list}
-langs_list = ${vars:test_lang_list}
-default_lang = ${vars:test_default_lang}
+debugtoolbar.hosts = {{ debug.host }}/0
 
 ###
 # wsgi server configuration
 ###
 [server:main]
 use = egg:waitress#main
-host = 0.0.0.0
-port = ${vars:server_port}
+host = {{ debug.host }}
+port = {{ debug.port }}
 
 ###
 # logging configuration

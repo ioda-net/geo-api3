@@ -38,7 +38,7 @@ class DownloadKML:
 
     def __init__(self, request):
         self.request = request
-        self.tmpdir = request.registry.settings['print_temp_dir'] + '/kml'
+        self.tmpdir = request.registry.settings['temp_dir'] + '/kml'
         self.host = request.registry.settings['api_url'] + '/kml'
 
     @view_config(route_name='downloadkml', renderer='jsonp')

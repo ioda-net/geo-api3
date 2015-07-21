@@ -10,30 +10,36 @@ help:
 	@echo "Usage: make <target>"
 	@echo
 	@echo "Possible targets:"
-	@echo "- init: install python deps in a venv and get node modules in bin"
+	@echo "- cleanall"
 	@echo "- clean"
 	@echo "- serve"
 	@echo "- test"
 	@echo "- translate"
 
 
-.PHONY: init
-init: requirements.txt setup.py
-	virtualenv .venv
-	${PYTHON_CMD} setup.py develop
-	cd bin && npm install
-
-
 .PHONY: serve
-serve: development.ini
+serve: development.ini venv node_modules
 	PYTHONPATH=${PYTHONPATH} ${PSERVE_CMD} development.ini --reload
 
-development.ini:
-	cd bin && ./node_modules/gulp/bin/gulp.js build-config
+development.ini: node_modules
+	@if [ ! -e production.ini ] || [ ! -e development.ini ]; then \
+	    cd bin && ./node_modules/gulp/bin/gulp.js build-config; \
+	fi
+
+venv:
+	@if [ ! -d .venv ]; then \
+	    virtualenv .venv; \
+	    ${PYTHON_CMD} setup.py develop; \
+	fi
+
+node_modules:
+	@if [ ! -d bin/node_modules ]; then \
+	    cd bin && npm install; \
+	fi
 
 
 .PHONY: test
-test:
+test: venv
 	PYTHONPATH=${PYTHONPATH} ${NOSE_CMD}
 
 
@@ -43,10 +49,17 @@ lint:
 
 
 .PHONY: translate
-translate:
+translate: venv
 	./bin/translate.sh
 
 
 .PHONY: clean
 clean:
+	rm -rf production.ini
+	rm -rf development.ini
+
+
+.PHONY: cleanall
+cleanall: clean
 	rm -rf .venv
+	rm -rf bin/node_modules

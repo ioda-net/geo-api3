@@ -17,6 +17,7 @@ help:
 	@echo "- test"
 	@echo "- translate"
 	@echo "- prod"
+	@echo "- lint"
 
 
 .PHONY: serve

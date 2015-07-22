@@ -52,4 +52,4 @@ B{Verwendung}:
 @note: Alle Verweise (URL's) wurden am 24. August 2010 abgerufen
 @note: Erstellt mit epydoc 3.0.1-8 U{http://epydoc.sourceforge.net/}
 """
-from _checker import OWSCheck
+from ows_checker._checker import OWSCheck

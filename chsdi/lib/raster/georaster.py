@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import shputils
+from chsdi.lib.raster import shputils
 from os.path import dirname
 from struct import unpack
 
@@ -26,11 +26,11 @@ def init_rasterfiles(datapath, preloadtypes):
     _rasterfiles = {
          'DTM25': datapath + 'bt/DTM25.shp'
     }
-    try:
-        for pt in preloadtypes:
-            get_raster(pt)
-    except Exception as e:
-        log.error('Could not initialize raster files. Make sure they exist in the following directory: %s (Exception: %s)' % (datapath, e))
+    #try:
+    for pt in preloadtypes:
+        get_raster(pt)
+    #except Exception as e:
+    #    log.error('Could not initialize raster files. Make sure they exist in the following directory: %s (Exception: %s)' % (datapath, e))
 
 
 class Tile(object):
@@ -73,24 +73,24 @@ class BTTile(Tile):
 
 class GeoRaster:
     def __init__(self, shapefileName):
-        self.tiles=[]
+        self.tiles = []
         shpRecords = shputils.loadShapefile(shapefileName)
-        dir=dirname(shapefileName)
-        if dir=="":
-            dir="."
+        dir = dirname(shapefileName)
+        if dir == "":
+            dir = "."
         for shape in shpRecords:
-            filename=shape['dbf_data']['location'].rstrip()
-            tileClass=None
+            filename = shape['dbf_data']['location'].rstrip()
+            tileClass = None
             if filename.endswith(".bt"):
-                tileClass=BTTile
+                tileClass = BTTile
             if not filename.startswith("/"):
-                filename=dir+'/'+filename
+                filename = dir + '/' + filename
             geo=shape['shp_data']
             tile=tileClass(geo['xmin'], geo['ymin'], geo['xmax'], geo['ymax'], filename)
             self.tiles.append(tile)
 
     def getVal(self, x,y):
-        tile=self.getTile(x, y)
+        tile = self.getTile(x, y)
         if tile:
             return tile.getVal(x, y)
         else:

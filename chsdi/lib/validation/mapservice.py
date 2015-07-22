@@ -141,7 +141,7 @@ class MapServiceValidation(object):
         if len(value) != 3:
             raise HTTPBadRequest('Please provide the parameter imageDisplay in a comma separated list of 3 arguments (width,height,dpi)')
         try:
-            self._imageDisplay = map(float, value)
+            self._imageDisplay = [float(val) for val in value]
         except ValueError:
             raise HTTPBadRequest('Please provide numerical values for the parameter imageDisplay')
 

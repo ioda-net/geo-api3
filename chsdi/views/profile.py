@@ -46,23 +46,23 @@ class Profile(ProfileValidation):
 
         coords = self._create_points(linestring.coords, self.nb_points)
         zvalues = {}
-        for i in xrange(0, len(self.layers)):
+        for i in range(0, len(self.layers)):
             zvalues[self.layers[i]] = []
-            for j in xrange(0, len(coords)):
+            for j in range(0, len(coords)):
                 z = rasters[i].getVal(coords[j][0], coords[j][1])
                 zvalues[self.layers[i]].append(z)
 
         factor = lambda x: float(1) / (abs(x) + 1)
         zvalues2 = {}
-        for i in xrange(0, len(self.layers)):
+        for i in range(0, len(self.layers)):
             zvalues2[self.layers[i]] = []
-            for j in xrange(0, len(zvalues[self.layers[i]])):
+            for j in range(0, len(zvalues[self.layers[i]])):
                 s = 0
                 d = 0
                 if zvalues[self.layers[i]][j] is None:
                     zvalues2[self.layers[i]].append(None)
                     continue
-                for k in xrange(-self.ma_offset, self.ma_offset + 1):
+                for k in range(-self.ma_offset, self.ma_offset + 1):
                     p = j + k
                     if p < 0 or p >= len(zvalues[self.layers[i]]):
                         continue
@@ -84,11 +84,11 @@ class Profile(ProfileValidation):
             profile['headers'].append('Easting')
             profile['headers'].append('Northing')
 
-        for j in xrange(0, len(coords)):
+        for j in range(0, len(coords)):
             if prev_coord is not None:
                 dist += self._dist(prev_coord, coords[j])
             alts = {}
-            for i in xrange(0, len(self.layers)):
+            for i in range(0, len(self.layers)):
                 if zvalues2[self.layers[i]][j] is not None:
                     alts[self.layers[i]] = self._filter_alt(
                         zvalues2[self.layers[i]][j])
@@ -142,7 +142,7 @@ class Profile(ProfileValidation):
                     cur_nb_points = 1
                 dx = (coord[0] - prev_coord[0]) / float(cur_nb_points)
                 dy = (coord[1] - prev_coord[1]) / float(cur_nb_points)
-                for i in xrange(1, cur_nb_points + 1):
+                for i in range(1, cur_nb_points + 1):
                     result.append(
                         [prev_coord[0] + dx * i,
                          prev_coord[1] + dy * i])

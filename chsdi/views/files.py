@@ -50,7 +50,9 @@ class FileView(object):
             raise exc.HTTPNotFound('File %s not found' % self.admin_id)
 
     def _get_uuid(self):
-        return base64.urlsafe_b64encode(uuid.uuid4().bytes).replace('=', '')
+        return base64.urlsafe_b64encode(uuid.uuid4().bytes)\
+            .replace(b'=', b'')\
+            .decode('ascii')
 
     @view_config(route_name='files_collection', request_method='OPTIONS', renderer='string')
     def options_files_collection(self):
@@ -76,6 +78,10 @@ class FileView(object):
         return os.path.join(self.kml_storage_path, self.file_id) + '.kml'
 
     def _save_kml(self, data, mime_type, update=False):
+        # Data most likely come from request.body which is of type bytes
+        if isinstance(data, bytes):
+            data = data.decode('utf-8')
+
         with open(self._get_save_path(), 'w') as kml:
             kml.write(data)
 

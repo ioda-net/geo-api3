@@ -3,7 +3,8 @@ PSERVE_CMD ?= .venv/bin/pserve
 NOSE_CMD ?= .venv/bin/nosetests
 # We need GDAL which is hard to install in a venv, modify PYTHONPATH to use the
 # system wide version.
-PYTHONPATH ?= .venv/lib/python2.7/site-packages:/usr/lib64/python2.7/site-packages
+PYTHON_VERSION := $(shell python3 --version | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
+PYTHONPATH ?= .venv/lib/python${PYTHON_VERSION}/site-packages:/usr/lib64/python${PYTHON_VERSION}/site-packages
 
 .PHONY: help
 help:
@@ -28,7 +29,7 @@ development.ini: node_modules
 
 venv:
 	@if [ ! -d .venv ]; then \
-	    virtualenv .venv; \
+	    python3 -m venv .venv; \
 	    ${PYTHON_CMD} setup.py develop; \
 	fi
 

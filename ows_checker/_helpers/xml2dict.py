@@ -16,14 +16,14 @@ try:
     import xml.etree.ElementTree as ET
 except:
     import cElementTree as ET # for 2.5
-    
+
 try:
     from django.utils.encoding import smart_str, smart_unicode
     has_django = True
 except ImportError:
     has_django = False
 
-from object_dict import object_dict 
+from ows_checker._helpers.object_dict import object_dict
 import re
 
 class XML2Dict(object):
@@ -48,8 +48,8 @@ class XML2Dict(object):
             old = node_tree[tag]
             if not isinstance(old, list):
                 node_tree.pop(tag)
-                node_tree[tag] = [old] # multi times, so change old dict to a list       
-            node_tree[tag].append(tree) # add the new one      
+                node_tree[tag] = [old] # multi times, so change old dict to a list
+            node_tree[tag].append(tree) # add the new one
 
         return  node_tree
 
@@ -62,13 +62,13 @@ class XML2Dict(object):
         """
         result = re.compile("\{(.*)\}(.*)").search(tag)
         if result:
-            value.namespace, tag = result.groups()    
+            value.namespace, tag = result.groups()
         return (tag, value)
 
     def parse(self, file):
         """parse a xml file to a dict"""
         f = open(file, 'r')
-        return self.fromstring(f.read()) 
+        return self.fromstring(f.read())
 
     def fromstring(self, s):
         """parse a string"""
@@ -77,4 +77,3 @@ class XML2Dict(object):
         t = ET.fromstring(s)
         root_tag, root_tree = self._namespace_split(t.tag, self._parse_node(t))
         return object_dict({root_tag: root_tree})
-

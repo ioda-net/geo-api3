@@ -82,7 +82,8 @@ class SearchValidation(object):
             raise exc.HTTPBadRequest("Please provide a search text")
         searchTextList = value.split(' ')
         # Remove empty strings
-        searchTextList = filter(None, searchTextList)
+        searchTextList = [searchText for searchText in searchTextList
+                          if searchText is not None]
         if len(searchTextList) > MAX_SEARCH_TERMS:
             raise HTTPBadRequest("The searchText parameter can not contain more than 10 words")
         self._searchText = searchTextList

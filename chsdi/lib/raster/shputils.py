@@ -3,15 +3,13 @@
 # file taken from http://indiemaps.com/blog/2008/03/easy-shapefile-loading-in-python/
 
 from struct import unpack
-import dbfutils, math
+from chsdi.lib.raster import dbfutils
+import math
 XY_POINT_RECORD_LENGTH = 16
 db = []
 
 def loadShapefile(file_name):
     global db
-    shp_bounding_box = []
-    shp_type = 0
-    file_name = file_name
     records = []
     # open dbf file and get records as a list
     dbf_file = file_name[0:-4] + '.dbf'
@@ -29,7 +27,7 @@ def loadShapefile(file_name):
     fp.seek(100)
     while True:
         shp_record = createRecord(fp)
-        if shp_record == False:
+        if shp_record is False:
             break
         records.append(shp_record)
 
@@ -41,17 +39,20 @@ record_class = {0:'RecordNull', 1:'RecordPoint', 8:'RecordMultiPoint',
 def createRecord(fp):
 # read header
     record_number = readAndUnpack('>L', fp.read(4))
-    if record_number == '':
+    if record_number == b'':
         return False
     content_length = readAndUnpack('>L', fp.read(4))
     record_shape_type = readAndUnpack('<L', fp.read(4))
 
-    shp_data = readRecordAny(fp,record_shape_type)
+    shp_data = readRecordAny(fp, record_shape_type)
     dbf_data = {}
-    for i in range(0,len(db[record_number+1])):
-        dbf_data[db[0][i]] = db[record_number+1][i]
+    for i in range(len(db[record_number+1])):
+        data = db[record_number+1][i]
+        if isinstance(data, bytes):
+            data = data.decode('ascii')
+        dbf_data[db[0][i]] = data
 
-    return {'shp_data':shp_data, 'dbf_data':dbf_data}
+    return {'shp_data': shp_data, 'dbf_data': dbf_data}
 
 # Reading defs
 
@@ -129,7 +130,7 @@ def readBoundingBox(fp):
     return data
 
 def readAndUnpack(type, data):
-    if data=='': return data
+    if data == b'': return data
     return unpack(type, data)[0]
 
 
@@ -180,8 +181,8 @@ def getTrueCenters(records, projected=False):
             #now get the true centroid
         tempPoint = {'x':0, 'y':0}
         if biggest[points][0] != biggest[points][len(biggest[points])-1]:
-            print "mug", biggest[points][0], biggest[points][len(biggest[points]
-                    )-1]
+            print("mug", biggest[points][0], biggest[points][len(biggest[points]
+                    )-1])
         for i in range(0, len(biggest[points])-1):
             j = (i + 1) % (len(biggest[points])-1)
             tempPoint['x'] -= (biggest[points][i]['x'] + biggest[points][j]['x']) * ((biggest[points][i]['x'] * biggest[points][j]['y']) - (biggest[points][j]['x'] * biggest[points][i]['y']))
@@ -206,7 +207,6 @@ def getNeighbors(records):
 
 #for each feature
     for i in range(len(records)):
-    #print i, records[i]['dbf_data']['ADMIN_NAME']
         if not 'neighbors' in records[i]['shp_data']:
             records[i]['shp_data']['neighbors'] = []
 
@@ -241,7 +241,7 @@ def getNeighbors(records):
                         break
 
 def projectShapefile(records, whatProjection, lonCenter=0, latCenter=0):
-    print 'projecting to ', whatProjection
+    print('projecting to ', whatProjection)
     for feature in records:
         for part in feature['shp_data']['parts']:
             part['projectedPoints'] = []

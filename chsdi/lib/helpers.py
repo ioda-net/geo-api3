@@ -6,8 +6,8 @@ from pyramid.threadlocal import get_current_registry
 from pyramid.i18n import get_locale_name
 from pyramid.httpexceptions import HTTPBadRequest
 import unicodedata
-from urllib import quote
-from urlparse import urlparse, urlunparse, urljoin
+from urllib.parse import quote
+from urllib.parse import urlparse, urlunparse, urljoin
 
 
 def versioned(path):

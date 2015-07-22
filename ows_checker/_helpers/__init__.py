@@ -7,8 +7,8 @@ Module ``_helpers``.
 """
 
 import xml.dom.minidom as dom
-import urllib2
-import xml2dict
+import urllib
+from ows_checker._helpers import xml2dict
 
 DEFAULT_TIMEOUT = 100
 
@@ -16,9 +16,9 @@ class ResponseDict(dict):
     """
     Die Klasse L{ResponseDict} formuliert ein C{dict}-Objekt mit vier festen
     Parametern und vier festen Rückgabewerten.
-    
+
     B{Aufruf}:
-        
+
     >>> r = ResponseDict("WMS-04 Checker", ["alles gut"], True, ["WMS-04"])
     >>> r
     {'checker': "WMS-04 Checker", 'results':["alles gut"], 'status': True, 'hints':["WMS-04"]}
@@ -48,37 +48,37 @@ class ResponseDict(dict):
         @type hints: str, unicode, list
         """
         self.hints = hints
-        
+
         if isinstance(checker, (str, unicode)):
             self.checker = checker
         else:
             raise ValueError("Es muss ein String für Checker übergeben werden")
-        
+
         if isinstance(results, (str, unicode)):
             self.results = [results]
         elif isinstance(results, list):
             self.results = results
         else:
             raise ValueError(u"Es muss ein String oder eine Liste für Results übergeben werden")
-        
+
         if isinstance(status, bool):
             self.status = status
         else:
             raise ValueError(u"Es muss ein Boolean für Status übergeben werden")
-         
+
         if self.hints:
             if isinstance(hints, (str, unicode)):
                 self.hints = [unicode(hints)]
             elif isinstance(hints, list):
                 self.hints = hints
-                    
+
         self.response_dict = {'checker':self.checker,
                                'results':self.results,
                                'status':self.status,
                                'hints':self.hints}
-        
+
         dict.__init__(self, self.response_dict)
-        
+
 def URL2File(url, headers={}, timeout=DEFAULT_TIMEOUT, auth={}):
         """
         Wandelt eine URL in ein Dateiobjekt um.
@@ -91,11 +91,11 @@ def URL2File(url, headers={}, timeout=DEFAULT_TIMEOUT, auth={}):
         Sekunden verwendet, um die Usability nicht zu beeinträchtigen.
 
         B{Beispiel}:
-        
+
         >>> u = URL2File("http://example.com/test.xml")
         >>> u.info().gettype()
         "text/xml"
-        
+
         @param url: URL
         @type url: str
         @param headers: Optionale Header-Informationen
@@ -112,17 +112,17 @@ def URL2File(url, headers={}, timeout=DEFAULT_TIMEOUT, auth={}):
         if auth:
             username = auth.get('user','user')
             password = auth.get('pass','pass')
-            passman = urllib2.HTTPPasswordMgrWithDefaultRealm()
+            passman = urllib.error.HTTPPasswordMgrWithDefaultRealm()
             passman.add_password(None, url, username, password)
-            authhandler = urllib2.HTTPBasicAuthHandler(passman)
-            opener = urllib2.build_opener(authhandler)
-            urllib2.install_opener(opener)
-            file = urllib2.urlopen(url)
+            authhandler = urllib.error.HTTPBasicAuthHandler(passman)
+            opener = urllib.error.build_opener(authhandler)
+            urllib.request.install_opener(opener)
+            file = urllib.request.urlopen(url)
         else:
-            req = urllib2.Request(url, None, headers)
-            file = urllib2.urlopen(url=req, timeout=timeout)
+            req = urllib.request.Request(url, None, headers)
+            file = urllib.request.urlopen(url=req, timeout=timeout)
         return file
-    
+
 def URL2XML2Dict(url):
     xmldict = xml2dict.XML2Dict()
     f = URL2File(url)
@@ -135,13 +135,13 @@ def URL2XML2Dict(url):
             body = node.toxml('utf-8')
     xmldict = xmldict.fromstring(body)
     return xmldict
-        
+
 
 def ns(e):
     """
     Ein Workaround für XML-Namespaces, von C{pickle} erzeugten C{'__dict__'}-Objekten
     und von L{_helpers.xml2dict.XML2Dict} erzeugten C{'value'}-Objekten.
-    
+
     B{Beispiel 1}:
 
     >>> e = {'value':'Ein Wert', '__dict__':{}}
@@ -159,9 +159,9 @@ def ns(e):
     @return: Objekt mit brauchbaren Werten
     @rtype: str, list
     """
-    
+
     entity = None
-    
+
     # {'__dict__':{}, ...}
     if isinstance(e, dict):
         e.pop('__dict__',None)
@@ -175,15 +175,15 @@ def ns(e):
             e.remove('namespace')
         if '__dict__' in e:
             e.remove('__dict__')
-            
-        entity = e    
-        
+
+        entity = e
+
     elif isinstance(e, str):
         entity = e
-    
+
     else:
         entity = e
-    
+
     return entity
 
 def unify(l):
@@ -195,7 +195,7 @@ def unify(l):
     @rtype: list
     """
     return list(set(l))
-    
+
 def value(l):
     """
     Gibt die Wert des Schlüssels C{value} aus einem dict in einer Liste C{l} zurück.
@@ -214,7 +214,7 @@ def value(l):
     v = []
     if isinstance(l, dict):
         v.append(l.value)
-        
+
     if isinstance(l, list):
         for i in l:
             v.append(i.value)
@@ -228,7 +228,7 @@ def removeCharsetFromMime(s):
     C{text/xml;UTF-8} heraus, sodass nur C{text/xml} zurückgegeben wird.
 
     B{Beispiel}:
-    
+
     >>> s = "text/xml;UTF-8"
     >>> removeCharsetFromMime(s)
     "text/xml"
@@ -287,7 +287,7 @@ def filterkey(e, key, ns=False):
                     l.append(_ns(i[key]))
                 else:
                     l.append(i[key])
-                
+
     return l
 
 def b(node):

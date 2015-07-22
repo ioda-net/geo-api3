@@ -88,8 +88,8 @@ SPH_ATTR_BOOL           = 4
 SPH_ATTR_FLOAT          = 5
 SPH_ATTR_BIGINT         = 6
 SPH_ATTR_STRING         = 7
-SPH_ATTR_MULTI          = 0X40000001L
-SPH_ATTR_MULTI64        = 0X40000002L
+SPH_ATTR_MULTI          = 0X40000001
+SPH_ATTR_MULTI64        = 0X40000002
 
 SPH_ATTR_TYPES = (SPH_ATTR_NONE,
                   SPH_ATTR_INTEGER,
@@ -223,14 +223,14 @@ class SphinxClient:
             sock = socket.socket ( af, socket.SOCK_STREAM )
             sock.settimeout ( self._timeout )
             sock.connect ( addr )
-        except socket.error, msg:
+        except socket.error as msg:
             if sock:
                 sock.close()
             self._error = 'connection to %s failed (%s)' % ( desc, msg )
             return
 
-        v = unpack('>L', sock.recv(4))
-        if v<1:
+        v = unpack('>L', sock.recv(4))[0]
+        if v < 1:
             sock.close()
             self._error = 'expected searchd protocol version, got %s' % v
             return
@@ -245,7 +245,7 @@ class SphinxClient:
         INTERNAL METHOD, DO NOT CALL. Gets and checks response packet from searchd server.
         """
         (status, ver, length) = unpack('>2HL', sock.recv(8))
-        response = ''
+        response = b''
         left = length
         while left>0:
             chunk = sock.recv(left)
@@ -313,14 +313,14 @@ class SphinxClient:
         """
         Set offset and count into result set, and optionally set max-matches and cutoff limits.
         """
-        assert ( type(offset) in [int,long] and 0<=offset<16777216 )
-        assert ( type(limit) in [int,long] and 0<limit<16777216 )
-        assert(maxmatches>=0)
+        assert ( isinstance(offset, int) and 0 <= offset < 16777216 )
+        assert ( isinstance(limit, int) and 0 < limit < 16777216 )
+        assert maxmatches >= 0
         self._offset = offset
         self._limit = limit
-        if maxmatches>0:
+        if maxmatches > 0:
             self._maxmatches = maxmatches
-        if cutoff>=0:
+        if cutoff >= 0:
             self._cutoff = cutoff
 
 
@@ -541,7 +541,7 @@ class SphinxClient:
         Add query to batch.
         """
         # build request
-        req = []
+        req = QueryRequest()
         req.append(pack('>4L', self._offset, self._limit, self._mode, self._ranker))
         if self._ranker==SPH_RANK_EXPR:
             req.append(pack('>L', len(self._rankexpr)))
@@ -550,9 +550,6 @@ class SphinxClient:
         req.append(pack('>L', len(self._sortby)))
         req.append(self._sortby)
 
-        if isinstance(query,unicode):
-            query = query.encode('utf-8')
-        assert(isinstance(query,str))
 
         req.append(pack('>L', len(query)))
         req.append(query)
@@ -560,9 +557,9 @@ class SphinxClient:
         req.append(pack('>L', len(self._weights)))
         for w in self._weights:
             req.append(pack('>L', w))
-        assert(isinstance(index,str))
         req.append(pack('>L', len(index)))
         req.append(index)
+
         req.append(pack('>L',1)) # id64 range marker
         req.append(pack('>Q', self._min_id))
         req.append(pack('>Q', self._max_id))
@@ -617,8 +614,9 @@ class SphinxClient:
             req.append ( pack ('>L',len(field)) + field + pack ('>L',weight) )
 
         # comment
-        comment = str(comment)
-        req.append ( pack('>L',len(comment)) + comment )
+        if isinstance(comment, str):
+            comment = comment.encode('utf-8')
+        req.append ( pack('>L', len(comment)) + comment )
 
         # attribute overrides
         req.append ( pack('>L', len(self._overrides)) )
@@ -639,13 +637,12 @@ class SphinxClient:
         req.append ( self._select )
 
         # send query, get response
-        req = ''.join(req)
+        req = b''.join(req)
 
         self._reqs.append(req)
-        return
 
 
-    def RunQueries (self):
+    def RunQueries(self):
         """
         Run queries batch.
         Returns None on network IO failure; or an array of result set hashes on success.
@@ -658,7 +655,7 @@ class SphinxClient:
         if not sock:
             return None
 
-        req = ''.join(self._reqs)
+        req = b''.join(self._reqs)
         length = len(req)+8
         req = pack('>HHLLL', SEARCHD_COMMAND_SEARCH, VER_COMMAND_SEARCH, length, 0, len(self._reqs))+req
         self._Send ( sock, req )
@@ -776,6 +773,14 @@ class SphinxClient:
                         match['attrs'][attrs[i][0]] = unpack('>L', response[p:p+4])[0]
                     p += 4
 
+                decodedAttrs = {}
+                for key, value in match['attrs'].items():
+                    if isinstance(value, bytes):
+                        value = value.decode('utf-8')
+                    if isinstance(key, bytes):
+                        key = key.decode('utf-8')
+                    decodedAttrs[key] = value
+                match['attrs'] = decodedAttrs
                 result['matches'].append ( match )
 
             result['total'], result['total_found'], result['time'], words = unpack('>4L', response[p:p+16])
@@ -1136,7 +1141,16 @@ def AssertInt32 ( value ):
 def AssertUInt32 ( value ):
     assert(isinstance(value, (int, long)))
     assert(value>=0 and value<=2**32-1)
-        
+
+
+class QueryRequest(list):
+    def __init__(self):
+        super()
+
+    def append(self, elt):
+        if isinstance(elt, str):
+            elt = elt.encode('utf-8')
+        super().append(elt)
 #
 # $Id: sphinxapi.py 3436 2012-10-08 09:17:18Z kevg $
 #

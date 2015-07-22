@@ -45,7 +45,8 @@ def validate_kml_input():
                 raise exc.HTTPUnsupportedMediaType('Only KML file are accepted')
 
             # IE9 sends data urlencoded
-            data = urllib.unquote_plus(request.body)
+            # body must be decoded in order for validation to work
+            data = urllib.parse.unquote_plus(request.body.decode('utf-8'))
             if len(data) > MAX_FILE_SIZE:
                 raise exc.HTTPRequestEntityTooLarge('File size exceed %s bytes' % MAX_FILE_SIZE)
             try:
@@ -54,7 +55,8 @@ def validate_kml_input():
             except Exception:
                 raise exc.HTTPUnsupportedMediaType('Only valid KML file are accepted')
 
-            request.body = data
+            # request.body must be of type bytes
+            request.body = data.encode('utf-8')
 
             return func(self, *args, **kwargs)
         return wrapper

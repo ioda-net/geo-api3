@@ -158,7 +158,7 @@ class Feature(GeoInterface):
         if (scale is None or (scale > cls.__minscale__ and scale <= cls.__maxscale__)) and \
            (resolution is None or (resolution > cls.__minresolution__ and resolution <= cls.__maxresolution__)):
             geom = esriRest2Shapely(geometry, geometryType)
-            wkbGeometry = WKBElement(buffer(geom.wkb), 21781)
+            wkbGeometry = WKBElement(memoryview(geom.wkb), 21781)
             geomColumn = cls.geometry_column()
             geomFilter = func.ST_DWITHIN(geomColumn, wkbGeometry, toleranceMeters)
             return geomFilter

@@ -271,9 +271,9 @@ messages = {
 }
 
 for rili, status in messages.items():
-    if not status.has_key(w):
+    if w not in status:
         messages[rili].update({w:NC})
-    if not status.has_key(y) and status.has_key(f):
+    if y not in status and f in status:
         messages[rili].update({y:status[f]})
 
 
@@ -294,7 +294,6 @@ def getMsg(rili, status, data={}, fake=False):
         else:
             raise KeyError
     except KeyError:
-        #msg = "No Message found (Rili=%(rili)s, Status=%(status)s, Data=%(data)s)" % locals()
         if status:
             return "No '%s' Message for %s" % (status, rili)
         else:

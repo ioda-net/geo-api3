@@ -2,7 +2,7 @@
 
 import requests
 import json
-import StringIO
+from io import BytesIO
 
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPBadRequest
@@ -34,7 +34,7 @@ def _make_qrcode_img(url):
     try:
         qr.add_data(url)
         qr.make()
-        output = StringIO.StringIO()
+        output = BytesIO()
         img = qr.make_image()
         img.save(output)
     except:

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from urlparse import urlparse
+from urllib.parse import urlparse
 import requests
 
 from pyramid.view import view_config
@@ -9,8 +9,8 @@ from pyramid.httpexceptions import HTTPBadRequest, HTTPBadGateway, HTTPNotAccept
 from pyramid.response import Response
 
 
-from StringIO import StringIO
-from urllib import urlopen
+from io import StringIO
+from urllib.request import urlopen
 from zipfile import ZipFile
 
 

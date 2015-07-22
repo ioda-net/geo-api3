@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from papyrus.renderers import GeoJSON
 
 from chsdi.esrigeojsonencoder import dumps as esri_dumps

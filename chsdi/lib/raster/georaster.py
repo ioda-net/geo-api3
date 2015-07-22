@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from chsdi.lib.raster import shputils
 from os.path import dirname
 from struct import unpack

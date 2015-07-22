@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from chsdi.tests.integration import TestsBase
 import unittest
 

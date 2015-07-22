@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import re
 from osgeo import osr, ogr
 from pyramid.threadlocal import get_current_registry

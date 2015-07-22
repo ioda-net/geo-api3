@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Das Paket L{ows_checker} beinhaltet
     - das Modul L{_checker}: Das Konformitätsprüfungsmodul 

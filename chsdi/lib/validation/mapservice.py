@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 from shapely.geometry import asShape
 from pyramid.httpexceptions import HTTPBadRequest
 

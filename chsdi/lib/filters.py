@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from sqlalchemy.sql.expression import cast
 from sqlalchemy import Text, or_
 

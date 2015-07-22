@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import cgi
 import json
 import datetime

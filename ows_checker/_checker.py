@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 The _checker-Module contains the Python class :py:class:`OWSCheck`. This class
 performs the eCH-0056 Version 2.0 validation.

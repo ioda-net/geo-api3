@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # $Id: sphinxapi.py 3436 2012-10-08 09:17:18Z kevg $
 #

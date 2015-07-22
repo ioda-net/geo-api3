@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from sqlalchemy import Column, Text, Integer
 from geoalchemy2.types import Geometry
 

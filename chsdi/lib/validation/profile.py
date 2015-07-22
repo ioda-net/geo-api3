@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import geojson
 
 from pyramid.httpexceptions import HTTPBadRequest

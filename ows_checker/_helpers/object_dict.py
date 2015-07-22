@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 Das Modul L{object_dict} implementiert einen objektorientierten Ansatz
 für C{dict}-Objekte. Der Quellcode wurde von URL [1] übernommen.

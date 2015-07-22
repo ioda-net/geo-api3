@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 Das Modul L{xml2dict} implementiert einen objektorientierten Ansatz
 für XML-Dateien. Der Quellcode wurde von URL [1] übernommen und wurde

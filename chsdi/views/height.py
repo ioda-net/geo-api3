@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from chsdi.lib.validation.height import HeightValidation
 from chsdi.lib.raster.georaster import get_raster
 

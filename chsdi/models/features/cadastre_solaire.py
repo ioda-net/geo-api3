@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from chsdi.models import bases
 from chsdi.models import register
 from chsdi.models.features import Feature

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from unittest import TestCase
 from pyramid import testing
 from webtest import TestApp

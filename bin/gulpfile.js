@@ -26,3 +26,14 @@ gulp.task('build-config', function () {
           .pipe(extReplace('.ini', '.ini.html'))
           .pipe(gulp.dest('..'));
 });
+
+
+gulp.task('wsgi', function () {
+  return gulp.src('../parts/*.wsgi.nunjucks')
+          .pipe(data(function () {
+            return {install_directory: path.join(__dirname, '..')};
+          }))
+          .pipe(nunjucksRender())
+          .pipe(extReplace('.wsgi', '.wsgi.html'))
+          .pipe(gulp.dest('../parts/wsgi'));
+});

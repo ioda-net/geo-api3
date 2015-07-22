@@ -16,6 +16,7 @@ help:
 	@echo "- serve"
 	@echo "- test"
 	@echo "- translate"
+	@echo "- prod"
 
 
 .PHONY: serve
@@ -52,6 +53,11 @@ lint:
 .PHONY: translate
 translate: venv
 	./bin/translate.sh
+
+
+.PHONY: prod
+prod: node_modules venv
+	cd bin && ./node_modules/gulp/bin/gulp.js wsgi
 
 
 .PHONY: clean

@@ -22,3 +22,4 @@ chsdi/static/js/*.css
 deploy/hooks/pre-create-code
 node_modules
 *.toml
+*.wsgi

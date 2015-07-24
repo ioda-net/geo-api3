@@ -24,8 +24,8 @@ class Test_EsriGeoJSON(unittest.TestCase):
         from geojson import Point
         point = Point([600000, 200000], properties={'name': 'toto'})
 
-        result = esri_dumps(point)
-        self.assertEqual(result, '{"spatialReference": {"wkid": 21781}, "attributes": {"name": "toto"}, "y": 200000, "x": 600000}')
+        result = esri_dumps(point, sort_keys=True)
+        self.assertEqual(result, '{"attributes": {"name": "toto"}, "spatialReference": {"wkid": 21781}, "x": 600000, "y": 200000}')
 
     # Testing loading EsriGeometries
     def test_loads_simple_point(self):

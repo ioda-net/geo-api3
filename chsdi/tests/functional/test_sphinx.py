@@ -19,13 +19,13 @@ class Test_SphinxApi(unittest.TestCase):
         res = api.BuildExcerpts(docs, index, words, opts)
         self.assertFalse(res)
 
-    @unittest.skip("Search is not yet activated")
     def test_sphinx_api_query(self):
         import sys
+
         api = self._callFUT()
         q = ''
         mode = sphinxapi.SPH_MATCH_ALL
-        host = 'service-sphinxsearch.dev.bgdi.ch'
+        host = 'localhost'
         port = 9312
         index = '*'
         filtercol = 'group_id'
@@ -86,4 +86,5 @@ class Test_SphinxApi(unittest.TestCase):
         if limit:
             api.SetLimits(0, limit, max(limit, 1000))
         res = api.Query(q, index)
+        print(res)
         self.failUnless(isinstance(res, dict))

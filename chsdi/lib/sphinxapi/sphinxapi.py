@@ -274,15 +274,15 @@ class SphinxClient:
             return response[wend:]
 
         if status==SEARCHD_ERROR:
-            self._error = 'searchd error: '+response[4:]
+            self._error = b'searchd error: '+response[4:]
             return None
 
         if status==SEARCHD_RETRY:
-            self._error = 'temporary searchd error: '+response[4:]
+            self._error = b'temporary searchd error: '+response[4:]
             return None
 
         if status!=SEARCHD_OK:
-            self._error = 'unknown status code %d' % status
+            self._error = b'unknown status code %d' % status
             return None
 
         # check version
@@ -396,8 +396,8 @@ class SphinxClient:
         Set IDs range to match.
         Only match records if document ID is beetwen $min and $max (inclusive).
         """
-        assert(isinstance(minid, (int, long)))
-        assert(isinstance(maxid, (int, long)))
+        assert(isinstance(minid, int))
+        assert(isinstance(maxid, int))
         assert(minid<=maxid)
         self._min_id = minid
         self._max_id = maxid
@@ -809,13 +809,9 @@ class SphinxClient:
         """
         if not opts:
             opts = {}
-        if isinstance(words,unicode):
-            words = words.encode('utf-8')
 
-        assert(isinstance(docs, list))
-        assert(isinstance(index, str))
-        assert(isinstance(words, str))
-        assert(isinstance(opts, dict))
+        assert isinstance(docs, list)
+        assert isinstance(opts, dict)
 
         sock = self._Connect()
 
@@ -850,7 +846,7 @@ class SphinxClient:
         if opts.get('load_files_scattered'):    flags |= 1024
         
         # mode=0, flags
-        req = [pack('>2L', 0, flags)]
+        req = QueryRequest([pack('>2L', 0, flags)])
 
         # req index
         req.append(pack('>L', len(index)))
@@ -884,13 +880,13 @@ class SphinxClient:
         # documents
         req.append(pack('>L', len(docs)))
         for doc in docs:
-            if isinstance(doc,unicode):
+            if isinstance(doc, str):
                 doc = doc.encode('utf-8')
-            assert(isinstance(doc, str))
+            assert(isinstance(doc, bytes))
             req.append(pack('>L', len(doc)))
             req.append(doc)
 
-        req = ''.join(req)
+        req = b''.join(req)
 
         # send query, get response
         length = len(req)
@@ -1134,17 +1130,22 @@ class SphinxClient:
         return tag
 
 def AssertInt32 ( value ):
-    assert(isinstance(value, (int, long)))
+    assert(isinstance(value, int))
     assert(value>=-2**32-1 and value<=2**32-1)
 
 def AssertUInt32 ( value ):
-    assert(isinstance(value, (int, long)))
+    assert(isinstance(value, int))
     assert(value>=0 and value<=2**32-1)
 
 
 class QueryRequest(list):
-    def __init__(self):
+    def __init__(self, initial_values=None):
         super()
+        if initial_values:
+            for value in initial_values:
+                if isinstance(value, str):
+                    value = value.encode('utf-8')
+                super().append(value)
 
     def append(self, elt):
         if isinstance(elt, str):

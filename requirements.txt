@@ -23,3 +23,4 @@ sphinx_rtd_theme
 SQLAlchemy==1.0.7
 waitress
 WebTest==2.0.18
+toml

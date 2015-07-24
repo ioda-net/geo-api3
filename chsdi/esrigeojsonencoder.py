@@ -1,6 +1,5 @@
 import decimal
 import datetime
-import functools
 from operator import add
 
 import geojson
@@ -132,7 +131,6 @@ class EsriGeoJSONEncoder(GeoJSONEncoder):
                 ret['type'] = 'esriGeometryPolygon'
 
                 return self._cleanup(ret)
-
         return GeoJSONEncoder.default(self, obj)
 
 
@@ -204,7 +202,10 @@ class EsriGeoJSON(dict):
 
         return d
 
-dumps = functools.partial(json.dumps, cls=EsriGeoJSONEncoder, use_decimal=True)
+def dumps(obj, sort_keys=False):
+    encoder = EsriGeoJSONEncoder()
+    obj = encoder.default(obj)
+    return json.dumps(obj, sort_keys=sort_keys)
 
 
 def loads(obj):

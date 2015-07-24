@@ -75,7 +75,9 @@ class OgcProxy:
                 except Exception:
                     raise HTTPNotAcceptable("Cannot decode requested content from advertized encoding: %s into unicode." % doc_encoding)
                 content = data.encode(DEFAULT_ENCODING)
-                content = content.replace(doc_encoding, DEFAULT_ENCODING)
+                content = content.replace(
+                    doc_encoding.encode('utf-8'),
+                    DEFAULT_ENCODING.encode('utf-8'))
 
         response = Response(content, status=resp.status_code,
                             headers={"Content-Type": ct})

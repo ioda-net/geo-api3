@@ -22,7 +22,7 @@ def get_raster(name):
 def init_rasterfiles(datapath, preloadtypes):
     global _rasterfiles
     _rasterfiles = {
-         'DTM25': datapath + 'bt/DTM25.shp'
+         'MNT50': datapath + 'bt/MNT50.shp'
     }
     #try:
     for pt in preloadtypes:

@@ -137,14 +137,19 @@ class FileView(object):
                 return {'success': True}
             except Exception as e:
                 raise exc.HTTPInternalServerError('Error while deleting file %s. %e' % (self.file_id, e))
-        else:
+        elif self._file_exists():
             raise exc.HTTPUnauthorized('You are not authorized to delete file %s' % self.file_id)
+        else:
+            raise exc.HTTPNotFound('File {} not found'.format(self.file_id))
 
     def _delete_file(self):
         file = self._get_file_from_admin_id()
         self.db.delete(file)
         os.remove(self._get_save_path())
         self.db.commit()
+
+    def _file_exists(self):
+        return os.path.isfile(self._get_save_path())
 
     @view_config(request_method='OPTIONS', renderer='string')
     def options_file(self):

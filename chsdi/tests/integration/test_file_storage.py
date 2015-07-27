@@ -33,21 +33,15 @@ NOT_WELL_FORMED_KML = '''<?xml version="1.0" encoding="UTF-8"?>
 class TestFileView(TestsBase):
 
     def setUp(self):
-        super(TestFileView, self).setUp()
-        self.headers = {'Content-Type': 'application/vnd.google-earth.kml+xml',
-                        'X-SearchServer-Authorized': 'true'}
+        super().setUp()
+        self.headers = {'Content-Type': 'application/vnd.google-earth.kml+xml'}
 
     def test_create_kml(self):
         resp = self.testapp.post('/files', VALID_KML, headers=self.headers, status=200)
         self.assertIn('adminId', resp.json)
 
-    def test_file_not_authorized(self):
-        self.testapp.post('/files', VALID_KML, headers={'X-SearchServer-Authorized': 'false',
-                                                        'Content-Type': 'application/vnd.google-earth.kml+xml'}, status=403)
-
     def test_file_invalid_content_type(self):
-        self.testapp.post('/files', VALID_KML, headers={'X-SearchServer-Authorized': 'true',
-                                                        'Content-Type': WRONG_CONTENT_TYPE}, status=415)
+        self.testapp.post('/files', VALID_KML, headers={'Content-Type': WRONG_CONTENT_TYPE}, status=415)
 
     def test_file_not_well_formed_kml(self):
         self.testapp.post('/files', NOT_WELL_FORMED_KML, headers=self.headers, status=415)
@@ -82,6 +76,7 @@ class TestFileView(TestsBase):
         resp = self.testapp.delete('/files/%s' % admin_id, headers=self.headers, status=200)
         self.assertTrue(resp.json['success'])
 
+        # Delete non existent file (this is not an admin_id os this is not authorized)
         resp = self.testapp.delete('/files/%s' % 'this-file-is-nothing', headers=self.headers, status=404)
 
     def test_file_too_big_kml(self):
@@ -89,7 +84,7 @@ class TestFileView(TestsBase):
         with open(os.path.join(current_dir, 'big.kml')) as f:
             data = f.read()
         resp = self.testapp.post('/files', data, headers=self.headers, status=413)
-        self.assertIn('File size exceed', resp.body)
+        self.assertIn('File size exceed', resp.body.decode('utf-8'))
 
     def test_update_copy_kml(self):
         # First request, to get ids
@@ -100,7 +95,7 @@ class TestFileView(TestsBase):
         # get file
         resp = self.testapp.get('/files/%s' % file_id, headers=self.headers, status=200)
         orig_data = resp.body
-        self.assertEqual(orig_data, VALID_KML)
+        self.assertEqual(orig_data, VALID_KML.encode('utf-8'))
 
         # update with file_id, should copy
         new_content = VALID_KML.replace('Simple placemark', 'Not so simple placemark')
@@ -116,12 +111,11 @@ class TestFileView(TestsBase):
         resp = self.testapp.get('/files/%s' % file_id, headers=self.headers, status=200)
         new_content = resp.body
 
-        self.assertEqual(new_content, VALID_KML)
+        self.assertEqual(new_content, VALID_KML.encode('utf-8'))
         self.assertNotEqual(new_content, modified_content)
 
     def test_file_ie9_fix(self):
         # No cotent-type should normally result in error
-        self.testapp.post('/files', URLENCODED_KML, headers={'X-SearchServer-Authorized': 'true'}, status=415)
+        self.testapp.post('/files', URLENCODED_KML, headers={}, status=415)
         # Having IE9 user-agent makes it working again
-        self.testapp.post('/files', URLENCODED_KML, headers={'X-SearchServer-Authorized': 'true',
-                                                             'User-Agent': 'MSIE 9.0'}, status=200)
+        self.testapp.post('/files', URLENCODED_KML, headers={'User-Agent': 'MSIE 9.0'}, status=200)

@@ -20,7 +20,7 @@ def _add_item(request, url):
             shorten_url = UrlShortener(url=url, short_url=short_url, createtime=datetime.now())
             request.db.add(shorten_url)
             request.db.commit()
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             raise exc.HTTPBadRequest('Error during put item %s' % e)
 
     return short_url
@@ -69,7 +69,7 @@ def shortener(request):
 @view_config(route_name='shorten_redirect')
 def shorten_redirect(request):
     short_url = request.matchdict.get('id')
-    if short_url is None:
+    if short_url is None:  # pragma: no cover
         raise exc.HTTPBadRequest('Please provide an id')
 
     url = _get_url(request, short_url)

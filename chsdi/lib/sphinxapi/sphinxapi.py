@@ -439,10 +439,10 @@ class SphinxClient:
 
 
     def SetGeoAnchor (self, attrlat, attrlong, latitude, longitude):
-        assert(isinstance(attrlat,str))
-        assert(isinstance(attrlong,str))
-        assert(isinstance(latitude,float))
-        assert(isinstance(longitude,float))
+        assert isinstance(attrlat,str)
+        assert isinstance(attrlong,str)
+        assert isinstance(latitude,float)
+        assert isinstance(longitude,float)
         self._anchor['attrlat'] = attrlat
         self._anchor['attrlong'] = attrlong
         self._anchor['lat'] = latitude

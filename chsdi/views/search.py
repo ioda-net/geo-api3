@@ -60,12 +60,6 @@ class Search(SearchValidation):
                 self.request.params.get('searchText')
             )
             self._layer_search()
-        elif self.typeInfo == 'featuresearch':
-            # search all features using searchText
-            self.searchText = format_search_text(
-                self.request.params.get('searchText')
-            )
-            self._feature_search()
         elif self.typeInfo == 'locations' or self.typeInfo == 'locations_preview':
             self.searchText = format_search_text(
                 self.request.params.get('searchText', '')
@@ -148,34 +142,6 @@ class Search(SearchValidation):
                 )[:-len(' | ')]
             return quadSearch
         return ''
-
-    def _feature_search(self):
-        # all features in given bounding box
-        if self.featureIndexes is None:
-            # we need bounding box and layernames. FIXME: this should be error
-            return
-        featureLimit = self.limit if self.limit and self.limit <= self.FEAUTRE_LIMIT else self.FEATURE_LIMIT
-        self.sphinx.SetLimits(0, featureLimit)
-        self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
-        if self.bbox:
-            geoAnchor = self._get_geoanchor_from_bbox()
-            self.sphinx.SetGeoAnchor('lat', 'lon', geoAnchor.GetY(), geoAnchor.GetX())
-            self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC, @geodist ASC')
-        else:
-            self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC')
-
-        timeFilter = self._get_time_filter()
-        if self.searchText:
-            searchdText = self._query_fields('@(detail,ofs,ofs_arr)')
-        else:
-            searchdText = ''
-        self._add_feature_queries(searchdText, timeFilter)
-        try:
-            temp = self.sphinx.RunQueries()
-        except IOError:
-            raise exc.HTTPGatewayTimeout()
-        self.sphinx.ResetFilters()
-        self._parse_feature_results(temp)
 
     def _get_time_filter(self):
         self._check_timeparameters()

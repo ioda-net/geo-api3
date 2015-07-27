@@ -1,6 +1,3 @@
-import unittest
-
-
 from chsdi.tests.integration import TestsBase
 
 
@@ -33,17 +30,14 @@ class TestSearchServiceView(TestsBase):
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json['results']) == 0)
 
-    @unittest.skip('Search with bbox requires lat and long')
     def test_search_locations(self):
         resp = self.testapp.get(self.search_uri, params={'searchText': 'rue des oeuches', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
 
-    @unittest.skip('Search with bbox requires lat and long')
     def test_search_loactions_with_cb(self):
-        resp = self.testapp.get(self.search_uri, params={'searchText': 'rue des oeuches', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625', 'callback': 'cb'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': 'rue des oeuches', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625', 'callback': 'callback'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
 
-    @unittest.skip('Search with bbox requires lat and long')
     def test_search_locations_all_langs(self):
         # even if not lang dependent
         for lang in self.langs:
@@ -55,10 +49,6 @@ class TestSearchServiceView(TestsBase):
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'pery-la heutte')
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'communes')
-
-    @unittest.skip('Search with bbox requires lat and long')
-    def test_search_locations_wrong_topic(self):
-        self.testapp.get('/rest/services/toto/SearchServer', params={'searchText': 'vd 446', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=400)
 
     def test_search_locations_grandval(self):
         resp = self.testapp.get(self.search_uri, params={'searchText': 'Grandval', 'type': 'locations'}, status=200)
@@ -110,12 +100,6 @@ class TestSearchServiceView(TestsBase):
         resp = self.testapp.get(self.search_uri, params={'searchText': 'Rue des Oeuches, 86', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
 
-    @unittest.skip('Search with bbox requires lat and long')
-    def test_search_features_identify(self):
-        params = {'searchText': 'vd 446', 'type': 'featuresearch', 'bbox': '551306.5625,167918.328125,551754.125,168514.625', 'features': 'ch.astra.ivs-reg_loc'}
-        resp = self.testapp.get(self.search_uri, params=params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-
     def test_search_locations_escape_charachters(self):
         resp = self.testapp.get(self.search_uri, params={'searchText': 'la fe', 'type': 'locations'}, status=200)
         self.failUnless(len(resp.json['results']) > 0)
@@ -147,16 +131,14 @@ class TestSearchServiceView(TestsBase):
         params = {'searchText': 'moutier', 'type': 'locations', 'origins': 'dummy'}
         self.testapp.get(self.search_uri, params=params, status=400)
 
-    @unittest.skip('Search with bbox requires lat and long')
     def test_search_locations_with_bbox(self):
         params = {'type': 'locations', 'searchText': 'buechli tegerfelden', 'bbox': '664100,268443,664150,268643'}
         resp = self.testapp.get(self.search_uri, params=params, status=200)
         self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'buechli  5306 tegerfelden 4320 tegerfelden ch ag')
         self.failUnless(len(resp.json['results']) == 1)
 
-    @unittest.skip('Search with bbox requires lat and long')
     def test_search_locations_bbox_only(self):
-        params = {'type': 'locations', 'bbox': '664126,268543,664126,268543'}
+        params = {'type': 'locations', 'bbox': '550000,210000,620000,245000'}
         resp = self.testapp.get(self.search_uri, params=params, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json['results']) > 1)
@@ -192,7 +174,5 @@ class TestSearchServiceView(TestsBase):
     def test_search_max_words(self):
         self.testapp.get('/rest/services/all/SearchServer', params={'searchText': 'this is a text with exactly 10 words, should work', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=200)
         self.testapp.get('/rest/services/all/SearchServer', params={'searchText': 'this is a text with exactly 10 words, should work', 'type': 'layers', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=200)
-        self.testapp.get('/rest/services/all/SearchServer', params={'searchText': 'this is a text with exactly 10 words, should work', 'type': 'featuresearch', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=200)
         self.testapp.get('/rest/services/all/SearchServer', params={'searchText': 'this is a text with exactly 11 words, should NOT work', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=400)
         self.testapp.get('/rest/services/all/SearchServer', params={'searchText': 'this is a text with exactly 11 words, should NOT work', 'type': 'layers', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=400)
-        self.testapp.get('/rest/services/all/SearchServer', params={'searchText': 'this is a text with exactly 11 words, should NOT work', 'type': 'featuresearch', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=400)

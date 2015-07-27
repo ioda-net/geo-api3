@@ -181,6 +181,7 @@ class TestSearchLocations(TestSearchServiceView):
         params = {'searchText': 'moutier', 'type': 'locations', 'limit': '1'}
         resp = self.testapp.get(self.search_uri, params=params, status=200)
         self.failUnless(len(resp.json['results']) == 1)
+        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'moutier')
 
     def test_locations_search_wrong_limit(self):
         params = {'searchText': 'moutier', 'type': 'locations', 'limit': '5.5'}
@@ -191,3 +192,8 @@ class TestSearchLocations(TestSearchServiceView):
         self.testapp.get('/rest/services/all/SearchServer', params={'searchText': 'this is a text with exactly 10 words, should work', 'type': 'layers', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=200)
         self.testapp.get('/rest/services/all/SearchServer', params={'searchText': 'this is a text with exactly 11 words, should NOT work', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=400)
         self.testapp.get('/rest/services/all/SearchServer', params={'searchText': 'this is a text with exactly 11 words, should NOT work', 'type': 'layers', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=400)
+
+    def test_search_with_keyword(self):
+        params = {'searchText': 'address moutier', 'type': 'locations', 'limit': '1'}
+        resp = self.testapp.get(self.search_uri, params=params, status=200)
+        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'moutier')

@@ -104,12 +104,12 @@ class Search(SearchValidation):
         if len(searchList) != 0:
             try:
                 temp = self.sphinx.Query(searchTextFinal, index='{}_locations'.format(self.portalName))
-            except IOError:
+            except IOError:  # pragma: no cover
                 raise exc.HTTPGatewayTimeout()
             temp = temp['matches'] if temp is not None else temp
-        else:
+        else:  # pragma: no cover
             temp = []
-        if temp is not None and len(temp) != 0:
+        if temp is not None and len(temp) > 0:
             self._parse_location_results(temp)
 
     def _layer_search(self):
@@ -121,7 +121,7 @@ class Search(SearchValidation):
         searchText = self._query_fields('@(layer,label)')
         try:
             temp = self.sphinx.Query(searchText, index=index_name)
-        except IOError:
+        except IOError:  # pragma: no cover
             raise exc.HTTPGatewayTimeout()
         temp = temp['matches'] if temp is not None else temp
         if temp is not None and len(temp) != 0:
@@ -142,37 +142,6 @@ class Search(SearchValidation):
                 )[:-len(' | ')]
             return quadSearch
         return ''
-
-    def _get_time_filter(self):
-        self._check_timeparameters()
-        years = []
-        t = None
-        timeInterval = re.search(r'((\b\d{4})-(\d{4}\b))', ' '.join(self.searchText)) or False
-        # search for year with getparameter timeInstant=2010
-        if self.timeInstant is not None:
-            years = [self.timeInstant]
-            t = 'instant'
-        elif self.timeStamps is not None:
-            years = self.timeStamps
-            t = 'layers'
-        # search for year interval with searchText Pattern .*YYYY-YYYY.*
-        elif timeInterval:
-            numbers = [timeInterval.group(2), timeInterval.group(3)]
-            start = min(numbers)
-            stop = max(numbers)
-            # remove time intervall from searchtext
-            self.searchText.remove(timeInterval.group(1))
-            if min != max:
-                t = 'range'
-                years = [start, stop]
-        return {
-            'type': t,
-            'years': years
-        }
-
-    def _check_timeparameters(self):
-        if self.timeInstant is not None and self.timeStamps is not None:
-            raise exc.HTTPBadRequest('You are not allowed to mix timeStamps and timeInstant parameters')
 
     def _get_geoanchor_from_bbox(self):
         centerX = (self.bbox[2] + self.bbox[0]) / 2
@@ -213,19 +182,6 @@ class Search(SearchValidation):
 
         return finalQuery
 
-    def _origin_to_layerbodid(self, origin):
-        origins2LayerBodId = {
-            'zipcode': 'ch.swisstopo-vd.ortschaftenverzeichnis_plz',
-            'gg25': 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill',
-            'district': 'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill',
-            'kantone': 'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill',
-            'address': 'ch.bfs.gebaeude_wohnungs_register'
-        }
-        if origin in origins2LayerBodId:
-            return origins2LayerBodId[origin]
-        else:
-            return None
-
     def _origins_to_ranks(self, origins):
         try:
             ranks = [self.originsToRanks[origin] for origin in origins]
@@ -242,27 +198,13 @@ class Search(SearchValidation):
                 # As one cannot apply filters on string attributes, we use the rank information
                 self.sphinx.SetFilter('rank', self._origins_to_ranks(['parcel']))
                 del self.searchText[0]
-            elif firstWord in ADDRESS_KEYWORDS:
+            if firstWord in ADDRESS_KEYWORDS:
                 self.sphinx.SetFilter('rank', self._origins_to_ranks(self.addressOrigins))
                 del self.searchText[0]
 
     def _filter_locations_by_origins(self):
         ranks = self._origins_to_ranks(self.origins)
         self.sphinx.SetFilter('rank', ranks)
-
-    def _add_feature_queries(self, queryText, timeFilter):
-        i = 0
-        for index in self.featureIndexes:
-            self.sphinx.ResetFiltersOnly()
-            if timeFilter and self.timeEnabled is not None and self.timeEnabled[i]:
-                if timeFilter['type'] == 'instant':
-                    self.sphinx.SetFilter('year', timeFilter['years'])
-                elif timeFilter['type'] == 'layers' and timeFilter['years'][i] is not None:
-                    self.sphinx.SetFilter('year', [timeFilter['years'][i]])
-                elif timeFilter['type'] == 'range':
-                    self.sphinx.SetFilterRange('year', int(min(timeFilter['years'])), int(max(timeFilter['years'])))
-            i += 1
-            self.sphinx.AddQuery(queryText, index=str(index))
 
     def _parse_address(self, res):
         if not self.returnGeometry:
@@ -275,13 +217,6 @@ class Search(SearchValidation):
         nb_address = 0
         for res in results:
             origin = res['attrs']['origin']
-            layerBodId = self._origin_to_layerbodid(origin)
-            if layerBodId is not None:
-                res['attrs']['layerBodId'] = layerBodId
-                res['attrs']['featureId'] = res['attrs']['feature_id']
-            else:
-                res['attrs'].pop('layerBodId', None)
-            res['attrs'].pop('feature_id', None)
             if origin in self.addressOrigins:
                 if nb_address < self.LOCATION_LIMIT:
                     if not self.bbox or self._bbox_intersection(self.bbox, res['attrs']['geom_st_box2d']):
@@ -292,22 +227,6 @@ class Search(SearchValidation):
                 if not self.bbox or self._bbox_intersection(self.bbox, res['attrs']['geom_st_box2d']):
                     self.results['results'].append(res)
 
-    def _parse_feature_results(self, results):
-        for i in range(0, len(results)):
-            if 'error' in results[i]:
-                if results[i]['error'] != '':
-                    raise exc.HTTPNotFound(results[i]['error'])
-            if results[i] is not None and 'matches' in results[i]:
-                # Add results to the list
-                for res in results[i]['matches']:
-                    if 'feature_id' in res['attrs']:
-                        res['attrs']['featureId'] = res['attrs']['feature_id']
-                    if self.typeInfo == 'featuresearch' or not self.bbox or \
-                            self._bbox_intersection(self.bbox, res['attrs']['geom_st_box2d']):
-                        if res['attrs']['layer'] == 'ch.bfs.gebaeude_wohnungs_register':
-                            res['attrs'] = self._parse_address(res['attrs'])
-                        self.results['results'].append(res)
-
     def _get_quad_index(self):
         try:
             quadindex = self.quadtree\
@@ -317,7 +236,7 @@ class Search(SearchValidation):
                              self.bbox[2],
                              self.bbox[3]))
             self.quadindex = quadindex if quadindex != '' else None
-        except ValueError:
+        except ValueError:  # pragma: no cover
             self.quadindex = None
 
     def _bbox_intersection(self, ref, result):

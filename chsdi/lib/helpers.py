@@ -102,35 +102,38 @@ def format_search_text(input_str):
 def remove_accents(input_str):
     if input_str is None:
         return input_str
-    input_str = input_str.replace('ü', 'ue')\
-        .replace('Ü', 'ue')\
-        .replace('ä', 'ae')\
-        .replace('Ä', 'ae')\
-        .replace('ö', 'oe')\
-        .replace('Ö', 'oe')
+    input_str = input_str.translate(str.maketrans({
+        'Ü': 'ue',
+        'ä': 'ae',
+        'Ä': 'ae',
+        'ö': 'oe',
+        'Ö': 'oe',
+        'ü': 'ue',
+    }))
     return ''.join(c for c in unicodedata.normalize('NFD', input_str) if unicodedata.category(c) != 'Mn')
 
 
 def escape_sphinx_syntax(input_str):
     if input_str is None:
         return input_str
-    input_str = input_str.replace('|', '\\|')\
-        .replace('!', '\\!')\
-        .replace('@', '\\@')\
-        .replace('&', '\\&')\
-        .replace('~', '\\~')\
-        .replace('^', '\\^')\
-        .replace('=', '\\=')\
-        .replace('/', '\\/')\
-        .replace('(', '\\(')\
-        .replace(')', '\\)')\
-        .replace(']', '\\]')\
-        .replace('[', '\\[')\
-        .replace('*', '\\*')\
-        .replace('<', '\\<')\
-        .replace('$', '\\$')\
-        .replace('"', '\"')
-    return input_str
+    return input_str.translate(str.maketrans({
+        '|': r'\|',
+        '!': r'\!',
+        '@': r'\@',
+        '&': r'\&',
+        '~': r'\~',
+        '^': r'\^',
+        '=': r'\=',
+        '/': r'\/',
+        '(': r'\(',
+        ')': r'\)',
+        ']': r'\]',
+        '[': r'\[',
+        '*': r'\*',
+        '<': r'\<',
+        '$': r'\$',
+        '"': r'\"',
+    }))
 
 
 def format_query(model, value):

@@ -35,7 +35,7 @@ def _make_qrcode_img(url):
         output = BytesIO()
         img = qr.make_image()
         img.save(output)
-    except:
+    except:  # pragma: no cover
         raise HTTPBadRequest('An error occured during the qrcode generation')
     return output.getvalue()
 
@@ -47,5 +47,5 @@ def _shorten_url(request, url):
         resp = json.loads(resp.text)
         url = resp['shorturl']
         return url
-    except:
+    except:  # pragma: no cover
         return url

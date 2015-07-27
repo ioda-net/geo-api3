@@ -369,32 +369,3 @@ def _process_feature(feature, params):
         layerBodId = f.get('layerBodId')
         f['layerName'] = params.translate(layerBodId)
     return f
-
-
-@view_config(route_name='releases', renderer='geojson')
-def releases(request):
-    params = _get_releases_params(request)
-    # For this sevice, we have to use different models based
-    # on specially sorted views. We add the _meta part to the given
-    # layer name
-    # Note that only zeitreihen is currently supported for this service
-    models = models_from_name(params.layer + '_meta')
-    if models is None:
-        raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layer)
-
-    # Default timestamp
-    timestamps = []
-
-    for f in _get_features_for_filters(params, [models]):
-        if hasattr(f, 'release_year') and f.release_year is not None:
-            for x in f.release_year:
-                timestamps.append(str(x))
-    if len(timestamps) > 0:
-        # remove duplicates
-        timestamps = list(set(timestamps))
-        # add day to have full timestamp
-        timestamps = sorted([int(ts + '1231') for ts in timestamps])
-        # transform back to string
-        timestamps = [str(ts) for ts in timestamps]
-
-    return {'results': timestamps}

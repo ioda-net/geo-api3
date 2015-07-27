@@ -52,17 +52,11 @@ def main(global_config, **settings):
 
     # route definitions
     config.add_route('ogcproxy', '/ogcproxy')
-    config.add_route('dev', '/dev')
-    config.add_route('ga_api', '/loader.js')
-    config.add_route('testi18n', '/testi18n')
     config.add_route('identify', '/rest/services/{map}/MapServer/identify')
     config.add_route('find', '/rest/services/{map}/MapServer/find')
     config.add_route('attribute_values', '/rest/services/{map}/MapServer/{layerId}/attributes/{attribute}')
-    config.add_route('releases', '/rest/services/{map}/MapServer/{layerId}/releases')
     config.add_route('featureAttributes', '/rest/services/{map}/MapServer/{layerId}')
     config.add_route('feature', '/rest/services/{map}/MapServer/{layerId}/{featureId}')
-    config.add_route('htmlPopup', '/rest/services/{map}/MapServer/{layerId}/{featureId}/htmlPopup')
-    config.add_route('extendedHtmlPopup', '/rest/services/{map}/MapServer/{layerId}/{featureId}/extendedHtmlPopup')
     config.add_route('search', '/rest/services/{map}/SearchServer')
     config.add_route('profile_json', '/rest/services/profile.json')
     config.add_route('profile_csv', '/rest/services/profile.csv')
@@ -71,17 +65,10 @@ def main(global_config, **settings):
     config.add_route('owschecker_bykvp', '/owschecker/bykvp')
     config.add_route('owschecker_form', '/owschecker/form')
     config.add_route('qrcodegenerator', '/qrcodegenerator')
-    config.add_route('luftbilder', '/luftbilder/viewer.html')
     config.add_route('checker', '/checker')
-    config.add_route('checker_dev', '/checker_dev')
-    config.add_route('downloadkml', '/downloadkml')
     config.add_route('files_collection', '/files')
     config.add_route('files', '/files/{id}')
     config.add_route('communes', '/communes')
-
-    # Some views for specific routes
-    config.add_view(route_name='dev', renderer='chsdi:templates/index.mako')
-    config.add_view(route_name='testi18n', renderer='chsdi:templates/testi18n.mako')
 
     # Shortener
     config.add_route('shorten', '/shorten.json')

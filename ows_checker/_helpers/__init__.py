@@ -23,7 +23,7 @@ class ResponseDict(dict):
     True
 
     @ivar checker: Name der Methode
-    @type checker: str, unicode
+    @type checker: str, bytes
     @ivar results: Resultat(e)
     @type results: list
     @ivar status: Status der Überprüfung
@@ -36,22 +36,22 @@ class ResponseDict(dict):
     def __init__(self, checker, results, status, hints = False):
         """
         @param checker: Name der Methode
-        @type checker: str, unicode, list
+        @type checker: str, bytes, list
         @param results: Resultat(e)
-        @type results: str, unicode, list
+        @type results: str, bytes, list
         @param status: Status der Überprüfung
         @type status: bool
         @param hints: Optionale Hinweise bezüglich Richtlinie(n)
-        @type hints: str, unicode, list
+        @type hints: str, bytes, list
         """
         self.hints = hints
 
-        if isinstance(checker, (str, unicode)):
+        if isinstance(checker, (str, bytes)):
             self.checker = checker
         else:
             raise ValueError("Es muss ein String für Checker übergeben werden")
 
-        if isinstance(results, (str, unicode)):
+        if isinstance(results, (str, bytes)):
             self.results = [results]
         elif isinstance(results, list):
             self.results = results
@@ -64,8 +64,8 @@ class ResponseDict(dict):
             raise ValueError(u"Es muss ein Boolean für Status übergeben werden")
 
         if self.hints:
-            if isinstance(hints, (str, unicode)):
-                self.hints = [unicode(hints)]
+            if isinstance(hints, (str)):
+                self.hints = [(hints.encode('utf-8'))]
             elif isinstance(hints, list):
                 self.hints = hints
 

@@ -12,14 +12,12 @@ performs the eCH-0056 Version 2.0 validation.
 
 from pprint import pprint
 
-# Globale Abhängigkeiten
 import re, urllib, os, socket, random, datetime
 import xml.dom.minidom as dom
 import xml.parsers.expat
 from urllib.error import HTTPError, URLError
 from lxml import etree
 
-# Interne Anhängigkeiten
 from ows_checker._helpers import xml2dict, ResponseDict, URL2File, object_dict, dict2list, URL2XML2Dict
 from ows_checker._helpers import _ns, _b, _filterkey, _value, _removeCharsetFromMime, unify
 import ows_checker.messages as _m
@@ -141,7 +139,7 @@ class OWSCheck(object):
         :param bool restful: If True, no KVP will be used
         """
 
-        if isinstance(base_url, (str, unicode)) and isinstance(service, (str, unicode)):
+        if isinstance(base_url, (str, bytes)) and isinstance(service, (str, bytes)):
             self.base_url = base_url
             self.service = service.upper()
             if version:
@@ -152,7 +150,7 @@ class OWSCheck(object):
             self.version = version
             self.version_requested = version
         else:
-            raise ValueError("base_url, service must be string or unicode")
+            raise ValueError("base_url, service must be string or bytes")
 
         # Variablen (VOR WORKFLOW)
         self.cwd = cwd
@@ -499,7 +497,7 @@ class OWSCheck(object):
             """
             ssp = False
 
-        kvp = urllib.urlencode(data)
+        kvp = urllib.parse.urlencode(data)
         if swapcases:
             kvp = kvp.swapcase()
 
@@ -609,7 +607,7 @@ class OWSCheck(object):
             failed_rili = []
             for i, checker in self.results_overview.items():
                 rili = checker['name']
-                if checker.has_key('rili'):
+                if 'rili' in checker:
                     for nr, results in checker['rili'].items():
                         if nr < 10:
                             nr = "0" + str(nr)
@@ -767,7 +765,7 @@ class OWSCheck(object):
         Checks an expected `header` of a resource (given by an `url`) and returns
         a `tuple (equal, detected header of url)`.
 
-        Uses :py:func:`info() <urllib2.urlopen>` and :py:func:`mimetools.Message.gettype` to detect the mime type.
+        Uses :py:func:`info() <urllib2.urlopen>` and :py:func:`mimetools.Message.get_content_type` to detect the mime type.
 
         Example:
 
@@ -801,7 +799,7 @@ class OWSCheck(object):
         try:
             f = URL2File(url, auth=self.auth)
             info = f.info()
-            _type = info.gettype()
+            _type = info.get_content_type()
             equal = _type in head
             f.close()
             return equal, _type
@@ -830,7 +828,7 @@ class OWSCheck(object):
             rili = _ns(ref_settings.rili)
 
             if  ref_status == 'must':
-                if ref_settings.has_key("dim"):
+                if 'dim' in ref_settings:
                     crs_3d_must[rili] = ref_value
                 else:
                     crs_must[rili] = ref_value
@@ -839,7 +837,7 @@ class OWSCheck(object):
                 crs_mustnot[rili] = ref_value
 
             elif ref_status == 'optional':
-                if ref_settings.has_key("dim"):
+                if 'dim' in ref_settings:
                     crs_3d_optional[rili] = ref_value
                 else:
                     crs_optional[rili] = ref_value
@@ -1144,7 +1142,7 @@ class OWSCheck(object):
             f = URL2File(req_url)
 
             # Dateiheader
-            header = f.info().gettype()
+            header = f.info().get_content_type()
             results.append(header)
             hints.append("ALLG-03")
             status = True
@@ -1268,12 +1266,12 @@ class OWSCheck(object):
                 hints.append("ALLG-03")
                 self.gc_file_info = gc_file.info()
                 self.tree = dom.parse(gc_file)
-                results.append(self.gc_file_info.gettype())
-                if "xml" not in gc_file.info().gettype():
-                    msg = "Returned files is not an XML file: %s" %(gc_file.info().gettype())
+                results.append(self.gc_file_info.get_content_type())
+                if "xml" not in gc_file.info().get_content_type():
+                    msg = "Returned files is not an XML file: %s" %(gc_file.info().get_content_type())
                     results.append(msg)
                     self.setResultsOverview("Status", False, msg)
-                    return ResponseDict("_base_GetCapHandler", gc_file.info().gettype(), False)
+                    return ResponseDict("_base_GetCapHandler", gc_file.info().get_content_type(), False)
 
                 for node in self.tree.childNodes:
                     if node.nodeType == dom.Node.ELEMENT_NODE:
@@ -1344,18 +1342,18 @@ class OWSCheck(object):
             self.setResultsOverview("Status", False, ex_msg)
 
         if self.gc_dict:
-            if self.gc_dict.has_key('ServiceExceptionReport') or self.gc_dict.has_key('ExceptionReport'):
+            if 'ServiceExceptionReport' in self.gc_dict or 'ExceptionReport' in self.gc_dict:
                 exceptionmsg = "(no exception msg)"
                 status = False
                 value = ""
-                if self.gc_dict.has_key('ServiceExceptionReport'):
+                if 'ServiceExceptionReport' in self.gc_dict:
                     code = self.gc_dict.ServiceExceptionReport
-                    if code.has_key('ServiceException'):
+                    if 'ServiceException' in code:
                         value = _value(code.ServiceException)
                     else:
                         value = 'No ServiceException found'
 
-                elif self.gc_dict.has_key('ExceptionReport'):
+                elif 'ExceptionReport' in self.gc_dict:
                     try:
                         code = self.gc_dict.ExceptionReport.Exception.exceptionCode
                         value = self.gc_dict.ExceptionReport.Exception.ExceptionText.value
@@ -1433,8 +1431,8 @@ class OWSCheck(object):
                     if gc is None:
                         continue
 
-                    if gc.has_key(way):
-                        gc = getattr(gc, way)
+                    if way in gc:
+                        gc = gc[way]
                         msg = "Way found: %s" %(way)
 
                         if way == node.split('.')[-1]:
@@ -1521,18 +1519,18 @@ class OWSCheck(object):
         results = []
 
         # nur WMS <= 1.1.1
-        if self.gc_dict.has_key('WMT_MS_Capabilities'):
+        if 'WMT_MS_Capabilities' in self.gc_dict:
             v = _ns(self.gc_dict.WMT_MS_Capabilities.version)
             r = 'WMT_MS_Capabilities'
 
 
         # z.B. WMS_Capabilities
-        elif self.gc_dict.has_key(key):
+        elif key in self.gc_dict:
             v = _ns(self.gc_dict[key].version)
             r = key
 
         # z.B. Capabilities (i.d.R. OWS Common)
-        elif self.gc_dict.has_key('Capabilities'):
+        elif 'Capabilities' in self.gc_dict:
             v = _ns(self.gc_dict.Capabilities.version)
             r = 'Capabilities'
 
@@ -1621,7 +1619,7 @@ class OWSCheck(object):
         results = [ows_url]
 
         # Ursprüngliche, "korrekte" Headerinformationen
-        typeheader_no_swap = self.gc_file_info.gettype()
+        typeheader_no_swap = self.gc_file_info.get_content_type()
 
         # Compare Headerinformations
         header_status = False
@@ -1699,9 +1697,9 @@ class OWSCheck(object):
                         try:
                             wms = dict2list(self.ssxml.WMS)
                             for w in wms:
-                                if w.has_key('GetFeatureInfo'):
+                                if 'GetFeatureInfo' in w:
                                     features = dict2list(w.GetFeatureInfo.Feature)
-                                if w.has_key('Layers'):
+                                if 'Layers' in w:
                                     layers_in_ssxml = dict2list(w.Layers.Layer)
 
                             for feat in features:
@@ -1898,32 +1896,6 @@ class OWSCheck(object):
         Suche in Operation.Parameter(name=Language).Value
         """
         # Get the Service Operations (same as in meta_ServiceOperations)
-        """
-        if self.ows_common:
-            #OWS_Common Workaround
-            service_ops = dict2list(self.gc_xmlroot.OperationsMetadata.Operation)
-        else:
-            service_ops = dict2list(self.gc_xmlroot.Capability.Request)
-
-        #if DEBUG: print service_ops
-        langs_in_param_found = []
-        for operation in service_ops:
-            if not operation.has_key('Parameter'):
-                continue
-            else:
-                params = dict2list(operation.Parameter)
-                for param in params:
-                    if "language" == param.name.lower():
-                        for lang in dict2list(param.Value):
-                            langs_in_param_found.append(lang.value)
-                            langs_found.append(lang.value)
-
-        if len(langs_in_param_found):
-            self.setResultsOverview("LANG-02", True, "Found following languages: " + ', '.join(langs_in_param_found))
-        else:
-            self.setResultsOverview("LANG-02", False, "Found no languages in Parameters")
-
-        """
 
         """
         By URL-naming
@@ -2128,7 +2100,7 @@ class OWSCheck(object):
             try:
                 xml = xmldict.fromstring(f.read())
                 # Check Mime-Type here
-                root = xml.keys()[0]
+                root = next(iter(xml.keys()))
                 current_gc_version = int(xml[root].version.replace('.', ''))
                 results.append("Checking for version %s - got version %s" %(_ns(version_in_settings),
                                                                         xml[root].version))
@@ -2250,7 +2222,7 @@ class OWSCheck(object):
             mime = [mime]
         # Beginn der Überprüfung
         try:
-            header = self.gc_file_info.gettype()
+            header = self.gc_file_info.get_content_type()
             status = (header in mime) and (header in settings)
             service = self.service
             mt = header
@@ -2348,46 +2320,46 @@ class OWSCheck(object):
 
         if support_selfdecription:
             if self.service.upper() == 'WCS' and self.version == '1.0.0':
-                if self.gc_xmlroot.has_key('Service'):
-                    if self.gc_xmlroot.Service.has_key('responsibleParty'):
+                if 'Service' in self.gc_xmlroot:
+                    if 'responsibleParty' in self.gc_xmlroot.Service:
                         S = self.gc_xmlroot.Service.responsibleParty
-                        if not S.has_key('organisationName') or not checkEmpty(S, 'organisationName'):
+                        if 'organisationName' not in S or not checkEmpty(S, 'organisationName'):
                             not_found.append("'organisationName'")
-                        if S.has_key('contactInfo'):
-                            if S.contactInfo.has_key('address'):
-                                #print S.contactInfo.electronicMailAddress
-                                if not S.contactInfo.address.has_key('electronicMailAddress') or not checkEmpty(S.contactInfo.address, 'electronicMailAddress'):
+                        if 'contactInfo' in S:
+                            if 'address' in S.contactInfo:
+                                if 'electronicMailAddress' not in S.contactInfo.address or not checkEmpty(S.contactInfo.address, 'electronicMailAddress'):
                                     not_found.append("'electronicMailAddress'")
 
                             else:
                                 not_found.append("'address'")
-                            if not (S.contactInfo.has_key('onlineResource') or checkEmpty(S.contactInfo, 'onlineResource')):
+                            if not ('onlineResource' in S.contactInfo or checkEmpty(S.contactInfo, 'onlineResource')):
                                 not_found.append("'onlineResource'")
                         else:
                             not_found.append("'contactInfo'")
                     else:
                         not_found.append("'responsibleParty'")
 
-                    if not self.gc_xmlroot.Service.has_key('fees') or not checkEmpty(self.gc_xmlroot.Service, 'fees'):
+                    if 'fees' not in self.gc_xmlroot.Service or not checkEmpty(self.gc_xmlroot.Service, 'fees'):
                         not_found.append("'fees'")
-                    if not self.gc_xmlroot.Service.has_key('accessConstraints') or not checkEmpty(self.gc_xmlroot.Service, 'accessConstraints'):
+                    if 'accessConstraints' not in self.gc_xmlroot.Service or not checkEmpty(self.gc_xmlroot.Service, 'accessConstraints'):
                         not_found.append("'accessConstraints'")
-                    if not self.gc_xmlroot.Service.has_key('label') or not checkEmpty(self.gc_xmlroot.Service, 'label'):
+                    if 'label' not in self.gc_xmlroot.Service or not checkEmpty(self.gc_xmlroot.Service, 'label'):
                         not_found.append("'label'")
-                    if not self.gc_xmlroot.Service.has_key('description') or not checkEmpty(self.gc_xmlroot.Service, 'description'):
+                    if 'description' not in self.gc_xmlroot.Service or not checkEmpty(self.gc_xmlroot.Service, 'description'):
                         not_found.append("'description'")
                 else:
                     not_found.append("'Service'")
 
             else:
                 if self.ows_common:
-                    if self.gc_xmlroot.has_key('ServiceProvider'):
+                    if 'ServiceProvider' in self.gc_xmlroot:
                         SP = self.gc_xmlroot.ServiceProvider
-                        if not SP.has_key('ProviderName') or not checkEmpty(SP, 'ProviderName'): not_found.append("'ProviderName'")
-                        if SP.has_key('ServiceContact'):
-                            if SP.ServiceContact.has_key('ContactInfo'):
+                        if 'ProviderName' not in SP or not checkEmpty(SP, 'ProviderName'):
+                            not_found.append("'ProviderName'")
+                        if 'ServiceContact' in SP:
+                            if 'ContactInfo' in SP.ServiceContact:
                                 if SP.ServiceContact.ContactInfo.Address:
-                                    if not SP.ServiceContact.ContactInfo.Address.has_key('ElectronicMailAddress') or not checkEmpty(SP.ServiceContact.ContactInfo.Address, 'ElectronicMailAddress'):
+                                    if 'ElectronicMailAddress' not in SP.ServiceContact.ContactInfo.Address or not checkEmpty(SP.ServiceContact.ContactInfo.Address, 'ElectronicMailAddress'):
                                         not_found.append("'ElectronicMailAddress'")
                                 else:
                                     not_found.append("'ElectronicMailAddress'")
@@ -2398,37 +2370,37 @@ class OWSCheck(object):
                     else:
                         not_found.append("'ServiceProvider'")
 
-                    if self.gc_xmlroot.has_key('ServiceIdentification'):
+                    if 'ServiceIdentification' in self.gc_xmlroot:
                         SI = self.gc_xmlroot.ServiceIdentification
-                        if not SI.has_key('AccessConstraints') or not checkEmpty(SI, 'AccessConstraints'):
+                        if 'AccessConstraints' not in SI or not checkEmpty(SI, 'AccessConstraints'):
                             not_found.append("'AccessConstraints'")
-                        if not SI.has_key('Title') or not checkEmpty(SI, 'Title'):
+                        if 'Title' not in SI or not checkEmpty(SI, 'Title'):
                             not_found.append("'Title'")
-                        if not SI.has_key('Abstract') or not checkEmpty(SI, 'Abstract'):
+                        if 'Abstract' not in SI or not checkEmpty(SI, 'Abstract'):
                             not_found.append("'Abstract'")
-                        if not SI.has_key('Fees') or not checkEmpty(SI, 'Fees'):
+                        if 'Fees' not in SI or not checkEmpty(SI, 'Fees'):
                             not_found.append("'Fees'")
                     else:
                         not_found.append("'ServiceIdentification'")
 
                 else:
-                    if self.gc_xmlroot.has_key('Service'):
+                    if 'Service' in self.gc_xmlroot:
                         S = self.gc_xmlroot.Service
-                        if not S.has_key('Name') or not checkEmpty(S, 'Name'): not_found.append("'Name'")
-                        if not S.has_key('Title') or not checkEmpty(S, 'Title'): not_found.append("'Title'")
-                        if not S.has_key('Abstract') or not checkEmpty(S, 'Abstract'): not_found.append("'Abstract'")
-                        if not S.has_key('Fees') or not checkEmpty(S, 'Fees'): not_found.append("'Fees'")
-                        if not S.has_key('AccessConstraints') or not checkEmpty(S, 'AccessConstraints'): not_found.append("'AccessConstraints'")
-                        if S.has_key('OnlineResource'):
-                           if S.OnlineResource.has_key('href'):
+                        if 'Name' not in S or not checkEmpty(S, 'Name'): not_found.append("'Name'")
+                        if 'Title' not in S or not checkEmpty(S, 'Title'): not_found.append("'Title'")
+                        if 'Abstract' not in S or not checkEmpty(S, 'Abstract'): not_found.append("'Abstract'")
+                        if 'Fees' not in S or not checkEmpty(S, 'Fees'): not_found.append("'Fees'")
+                        if 'AccessConstraints' not in S or not checkEmpty(S, 'AccessConstraints'): not_found.append("'AccessConstraints'")
+                        if 'OnlineResource' in S:
+                           if 'href' in S.OnlineResource:
                                if not checkEmpty(S.OnlineResource, 'href'):
                                    not_found.append("'OnlineResource'")
                         else:
                            not_found.append("'OnlineResource'")
                         if not self.service == "WFS" and self.version == "1.0.0":
-                            if not S.has_key('ContactInformation') or not checkEmpty(S, 'ContactInformation'): not_found.append("'ContactInformation'")
-                            if not S.has_key('ContactOrganization') or not checkEmpty(S, 'ContactOrganization'): not_found.append("'ContactOrganization'")
-                            if not S.has_key('ContactElectronicMailAddress') or not checkEmpty(S, 'ContactElectronicMailAddress'): not_found.append("'ContactElectronicMailAddress'")
+                            if 'ContactInformation' not in S or not checkEmpty(S, 'ContactInformation'): not_found.append("'ContactInformation'")
+                            if 'ContactOrganization' not in S or not checkEmpty(S, 'ContactOrganization'): not_found.append("'ContactOrganization'")
+                            if 'ContactElectronicMailAddress' not in S or not checkEmpty(S, 'ContactElectronicMailAddress'): not_found.append("'ContactElectronicMailAddress'")
 
                     else:
                         not_found.append("'Service'")
@@ -2821,19 +2793,19 @@ class OWSCheck(object):
 
         status_vsc = False
 
-        if self.gc_by_versions.has_key('1.1.1'):
+        if '1.1.1' in self.gc_by_versions:
             # WMS Version 1.1.1
-            if self.gc_xmlroot.Capability.has_key('VendorSpecificCapabilities'):
+            if 'VendorSpecificCapabilities' in self.gc_xmlroot.Capability:
                 if DEBUG: print(self.gc_xmlroot.Capability.VendorSpecificCapabilities)
-                if self.gc_xmlroot.Capability.VendorSpecificCapabilities.has_key('ExternalServiceMetadata'):
+                if 'ExternalServiceMetadata' in self.gc_xmlroot.Capability.VendorSpecificCapabilities:
                     status_vsc = True
                     msg = "Found VendorSpecificCapabilities.ExternalServiceMetadata"
 
-        elif self.gc_by_versions.has_key('1.3.0'):
+        elif '1.3.0' in self.gc_by_versions:
             # WMS Version 1.3.0
-            if self.gc_by_versions['1.3.0'].Capability.has_key('ExtendedCapabilities'):
+            if 'ExtendedCapabilities' in self.gc_by_versions['1.3.0'].Capability:
                 if DEBUG: print(self.gc_xmlroot.ExtendedCapabilities)
-                if self.gc_xmlroot.Capability.ExtendedCapabilities.has_key('ExternalServiceMetadata'):
+                if 'ExternalServiceMetadata' in self.gc_xmlroot.Capability.ExtendedCapabilities:
                     status_vsc = True
                     msg = "Found ExtendedCapabilities.ExternalServiceMetadata"
 
@@ -2850,7 +2822,7 @@ class OWSCheck(object):
         a = 0
         b = []
         if isinstance(l0, dict):
-            if l0.has_key('Layer'):
+            if 'Layer' in l0:
                 if isinstance(l0.Layer, dict):
                     layers.append(l0.Layer)
                     a += 1
@@ -2974,16 +2946,16 @@ class OWSCheck(object):
                 continue
 
             #Comment the next two lines out to check the "container" layer
-            if layer.has_key('Layer') and not layer.has_key('Name'):
+            if 'Layer' in layer and 'Name' not in layer:
                 continue
 
-            if not layer.has_key('Name'):
+            if 'Name' not in layer:
                 name = "unnamed"
             else:
                 name = _ns(layer.Name)
 
             number_layers += 1
-            if layer.has_key('Style'):
+            if 'Style' in layer:
                 # layer_style_name i.d.R. default
                 try:
                     layer_style_name = [_ns(style.Name) for style in _ns(layer.Style)]
@@ -3049,13 +3021,13 @@ class OWSCheck(object):
 
             if not isinstance(layer, dict):
                 continue
-            if not layer.has_key('Name'):
+            if 'Name' not in layer:
                 name = "unnamed"
             else:
                 name = _ns(layer.Name)
 
             #Comment the next two lines out to check the "container" layer
-            if layer.has_key('Layer') and not layer.has_key('Name'):
+            if 'Layer' in layer and 'Name' not in layer:
                 continue
 
             try:
@@ -3196,19 +3168,19 @@ class OWSCheck(object):
             """
             Supports ``CRS`` and ``SRS``.
             """
-            if hasattr(layer, 'has_key'):
-                if layer.has_key('SRS'):
+            if hasattr(layer, '__contains__'):
+                if 'SRS' in layer:
                     return _value(layer.SRS)
-                elif layer.has_key('CRS'):
+                elif 'CRS' in layer:
                     return _value(layer.CRS)
             if DEBUG: print("getCRS4Layer layer=", layer)
             return []
 
         for layer in gc_layer:
             srs_all += getCRS4Layer(layer)
-            if not hasattr(layer, 'has_key'):
+            if not hasattr(layer, '__contains__'):
                 continue
-            if layer.has_key('Layer'):
+            if 'Layer' in layer:
                 for sublayer in dict2list(layer.Layer):
                     srs_all += getCRS4Layer(sublayer)
 
@@ -3271,7 +3243,7 @@ class OWSCheck(object):
 
         for format in _ns(self.service_settings.Operations.GetMap.Format):
             for layer in self.gc_layers:
-                if layer.has_key('Layer'):
+                if 'Layer' in layer:
                       layer_list = dict2list(layer.Layer)
                 else:
                     layer_list = self.gc_layers
@@ -3279,7 +3251,7 @@ class OWSCheck(object):
             for layer in layer_list:
                 try:
                     for lbbox in dict2list(layer.BoundingBox):
-                        if lbbox.has_key('SRS'):
+                        if 'SRS' in lbbox:
                             bbox_crs = lbbox.SRS
                         else:
                             bbox_crs = lbbox.CRS
@@ -3383,7 +3355,7 @@ class OWSCheck(object):
         except KeyError:
             sld_settings = None
 
-        if sld_settings and self.gc_by_versions.has_key('1.3.0'):
+        if sld_settings and '1.3.0' in self.gc_by_versions:
             try:
                 schema_locations = self.gc_by_versions['1.3.0'].schemaLocation.value
                 print("schemaLocation", schema_locations)
@@ -3402,7 +3374,7 @@ class OWSCheck(object):
             self.setResultsOverview("SLD-01",sld_status, sld_results)
             self.setResultsOverview("WMS-11", sld_status, sld_results)
 
-        if not sld_status and self.gc_by_versions.has_key('1.3.0'):
+        if not sld_status and '1.3.0' in self.gc_by_versions:
             sld_results.append("WMS at Version 1.3.0: No SLD in schemaLocation found.")
 
         return ResponseDict("wms_SLD", sld_results, sld_status)
@@ -3596,9 +3568,9 @@ class OWSCheck(object):
         try:
             wms = dict2list(self.ssxml.WMS)
             for w in wms:
-                if w.has_key('GetFeatureInfo'):
+                if 'GetFeatureInfo' in w:
                     features = dict2list(w.GetFeatureInfo.Feature)
-                if w.has_key('Layers'):
+                if 'Layers' in w:
                     layers_in_ssxml = dict2list(w.Layers.Layer)
 
             for feat in features:
@@ -3675,14 +3647,14 @@ class OWSCheck(object):
             # Checking for Layers (WMS-50)
             layer_names = []
             def getSublayer(layer):
-                if isinstance(layer, dict) and layer.has_key('Name'):
+                if isinstance(layer, dict) and 'Name' in layer:
                     if (layer.Name not in layer_names) and (layer.Name):
                         return layer.Name
 
                 else:
                     if isinstance(layer, list):
                         for sublayer in layer:
-                            if sublayer.has_key('Name'):
+                            if 'Name' in sublayer:
                                 return getSublayer(sublayer)
 
 
@@ -3765,10 +3737,10 @@ class OWSCheck(object):
         v = self.version
 
         try:
-            if self.gc_by_versions.has_key('1.1.0'):
+            if '1.1.0' in self.gc_by_versions:
                 root = self.gc_by_versions['1.1.0'].FeatureTypeList.FeatureType
                 v = "1.1.0"
-            elif self.gc_by_versions.has_key('1.0.0'):
+            elif '1.0.0' in self.gc_by_versions:
                 root = self.gc_by_versions['1.0.0'].FeatureTypeList.FeatureType
                 v = "1.0.0"
             else:
@@ -3778,13 +3750,13 @@ class OWSCheck(object):
                 root = [root]
 
             for ft in root:
-                if ft.has_key("SRS"):
+                if "SRS" in ft:
                     srs_all.append(ft.SRS.value)
-                elif ft.has_key("CRS"):
+                elif "CRS" in ft:
                     srs_all.append(ft.SRS.value)
-                elif ft.has_key("DefaultSRS"):
+                elif "DefaultSRS" in ft:
                     srs_all.append(ft.DefaultSRS.value)
-                if ft.has_key("OtherSRS"):
+                if "OtherSRS" in ft:
                     if type(_ns(ft.OtherSRS)) is list and len(_ns(ft.OtherSRS)) > 1:
                         for x in range(len(_ns(ft.OtherSRS))):
                             srs_all.append(_ns(ft.OtherSRS)[x].value)
@@ -3840,7 +3812,7 @@ class OWSCheck(object):
             ftl = dict2list(self.gc_xmlroot.FeatureTypeList.FeatureType)
             for ft in ftl:
                 ft_formats = []
-                if ft.has_key("Name"):
+                if "Name" in ft:
                     ft_name = ft.Name.value
                     # Init Lists
                     found_gml[ft_name] = []
@@ -4161,9 +4133,9 @@ class OWSCheck(object):
         """
         Helper Function used in :py:meth:`wfs_ServiceMeta <ows_checker._checker.OWSCheck.wfs_ServiceMeta>`.
         """
-        if ExtendedCapabilities.has_key('ExternalDataMetadata'):
+        if 'ExternalDataMetadata' in ExtendedCapabilities:
             found_ed = True
-        if ExtendedCapabilities.has_key('ExternalServiceMetadata'):
+        if 'ExternalServiceMetadata' in ExtendedCapabilities:
             found_es = True
         return found_ed, found_es
 
@@ -4198,17 +4170,17 @@ class OWSCheck(object):
         found_es = False
         msg_ec = ""
 
-        if self.gc_dict.has_key('WFS_Capabilities'):
-            if self.gc_dict.WFS_Capabilities.has_key('Capability'):
-                found_ec = self.gc_dict.WFS_Capabilities.Capability.has_key('VendorSpecificCapabilities')
+        if 'WFS_Capabilities' in self.gc_dict:
+            if 'Capability' in self.gc_dict.WFS_Capabilities:
+                found_ec = 'VendorSpecificCapabilities' in self.gc_dict.WFS_Capabilities.Capability
                 if found_ec:
                     msg_ec = "Found Capability.VendorSpecificCapabilities!"
                     if DEBUG: print(self.gc_dict.WFS_Capabilities.Capability.VendorSpecificCapabilities)
                     found_ed, found_es = self.check_wfs_serviceMeta(self.gc_dict.WFS_Capabilities.Capability.VendorSpecificCapabilities, found_ed, found_es)
                 else:
                     msg_ec = "No Capability.ExtendedCapabilities Element found"
-            elif self.gc_dict.WFS_Capabilities.has_key('ExtendedCapabilities'):
-                found_ec = self.gc_dict.WFS_Capabilities.has_key('ExtendedCapabilities')
+            elif 'ExtendedCapabilities' in self.gc_dict.WFS_Capabilities:
+                found_ec = 'ExtendedCapabilities' in self.gc_dict.WFS_Capabilities
                 if found_ec:
                     msg_ec = "Found WFS_Capabilities.ExtendedCapabilities!"
                     if DEBUG: print(self.gc_dict.WFS_Capabilities.ExtendedCapabilities)
@@ -4219,17 +4191,17 @@ class OWSCheck(object):
             found_ec = False
             msg_ec = "No Metadata Element found"
 
-        if self.gc_dict.WFS_Capabilities.has_key('FeatureTypeList'):
-            if self.gc_dict.WFS_Capabilities.FeatureTypeList.has_key('FeatureType'):
+        if 'FeatureTypeList' in self.gc_dict.WFS_Capabilities:
+            if 'FeatureType' in self.gc_dict.WFS_Capabilities.FeatureTypeList:
                 try:
-                    if self.gc_dict.WFS_Capabilities.FeatureTypeList.FeatureType.has_key('ExtendedCapabilities'):
-                        found_ec = self.gc_dict.WFS_Capabilities.FeatureTypeList.FeatureType.has_key('ExtendedCapabilities')
+                    if 'ExtendedCapabilities' in self.gc_dict.WFS_Capabilities.FeatureTypeList.FeatureType:
+                        found_ec = 'ExtendedCapabilities' in self.gc_dict.WFS_Capabilities.FeatureTypeList.FeatureType
                         if found_ec:
                             msg_ec = "Found Featuretype.FeatureType.ExtendedCapabilities!"
                             if DEBUG: print(self.gc_dict.WFS_Capabilities.FeatureTypeList.FeatureType.ExtendedCapabilities)
                             found_ed, found_es = self.check_wfs_serviceMeta(self.gc_dict.WFS_Capabilities.FeatureTypeList.FeatureType.ExtendedCapabilities, found_ed, found_es)
-                    elif self.gc_dict.WFS_Capabilities.FeatureTypeList.FeatureType.has_key('VendorSpecificCapabilities'):
-                        found_ec = self.gc_dict.WFS_Capabilities.FeatureTypeList.FeatureType.has_key('VendorSpecificCapabilities')
+                    elif 'VendorSpecificCapabilities' in self.gc_dict.WFS_Capabilities.FeatureTypeList.FeatureType:
+                        found_ec = 'VendorSpecificCapabilities' in self.gc_dict.WFS_Capabilities.FeatureTypeList.FeatureType
                         if found_ec:
                             msg_ec = "Found Featuretype.FeatureType.VendorSpecificCapabilities!"
                             if DEBUG: print(self.gc_dict.WFS_Capabilities.FeatureTypeList.FeatureType.VendorSpecificCapabilities)
@@ -4289,18 +4261,18 @@ class OWSCheck(object):
         results = "no crs detected"
         status = False
         if self.ows_common \
-           or self.gc_by_versions.has_key('1.1.0') \
-           or self.gc_by_versions.has_key('1.1.1') \
-           or self.gc_by_versions.has_key('1.1.2'):
+           or '1.1.0' in self.gc_by_versions \
+           or '1.1.1' in self.gc_by_versions \
+           or '1.1.2' in self.gc_by_versions:
             try:
                 v = self.version
-                if self.gc_by_versions.has_key('1.1.2'):
+                if '1.1.2' in self.gc_by_versions:
                     root = self.gc_by_versions['1.1.2']
                     v = "1.1.2"
-                elif self.gc_by_versions.has_key('1.1.1'):
+                elif '1.1.1' in self.gc_by_versions:
                     root = self.gc_by_versions['1.1.1']
                     v = "1.1.1"
-                elif self.gc_by_versions.has_key('1.1.0'):
+                elif '1.1.0' in self.gc_by_versions:
                     root = self.gc_by_versions['1.1.0']
                     v = "1.1.0"
                 else:
@@ -4312,12 +4284,12 @@ class OWSCheck(object):
                         parameter = dict2list(operation.Parameter)
                         for param in parameter:
                             if _ns(param.name) == "GridBaseCRS":
-                                if param.has_key('Value'):
+                                if 'Value' in param:
                                     pvalue = param.Value
-                                elif param.has_key('value'):
+                                elif 'value' in param:
                                     pvalue = param.value
 
-                                if param.has_key('Value') or param.has_key('value'):
+                                if 'Value' in param or 'value' in param:
                                     if isinstance(pvalue, list):
                                         for val in _ns(pvalue):
                                             crs_all.append(_ns(val))

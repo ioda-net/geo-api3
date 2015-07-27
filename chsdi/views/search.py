@@ -37,6 +37,7 @@ class Search(SearchValidation):
         self.timeEnabled = request.params.get('timeEnabled')
         self.timeStamps = request.params.get('timeStamps')
         self.typeInfo = request.params.get('type')
+        self.lang = request.params.get('lang')
         self.limit = request.params.get('limit')
         self.results = {'results': []}
         self.request = request
@@ -118,16 +119,6 @@ class Search(SearchValidation):
             self._parse_location_results(temp)
 
     def _layer_search(self):
-
-        def staging_filter(staging):
-            ret = '@staging prod'
-            if staging == 'integration' or staging == 'test':
-                ret += ' | @staging integration'
-                if staging == 'test':
-                    ret += ' | @staging test'
-            return ret
-
-        # 10 features per layer are returned at max
         layerLimit = self.limit if self.limit and self.limit <= self.LAYER_LIMIT else self.LAYER_LIMIT
         self.sphinx.SetLimits(0, layerLimit)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
@@ -270,9 +261,8 @@ class Search(SearchValidation):
             return None
 
     def _origins_to_ranks(self, origins):
-        buildRanksList = lambda x: self.originsToRanks[x]
         try:
-            ranks = map(buildRanksList, origins)
+            ranks = [self.originsToRanks[origin] for origin in origins]
         except KeyError:
             raise exc.HTTPBadRequest('Bad value(s) in parameter origins')
         return ranks
@@ -311,8 +301,7 @@ class Search(SearchValidation):
     def _parse_address(self, res):
         if not self.returnGeometry:
             attrs2Del = ['x', 'y', 'lon', 'lat', 'geom_st_box2d']
-            popAtrrs = lambda x: res.pop(x) if x in res else x
-            map(popAtrrs, attrs2Del)
+            res = {key: value for key, value in res.items() if key not in attrs2Del}
             return res
         return res
 
@@ -373,8 +362,8 @@ class Search(SearchValidation):
                 return False
         try:
             refbox = box(ref[0], ref[1], ref[2], ref[3]) if not _is_point(ref) else Point(ref[0], ref[1])
-            arr = map(float, result.replace('BOX(', '').replace(')', '')
-                      .replace(',', ' ').split(' '))
+            arr = [float(value) for value in result.replace('BOX(', '').replace(')', '')
+                      .replace(',', ' ').split(' ')]
             resbox = box(arr[0], arr[1], arr[2], arr[3]) if not _is_point(arr) else Point(arr[0], arr[1])
         except:
             # We bail with True to be conservative and

@@ -566,7 +566,7 @@ class SphinxClient:
         # filters
         req.append ( pack ( '>L', len(self._filters) ) )
         for f in self._filters:
-            req.append ( pack ( '>L', len(f['attr'])) + f['attr'])
+            req.append ( pack ( '>L', len(f['attr'])) + f['attr'].encode('utf-8'))
             filtertype = f['type']
             req.append ( pack ( '>L', filtertype))
             if filtertype == SPH_FILTER_VALUES:
@@ -595,8 +595,8 @@ class SphinxClient:
             attrlat, attrlong = self._anchor['attrlat'], self._anchor['attrlong']
             latitude, longitude = self._anchor['lat'], self._anchor['long']
             req.append ( pack ('>L', 1))
-            req.append ( pack ('>L', len(attrlat)) + attrlat)
-            req.append ( pack ('>L', len(attrlong)) + attrlong)
+            req.append ( pack ('>L', len(attrlat)) + attrlat.encode('utf-8'))
+            req.append ( pack ('>L', len(attrlong)) + attrlong.encode('utf-8'))
             req.append ( pack ('>f', latitude) + pack ('>f', longitude))
 
         # per-index weights

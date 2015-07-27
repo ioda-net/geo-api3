@@ -81,7 +81,7 @@ class SearchValidation(object):
         searchTextList = value.split(' ')
         # Remove empty strings
         searchTextList = [searchText for searchText in searchTextList
-                          if searchText is not None]
+                          if searchText]
         if len(searchTextList) > MAX_SEARCH_TERMS:
             raise HTTPBadRequest("The searchText parameter can not contain more than 10 words")
         self._searchText = searchTextList
@@ -93,7 +93,7 @@ class SearchValidation(object):
             if len(values) != 4:
                 raise HTTPBadRequest("Please provide 4 coordinates in a comma separated list")
             try:
-                values = map(float, values)
+                values = [float(value) for value in values]
             except ValueError:
                 raise HTTPBadRequest("Please provide numerical values for the parameter bbox")
             # Swiss extent

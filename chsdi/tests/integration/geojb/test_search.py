@@ -7,9 +7,10 @@ from chsdi.tests.integration import TestsBase
 class TestSearchServiceView(TestsBase):
 
     def setUp(self):
-        super(TestSearchServiceView, self).setUp()
-        self.search_uri = '/rest/services/{}/SearchServer'.format(self.topic_id)
-        self.address_origins = self.settings['search.address_origins']
+        super().setUp()
+        self.portal_name = 'geojb'
+        self.search_uri = '/rest/services/{}/SearchServer'.format(self.portal_name)
+        self.address_origins = self.config['template']['search']['address_origins']
 
     def test_no_type(self):
         self.testapp.get(self.search_uri, params={'searchText': 'ga'}, status=400)
@@ -17,20 +18,13 @@ class TestSearchServiceView(TestsBase):
     def test_search_layers(self):
         resp = self.testapp.get(self.search_uri, params={'searchText': self.layer_id, 'type': 'layers'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json['results'][0]['attrs']['lang'] == self.default_lang)
 
     def test_search_layers_with_cb(self):
-        resp = self.testapp.get(self.search_uri, params={'searchText': self.layer_id, 'type': 'layers', 'callback': 'cb'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': self.layer_id, 'type': 'layers', 'callback': 'callback'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
 
-    def test_search_layers_all_langs(self):
-        for lang in self.langs:
-            resp = self.testapp.get(self.search_uri, params={'searchText': self.layer_id, 'type': 'layers', 'lang': lang}, status=200)
-            self.failUnless(resp.content_type == 'application/json')
-            self.failUnless(resp.json['results'][0]['attrs']['lang'] == lang)
-
     def test_search_layers_for_one_layer(self):
-        resp = self.testapp.get(self.search_uri, params={'searchText': self.layer_id, 'type': 'layers'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': self.layer_id, 'type': 'layers', 'limit': 1}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json['results']) == 1)
 
@@ -59,7 +53,7 @@ class TestSearchServiceView(TestsBase):
     def test_search_locations_prefix_sentence_match(self):
         resp = self.testapp.get(self.search_uri, params={'searchText': 'Péry-La', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'pery-la heutte - la heutte')
+        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'pery-la heutte')
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'communes')
 
     @unittest.skip('Search with bbox requires lat and long')
@@ -88,10 +82,10 @@ class TestSearchServiceView(TestsBase):
         self.failUnless('oeuches' in resp.json['results'][0]['attrs']['detail'])
 
     def test_search_location_max_address(self):
-        resp = self.testapp.get(self.search_uri, params={'searchText': 'corgémont', 'type': 'locations'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': 'moutier', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
-        results_addresses = filter(lambda x: x if x['attrs']['origin'] in self.address_origins else False, resp.json['results'])
-        self.failUnless(len(results_addresses) <= 20)
+        results_addresses = [result for result in resp.json['results'] if result['attrs']['origin'] in self.address_origins]
+        self.failUnless(len(results_addresses) <= 50)
 
     def test_search_locations_no_geometry(self):
         resp = self.testapp.get(self.search_uri, params={'searchText': 'moutier', 'type': 'locations', 'returnGeometry': 'false'}, status=200)
@@ -99,16 +93,18 @@ class TestSearchServiceView(TestsBase):
         self.failUnless('geom_st_box2d' not in resp.json['results'][0]['attrs'].keys())
 
     def test_locations_searchtext_apostrophe(self):
-        resp = self.testapp.get(self.search_uri, params={'searchText': 'Rue de l\'Envers', 'type': 'locations'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': 'corgemont, Rue de l\'Envers', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'corgemont, rue de l\'envers, 19')
-        self.failUnless(resp.json['results'][0]['attrs']['num'] == 19)
+        self.failUnless(resp.json['results'][0]['attrs']['detail'].startswith('corgemont, rue de l\'envers'))
 
     def test_address_order(self):
-        resp = self.testapp.get(self.search_uri, params={'searchText': 'moutier chemin', 'type': 'locations'}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': 'moutier, chemin de graitery', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'moutier, chemin de graitery, 64')
-        self.failUnless(resp.json['results'][0]['attrs']['num'] == 64)
+        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'moutier, chemin de graitery, 1')
+        self.failUnless(resp.json['results'][1]['attrs']['detail'] == 'moutier, chemin de graitery, 1a')
+        self.failUnless(resp.json['results'][7]['attrs']['detail'] == 'moutier, chemin de graitery, 10')
+        self.failUnless(resp.json['results'][8]['attrs']['detail'] == 'moutier, chemin de graitery, 12')
+        self.failUnless(resp.json['results'][9]['attrs']['detail'] == 'moutier, chemin de graitery, 12a')
 
     def test_search_address_with_letters(self):
         resp = self.testapp.get(self.search_uri, params={'searchText': 'Rue des Oeuches, 86', 'type': 'locations'}, status=200)

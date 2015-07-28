@@ -75,7 +75,7 @@ gdal: venv
 	cd build && \
 	tar -xzf GDAL-1.11.2.tar.gz && \
 	cd GDAL-1.11.2 && \
-	${PYTHON_CMD} setup.py build_ext --gdal-config=/usr/bin/gdal-config-64 --library-dirs=/usr/lib --include-dirs=/usr/include/gdal && \
+	${PYTHON_CMD} setup.py build_ext --gdal-config=/usr/bin/gdal-config --library-dirs=/usr/lib --include-dirs=/usr/include/gdal && \
 	${PYTHON_CMD} setup.py install --root / && \
 	cd ../.. && \
 	${PYTHON_CMD} -c "from osgeo import gdal; print('GDAL installed'); print(gdal.__version__, gdal.__file__)"

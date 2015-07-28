@@ -31,7 +31,7 @@ development.ini: node_modules
 
 venv:
 	@if [ ! -d .venv ]; then \
-	    python3 -m venv .venv; \
+	    virtualenv-${PYTHON_VERSION} .venv; \
 	    ${PYTHON_CMD} setup.py develop; \
 	fi
 

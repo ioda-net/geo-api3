@@ -55,10 +55,8 @@ def main(global_config, **settings):
     # route definitions
     config.add_route('ogcproxy', '/ogcproxy')
     config.add_route('identify', '/rest/services/{portal}/MapServer/identify')
-    config.add_route('find', '/rest/services/{map}/MapServer/find')
-    config.add_route('attribute_values', '/rest/services/{map}/MapServer/{layerId}/attributes/{attribute}')
-    config.add_route('featureAttributes', '/rest/services/{map}/MapServer/{layerId}')
-    config.add_route('feature', '/rest/services/{map}/MapServer/{layerId}/{featureId}')
+    config.add_route('find', '/rest/services/{portal}/MapServer/find')
+    config.add_route('feature', '/rest/services/{portal}/MapServer/{layerId}/{featureId}')
     config.add_route('search', '/rest/services/{map}/SearchServer')
     config.add_route('profile_json', '/rest/services/profile.json')
     config.add_route('profile_csv', '/rest/services/profile.csv')

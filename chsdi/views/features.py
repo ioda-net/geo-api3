@@ -102,11 +102,6 @@ def view_find_esrijson(request):
     return _find(request)
 
 
-@view_config(route_name='attribute_values', renderer='geojson')
-def view_attribute_values_geojson(request):
-    return _attributes(request)
-
-
 def _identify(request):
     params = _get_features_params(request)
 
@@ -153,7 +148,7 @@ def _get_features(params, extended=False):
     ''' Returns exactly one feature or raises
     an excpetion '''
     featureIds = params.featureIds.split(',')
-    models = models_from_name(params.layerId)
+    models = models_from_name(params.portal_name, params.layerId)
     if models is None:
         raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layerId)
 
@@ -240,43 +235,6 @@ def _get_features_for_filters(params, models, maxFeatures=None, where=None):
                 else:
                     for feature in query:
                         yield feature
-
-
-def _attributes(request):
-    ''' This service exposes preview values based on a layer Id
-    and an attribute name (mapped in the model) '''
-    MAX_ATTR_VALUES = 50
-    attributesValues = []
-    params = _get_attributes_params(request)
-
-    models = models_from_name(params.layerId)
-
-    if models is None:
-        raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layerId)
-
-    # Check that the attribute provided is found at least in one model
-    modelToQuery = None
-    for model in models:
-        attributes = model().getAttributesKeys()
-        if params.attribute in attributes:
-            modelToQuery = model
-            break
-    if modelToQuery is None:
-        raise exc.HTTPBadRequest('No attribute %s was found for %s' % (params.attribute, params.layerId))
-
-    col = modelToQuery.get_column_by_property_name(params.attribute)
-    colType = str(col.type)
-    if colType in ['DATE', 'INTEGER', 'NUMERIC']:
-        query = request.db.query(func.max(col).label('max'), func.min(col).label('min'))
-        res = query.one()
-        return {'values': [res.min, res.max]}
-    else:
-        query = request.db.query(col).distinct().order_by(col)
-        query = query.limit(MAX_ATTR_VALUES)
-        for attr in query:
-            if len(attr):
-                attributesValues.append(attr[0])
-        return {'values': sorted(attributesValues)}
 
 
 def _find(request):

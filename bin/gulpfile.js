@@ -4,6 +4,7 @@ var fs = require('fs');
 var gulp = require('gulp');
 var data = require('gulp-data');
 var nunjucksRender = require('gulp-nunjucks-render');  // Templating engine
+var extReplace = require('gulp-ext-replace');
 var rename = require('gulp-rename');
 var toml = require('toml');
 var path = require('path');

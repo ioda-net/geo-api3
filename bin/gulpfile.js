@@ -3,8 +3,8 @@
 var fs = require('fs');
 var gulp = require('gulp');
 var data = require('gulp-data');
-var extReplace = require('gulp-ext-replace');
 var nunjucksRender = require('gulp-nunjucks-render');  // Templating engine
+var rename = require('gulp-rename');
 var toml = require('toml');
 var path = require('path');
 
@@ -28,12 +28,18 @@ gulp.task('build-config', function () {
 });
 
 
-gulp.task('wsgi', function () {
-  return gulp.src('../parts/*.wsgi.nunjucks')
-          .pipe(data(function () {
-            return {install_directory: path.join(__dirname, '..')};
-          }))
-          .pipe(nunjucksRender())
-          .pipe(extReplace('.wsgi', '.wsgi.html'))
-          .pipe(gulp.dest('../parts/wsgi'));
+gulp.task('wsgi', function (cb) {
+  ['developement', 'production'].forEach(function (stage) {
+    gulp.src('../parts/*.wsgi.nunjucks')
+        .pipe(data(function () {
+          return {
+            install_directory: path.join(__dirname, '..'),
+            stage: stage
+          };
+        }))
+        .pipe(nunjucksRender())
+        .pipe(rename(stage + '.wsgi'))
+        .pipe(gulp.dest('../parts/wsgi'));
+  });
+  cb();
 });

@@ -44,7 +44,6 @@ def _get_features_params(request):
     params.mapExtent = request.params.get('mapExtent')
     params.tolerance = request.params.get('tolerance')
     params.layers = request.params.get('layers', 'all')
-    params.timeInstant = request.params.get('timeInstant')
     params.offset = request.params.get('offset')
     return params
 
@@ -63,14 +62,6 @@ def _get_find_params(request):
     params.searchText = request.params.get('searchText')
     params.searchField = request.params.get('searchField')
     params.contains = request.params.get('contains')
-    return params
-
-
-def _get_attributes_params(request):
-    params = FeatureParams(request)
-    params.layerId = request.matchdict.get('layerId')
-    params.attribute = request.matchdict.get('attribute')
-
     return params
 
 
@@ -120,7 +111,7 @@ def _identify(request):
     while True:
         try:
             feature = next(feature_gen)
-        except InternalError as e:
+        except InternalError as e:  # pragma: no cover
             raise exc.HTTPBadRequest('Your request generated the following database error: %s' % e)
         except StopIteration:
             break
@@ -128,7 +119,7 @@ def _identify(request):
             f = _process_feature(feature, params)
             features.append(f)
 
-            if len(features) > maxFeatures:
+            if len(features) > maxFeatures:  # pragma: no cover
                 break
 
     return {'results': features}
@@ -161,7 +152,7 @@ def _get_features(params, extended=False):
                 feature = query.one()
             except NoResultFound:
                 feature = None
-            except MultipleResultsFound:
+            except MultipleResultsFound:  # pragma: no cover
                 raise exc.HTTPInternalServerError('Multiple features found for the same id %s' % featureId)
 
             if feature is not None:
@@ -206,11 +197,6 @@ def _get_features_for_filters(params, models, maxFeatures=None, where=None):
                     query = query.order_by(model.bgdi_order) if hasattr(model, 'bgdi_order') else query
                     query = query.filter(geomFilter)
 
-            # Filter by time instant
-            if params.timeInstant is not None and hasattr(model, '__timeInstant__'):
-                timeInstantColumn = model.time_instant_column()
-                query = query.filter(timeInstantColumn == params.timeInstant)
-
             # Add limit
             query = query.limit(maxFeatures) if maxFeatures is not None else query
 
@@ -221,20 +207,8 @@ def _get_features_for_filters(params, models, maxFeatures=None, where=None):
             # We need either where or geomFilter (geomFilter especially for zeitreihen layer)
             # This probably needs refactoring...
             if where is not None or geomFilter is not None:
-                # TODO remove layer specific code
-                if model.__bodId__ == 'ch.swisstopo.zeitreihen':
-                    counter = 0
-                    bgdi_order = 0
-                    for feature in query:
-                        counter += 1
-                        if counter > 1:
-                            if bgdi_order < feature.bgdi_order:
-                                continue
-                        bgdi_order = feature.bgdi_order
-                        yield feature
-                else:
-                    for feature in query:
-                        yield feature
+                for feature in query:
+                    yield feature
 
 
 def _find(request):

@@ -84,6 +84,16 @@ class TestFeature(TestsBase):
         self.failUnless(len(resp.json) == 1)
         self.failUnless(resp.json['feature']['id'] == self.feature_id)
 
+    def test_identify_feature_inexistant_layer(self):
+        self.features_url = '/'.join(self.features_url.split('/')[:-2])
+        self.features_url += '/dummy/1'
+        resp = self.testapp.get(self.features_url, status=400)
+
+    def test_identify_inexistant_feature(self):
+        self.features_url = '/'.join(self.features_url.split('/')[:-1])
+        self.features_url += '/1'
+        self.testapp.get(self.features_url, status=404)
+
     def test_identify_mutliple_features(self):
         url = '{},{}'.format(self.features_url, self.complementary_feature_id)
         resp = self.testapp.get(url, status=200)
@@ -103,7 +113,7 @@ class TestFeatureFind(TestsBase):
             'searchField': 'nom',
         }
 
-    def test_wrong_parameters(self):
+    def test_find_wrong_parameters(self):
         self.testapp.get(self.feature_find_url, status=400)
         params = {'layers': self.test_config['layer_id']}
         self.testapp.get(self.feature_find_url, params=params, status=400)
@@ -113,8 +123,12 @@ class TestFeatureFind(TestsBase):
         params['searchField'] = 'nom'
         self.testapp.get(self.feature_find_url, params=params, status=400)
 
-    def test_wrong_field(self):
+    def test_find_wrong_field(self):
         self.params['searchField'] = 'dummy'
+        self.testapp.get(self.feature_find_url, params=self.params, status=400)
+
+    def test_find_wrong_layer(self):
+        self.params['layer'] = 'dummy'
         self.testapp.get(self.feature_find_url, params=self.params, status=400)
 
     def test_find(self):

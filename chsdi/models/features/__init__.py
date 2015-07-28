@@ -73,15 +73,11 @@ class Feature(GeoInterface):
                 elif not col.foreign_keys and not isinstance(col.type, Geometry):
                     properties[p.key] = val
 
-        if self.__add_properties__:
-            for k in self.__add_properties__:
-                properties[k] = getattr(self, k)
-
         properties = self.insertLabel(properties)
         return geojson.Feature(id=id, geometry=geom, properties=properties)
 
     @property
-    def srid(self):
+    def srid(self):  # pragma: no cover
         return self.geometry_column().type.srid
 
     # Overrides GeoInterface
@@ -92,12 +88,12 @@ class Feature(GeoInterface):
         try:
             shape = asShape(feature.geometry)
             extents.append(shape.bounds)
-        except:
+        except:  # pragma: no cover
             pass
         try:
             for geom in feature.geometry.geometries:
                 extents.append(asShape(geom).bounds)
-        except:
+        except:  # pragma: no cover
             pass
         return geojson.Feature(
             id=self.id,
@@ -133,10 +129,6 @@ class Feature(GeoInterface):
         return cls.__mapper__.primary_key[0]
 
     @classmethod
-    def time_instant_column(cls):
-        return getattr(cls, cls.__timeInstant__)
-
-    @classmethod
     def label_column(cls):
         return cls.__mapper__.columns[cls.__label__] if hasattr(cls, '__label__') else cls.__mapper__.primary_key[0]
 
@@ -160,13 +152,11 @@ class Feature(GeoInterface):
             geomColumn = cls.geometry_column()
             geomFilter = func.ST_DWITHIN(geomColumn, wkbGeometry, toleranceMeters)
             return geomFilter
-        return None
 
     @classmethod
     def get_column_by_property_name(cls, columnPropName):
         if columnPropName in cls.__mapper__.columns:
             return cls.__mapper__.columns.get(columnPropName)
-        return None
 
     def getOrmColumnsNames(self, excludePkey=True):
         primaryKeyColumn = self.__mapper__.get_property_by_column(self.primary_key_column()).key
@@ -181,10 +171,6 @@ class Feature(GeoInterface):
             ormColumnName = self.__mapper__.get_property_by_column(column).key
             if ormColumnName not in keysToExclude:
                 yield ormColumnName
-
-    def getAttributesKeys(self):
-        attributes = [columnName for columnName in self.getOrmColumnsNames(excludePkey=False)]
-        return attributes
 
     def getAttributes(self, excludePkey=True):
         attributes = {}

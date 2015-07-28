@@ -21,13 +21,17 @@ class Height(HeightValidation):
         elif 'elevation_model' in request.params:
             self.layers = request.params.get('elevation_model')
         else:
-            self.layers = ['DTM25']
+            self.layers = [model.strip() for model in
+                           request.registry
+                           .settings['raster.preloaded']
+                           .split(',')]
         self.request = request
 
     @view_config(route_name='height', renderer='jsonp', http_cache=0)
     def height(self):
         rasters = [get_raster(layer) for layer in self.layers]
         alt = self._filter_alt(rasters[0].getVal(self.lon, self.lat))
+        alt = alt if alt is not None else ''
 
         return {'height': str(alt)}
 

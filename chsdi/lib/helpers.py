@@ -5,24 +5,7 @@ from pyramid.i18n import get_locale_name
 from pyramid.httpexceptions import HTTPBadRequest
 import unicodedata
 from urllib.parse import quote
-from urllib.parse import urlparse, urlunparse, urljoin
-
-
-def versioned(path):
-    version = get_current_registry().settings['app_version']
-    entry_path = get_current_registry().settings['entry_path'] + '/'
-    if version is not None:
-        agnosticPath = make_agnostic(path)
-        parsedURL = urlparse(agnosticPath)
-        # we don't do version when behind pserve (at localhost)
-        if 'localhost:' not in parsedURL.netloc:
-            parts = parsedURL.path.split(entry_path, 1)
-            if len(parts) > 1:
-                parsedURL = parsedURL._replace(path=parts[0] + entry_path + version + '/' + parts[1])
-                agnosticPath = urlunparse(parsedURL)
-        return agnosticPath
-    else:
-        return path
+from urllib.parse import urlparse
 
 
 def make_agnostic(path):
@@ -59,15 +42,6 @@ def check_url(url, config):
     return url
 
 
-def sanitize_url(url):
-    sanitized = url
-    try:
-        sanitized = urljoin(url, urlparse(url).path.replace('//', '/'))
-    except:
-        pass
-    return sanitized
-
-
 def locale_negotiator(request):
     lang = request.params.get('lang')
     settings = get_current_registry().settings
@@ -82,12 +56,6 @@ def locale_negotiator(request):
     return lang
 
 
-def check_even(number):
-    if number % 2 == 0:
-        return True
-    return False
-
-
 def round(val):
     import math
     return math.floor(val + 0.5)
@@ -100,7 +68,7 @@ def format_search_text(input_str):
 
 
 def remove_accents(input_str):
-    if input_str is None:
+    if input_str is None:  # pragma: no cover
         return input_str
     input_str = input_str.translate(str.maketrans({
         'Ü': 'ue',
@@ -114,7 +82,7 @@ def remove_accents(input_str):
 
 
 def escape_sphinx_syntax(input_str):
-    if input_str is None:
+    if input_str is None:  # pragma: no cover
         return input_str
     return input_str.translate(str.maketrans({
         '|': r'\|',
@@ -182,44 +150,6 @@ def quoting(text):
     return quote(text.encode('utf-8'))
 
 
-def parseHydroXML(id, root):
-    html_attr = {'date_time': '-', 'abfluss': '-', 'wasserstand': '-', 'wassertemperatur': '-'}
-    for child in root:
-        fid = child.attrib['StrNr']
-        if fid == id:
-            if child.attrib['Typ'] == '10':
-                for attr in child:
-                    if attr.tag == 'Datum':
-                        html_attr['date_time'] = attr.text
-                    # Zeit is always parsed after Datum
-                    elif attr.tag == 'Zeit':
-                        html_attr['date_time'] = html_attr['date_time'] + ' ' + attr.text
-                    elif attr.tag == 'Wert':
-                        html_attr['abfluss'] = attr.text
-                        break
-            elif child.attrib['Typ'] == '02':
-                for attr in child:
-                    if attr.tag == 'Datum':
-                        html_attr['date_time'] = attr.text
-                    # Zeit is always parsed after Datum
-                    elif attr.tag == 'Zeit':
-                        html_attr['date_time'] = html_attr['date_time'] + ' ' + attr.text
-                    elif attr.tag == 'Wert':
-                        html_attr['wasserstand'] = attr.text
-                        break
-            elif child.attrib['Typ'] == '03':
-                for attr in child:
-                    if attr.tag == 'Datum':
-                        html_attr['date_time'] = attr.text
-                    # Zeit is always parsed after Datum
-                    elif attr.tag == 'Zeit':
-                        html_attr['date_time'] = html_attr['date_time'] + ' ' + attr.text
-                    elif attr.tag == 'Wert':
-                        html_attr['wassertemperatur'] = attr.text
-                        break
-    return html_attr
-
-
 def transformCoordinate(wkt, srid_from, srid_to):
     srid_in = osr.SpatialReference()
     srid_in.ImportFromEPSG(srid_from)
@@ -229,9 +159,3 @@ def transformCoordinate(wkt, srid_from, srid_to):
     geom.AssignSpatialReference(srid_in)
     geom.TransformTo(srid_out)
     return geom
-
-
-def get_topic_id_from_request(request):
-    path_elements = request.current_route_path().split('/')
-    if path_elements[2] == 'services':
-        return path_elements[3]

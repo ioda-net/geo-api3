@@ -9,21 +9,6 @@ import urllib
 
 EXPECTED_CONTENT_TYPE = 'application/vnd.google-earth.kml+xml'
 
-def requires_authorization():
-    def wrapper(f):
-        @wraps(f)
-        def wrapped(self, *args, **kwargs):
-            if hasattr(self, 'request'):
-                request = self.request
-            else:
-                request = self
-            if request.headers.get('X-SearchServer-Authorized', '').lower() != 'true':
-                raise exc.HTTPForbidden(detail='This service requires an authorization')
-            else:
-                return f(self, *args, **kwargs)
-        return wrapped
-    return wrapper
-
 def validate_kml_input():
     def decorator(func):
         @wraps(func)

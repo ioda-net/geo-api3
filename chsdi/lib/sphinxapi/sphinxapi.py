@@ -443,8 +443,8 @@ class SphinxClient:
         assert isinstance(attrlong,str)
         assert isinstance(latitude,float)
         assert isinstance(longitude,float)
-        self._anchor['attrlat'] = attrlat
-        self._anchor['attrlong'] = attrlong
+        self._anchor['attrlat'] = attrlat.encode('utf-8')
+        self._anchor['attrlong'] = attrlong.encode('utf-8')
         self._anchor['lat'] = latitude
         self._anchor['long'] = longitude
 
@@ -595,8 +595,8 @@ class SphinxClient:
             attrlat, attrlong = self._anchor['attrlat'], self._anchor['attrlong']
             latitude, longitude = self._anchor['lat'], self._anchor['long']
             req.append ( pack ('>L', 1))
-            req.append ( pack ('>L', len(attrlat)) + attrlat.encode('utf-8'))
-            req.append ( pack ('>L', len(attrlong)) + attrlong.encode('utf-8'))
+            req.append ( pack ('>L', len(attrlat)) + attrlat)
+            req.append ( pack ('>L', len(attrlong)) + attrlong)
             req.append ( pack ('>f', latitude) + pack ('>f', longitude))
 
         # per-index weights

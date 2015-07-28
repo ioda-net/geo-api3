@@ -1,4 +1,3 @@
-Babel
 Mako==1.0.0
 OWSLib==0.9.0
 Pillow

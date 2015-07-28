@@ -37,8 +37,8 @@ class CSVRenderer(object):
 
     def __call__(self, value, system):
         import csv
-        import StringIO
-        fout = StringIO.StringIO()
+        from io import StringIO
+        fout = StringIO()
         writer = csv.writer(fout, delimiter=';', quoting=csv.QUOTE_ALL)
 
         writer.writerow(value['headers'])

@@ -24,9 +24,7 @@ class FeatureParams(MapServiceValidation):
         # Map and topic represent the same resource
         self.portal_name = request.matchdict.get('portal')
         self.cbName = request.params.get('callback')
-        self.lang = request.lang
         self.returnGeometry = request.params.get('returnGeometry')
-        self.translate = request.translate
         self.request = request
         self.varnish_authorized = request.headers.get('X-SearchServer-Authorized', 'false').lower() == 'true'
 
@@ -276,15 +274,14 @@ def _format_search_text(columnType, searchText):
 
 
 def _process_feature(feature, params):
-    # TODO find a way to use translate directly in the model
     if params.returnGeometry:
         f = feature.__geo_interface__
     else:
         f = feature.__interface__
     if hasattr(f, 'extra'):
         layerBodId = f.extra['layerBodId']
-        f.extra['layerName'] = params.translate(layerBodId)
+        f.extra['layerName'] = layerBodId
     else:
         layerBodId = f.get('layerBodId')
-        f['layerName'] = params.translate(layerBodId)
+        f['layerName'] = layerBodId
     return f

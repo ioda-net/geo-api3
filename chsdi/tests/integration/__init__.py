@@ -14,8 +14,6 @@ class TestsBase(TestCase):
         app = get_app('development.ini')
         self.testapp = TestApp(app)
         self.settings = self.testapp.app.registry.settings
-        self.default_lang = self.test_config['default_lang']
-        self.langs = self.test_config['lang_list']
         self.topic_id = self.test_config['topic_id']
         self.topics_list = self.test_config['topics_list']
         self.layer_id = self.test_config['layer_id']

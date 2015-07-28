@@ -41,12 +41,6 @@ class TestSearchLocations(TestSearchServiceView):
         resp = self.testapp.get(self.search_uri, params={'searchText': 'rue des oeuches', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625', 'callback': 'callback'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
 
-    def test_search_locations_all_langs(self):
-        # even if not lang dependent
-        for lang in self.langs:
-            resp = self.testapp.get(self.search_uri, params={'searchText': 'mont d\'or', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625', 'lang': lang}, status=200)
-            self.failUnless(resp.content_type == 'application/json')
-
     def test_search_locations_prefix_sentence_match(self):
         resp = self.testapp.get(self.search_uri, params={'searchText': 'Péry-La', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')

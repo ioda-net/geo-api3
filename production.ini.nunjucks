@@ -6,7 +6,6 @@
 use = egg:chsdi
 app_version = {{ app_version }}
 entry_path = {{ deploy.apache_base_path }}
-available_languages = {{ deploy.available_languages | join(" ") }}
 
 
 pyramid.reload_templates = false

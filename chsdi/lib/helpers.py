@@ -42,20 +42,6 @@ def check_url(url, config):
     return url
 
 
-def locale_negotiator(request):
-    lang = request.params.get('lang')
-    settings = get_current_registry().settings
-    languages = settings['available_languages'].split()
-    if lang == 'rm':
-        return 'fi'
-    elif lang is None or lang not in languages:
-        if request.accept_language:
-            return request.accept_language.best_match(languages, 'de')
-        # the default_locale_name configuration variable
-        return get_locale_name(request)
-    return lang
-
-
 def round(val):
     import math
     return math.floor(val + 0.5)

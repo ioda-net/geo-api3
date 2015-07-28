@@ -1,6 +1,4 @@
 from pyramid.config import Configurator
-from pyramid.events import BeforeRender, NewRequest
-from chsdi.subscribers import add_localizer, add_renderer_globals
 from pyramid.renderers import JSONP
 from sqlalchemy.orm import scoped_session, sessionmaker
 
@@ -33,11 +31,6 @@ def main(global_config, **settings):
     init_rasterfiles(
         settings['dtm_base_path'],
         settings['raster.preloaded'].split(','))
-
-    # configure 'locale' dir as the translation dir for chsdi app
-    config.add_translation_dirs('chsdi:locale/')
-    config.add_subscriber(add_localizer, NewRequest)
-    config.add_subscriber(add_renderer_globals, BeforeRender)
 
     # renderers
     config.add_mako_renderer('.html')

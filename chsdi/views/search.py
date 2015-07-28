@@ -24,9 +24,7 @@ class Search(SearchValidation):
         self.sphinx = sphinxapi.SphinxClient()
         self.sphinx.SetServer(request.registry.settings['sphinxhost'], request.registry.settings['sphinxport'])
         self.sphinx.SetMatchMode(sphinxapi.SPH_MATCH_EXTENDED)
-
         self.portalName = request.matchdict.get('map')
-        self.lang = request.lang
         self.cbName = request.params.get('callback')
         self.bbox = request.params.get('bbox')
         self.returnGeometry = request.params.get('returnGeometry', 'true').lower() == 'true'
@@ -37,7 +35,6 @@ class Search(SearchValidation):
         self.timeEnabled = request.params.get('timeEnabled')
         self.timeStamps = request.params.get('timeStamps')
         self.typeInfo = request.params.get('type')
-        self.lang = request.params.get('lang')
         self.limit = request.params.get('limit')
         self.results = {'results': []}
         self.request = request

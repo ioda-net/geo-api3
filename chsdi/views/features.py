@@ -243,7 +243,7 @@ def _find(request):
     if params.searchText is None:
         raise exc.HTTPBadRequest('Please provide a searchText')
 
-    models = models_from_name(params.layer)
+    models = models_from_name(params.portal_name, params.layer)
     features = []
     findColumn = lambda x: (x, x.get_column_by_property_name(params.searchField))
     if models is None:

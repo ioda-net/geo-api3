@@ -36,28 +36,34 @@ class TestFeaturesIdentify(TestsBase):
     def test_query(self):
         for layer_with_feature in registered_features['geojb']:
             self.params['layers'] = 'all:' + layer_with_feature
-            self.testapp.get(self.features_url, params=self.params, status=200)
+            resp = self.testapp.get(self.features_url, params=self.params, status=200)
+            self.failUnless(resp.content_type == 'application/json')
 
     def test_query_bbox(self):
         self.params['geometry'] = '588823.34,235243.77,589583.34,235733.77'
         self.params['geometryType'] = 'esriGeometryEnvelope'
         for layer_with_feature in registered_features['geojb']:
             self.params['layers'] = 'all:' + layer_with_feature
-            self.testapp.get(self.features_url, params=self.params, status=200)
+            resp = self.testapp.get(self.features_url, params=self.params, status=200)
+            self.failUnless(resp.content_type == 'application/json')
 
     def test_query_no_geometry(self):
         self.params['layers'] = 'all:' + self.test_config['layer_id']
         self.params['returnGeometry'] = 'false'
         resp = self.testapp.get(self.features_url, params=self.params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
         self.failUnless('geometry' not in resp.json['results'][0])
 
     def test_query_geometry(self):
         self.params['layers'] = 'all:' + self.test_config['layer_id']
         self.params['returnGeometry'] = 'true'
         resp = self.testapp.get(self.features_url, params=self.params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
         self.failUnless('geometry' in resp.json['results'][0])
+
         del self.params['returnGeometry']
         resp = self.testapp.get(self.features_url, params=self.params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
         self.failUnless('geometry' in resp.json['results'][0])
 
 
@@ -74,12 +80,87 @@ class TestFeature(TestsBase):
 
     def test_identify_feature(self):
         resp = self.testapp.get(self.features_url, status=200)
+        self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json) == 1)
         self.failUnless(resp.json['feature']['id'] == self.feature_id)
 
     def test_identify_mutliple_features(self):
         url = '{},{}'.format(self.features_url, self.complementary_feature_id)
         resp = self.testapp.get(url, status=200)
+        self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json['features']) == 2)
         self.failUnless(resp.json['features'][0]['feature']['id'] == self.feature_id)
         self.failUnless(resp.json['features'][1]['feature']['id'] == self.complementary_feature_id)
+
+
+class TestFeatureFind(TestsBase):
+    def setUp(self):
+        super().setUp()
+        self.feature_find_url = '/rest/services/geojb/MapServer/find'
+        self.params = {
+            'layer': self.test_config['layer_id'],
+            'searchText': 'Moutier',
+            'searchField': 'nom',
+        }
+
+    def test_wrong_parameters(self):
+        self.testapp.get(self.feature_find_url, status=400)
+        params = {'layers': self.test_config['layer_id']}
+        self.testapp.get(self.feature_find_url, params=params, status=400)
+        params['searchText'] = 'Moutier'
+        self.testapp.get(self.feature_find_url, params=params, status=400)
+        del params['searchText']
+        params['searchField'] = 'nom'
+        self.testapp.get(self.feature_find_url, params=params, status=400)
+
+    def test_wrong_field(self):
+        self.params['searchField'] = 'dummy'
+        self.testapp.get(self.feature_find_url, params=self.params, status=400)
+
+    def test_find(self):
+        resp = self.testapp.get(self.feature_find_url, params=self.params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(len(resp.json['results']) > 0)
+        self.failUnless('geometry' in resp.json['results'][0])
+
+    def test_find_no_geometry(self):
+        self.params['returnGeometry'] = 'false'
+        resp = self.testapp.get(self.feature_find_url, params=self.params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(len(resp.json['results']) > 0)
+        self.failUnless('geometry' not in resp.json['results'][0])
+
+    def test_find_geometry(self):
+        self.params['returnGeometry'] = 'true'
+        resp = self.testapp.get(self.feature_find_url, params=self.params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(len(resp.json['results']) > 0)
+        self.failUnless('geometry' in resp.json['results'][0])
+
+    def test_find_no_match(self):
+        self.params['searchText'] = 'not_a_city_in_Switzerland'
+        resp = self.testapp.get(self.feature_find_url, params=self.params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(len(resp.json['results']) == 0)
+
+    def test_find_contains(self):
+        self.params['contains'] = 'true'
+        resp = self.testapp.get(self.feature_find_url, params=self.params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(len(resp.json['results']) > 0)
+
+        self.params['searchText'] = 'Moutie'
+        resp = self.testapp.get(self.feature_find_url, params=self.params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(len(resp.json['results']) > 0)
+
+        self.params['contains'] = 'false'
+        self.params['searchText'] = 'Moutie'
+        resp = self.testapp.get(self.feature_find_url, params=self.params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(len(resp.json['results']) == 0)
+
+        self.params['searchText'] = 'Moutier'
+        resp = self.testapp.get(self.feature_find_url, params=self.params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(len(resp.json['results']) > 0)

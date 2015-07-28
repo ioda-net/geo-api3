@@ -1,4 +1,3 @@
-import unittest
 from chsdi.tests.integration import TestsBase
 
 
@@ -144,14 +143,12 @@ class TestSearchLocations(TestSearchServiceView):
         params = {'searchText': 'moutier', 'type': 'locations', 'origins': 'dummy'}
         self.testapp.get(self.search_uri, params=params, status=400)
 
-    @unittest.skip('bbox does not work correctly with sphinx')
     def test_search_locations_with_bbox(self):
-        params = {'type': 'locations', 'searchText': 'buechli tegerfelden', 'bbox': '664100,268443,664150,268643'}
+        params = {'type': 'locations', 'searchText': 'moutier, rue des oeuches, 45a', 'bbox': '550000,210000,620000,245000'}
         resp = self.testapp.get(self.search_uri, params=params, status=200)
-        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'buechli  5306 tegerfelden 4320 tegerfelden ch ag')
+        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'moutier, rue des oeuches, 45a')
         self.failUnless(len(resp.json['results']) == 1)
 
-    @unittest.skip('bbox does not work correctly with sphinx')
     def test_search_locations_bbox_only(self):
         params = {'type': 'locations', 'bbox': '550000,210000,620000,245000'}
         resp = self.testapp.get(self.search_uri, params=params, status=200)

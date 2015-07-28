@@ -4,7 +4,7 @@ PSERVE_CMD ?= $(shell pwd)/.venv/bin/pserve
 NOSE_CMD ?= $(shell pwd)/.venv/bin/nosetests
 # We need GDAL which is hard to install in a venv, modify PYTHONPATH to use the
 # system wide version.
-PYTHON_VERSION := $(shell python3 --version | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
+PYTHON_VERSION := $(shell python3 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
 PYTHONPATH ?= .venv/lib/python${PYTHON_VERSION}/site-packages:/usr/lib64/python${PYTHON_VERSION}/site-packages
 
 .PHONY: help
@@ -19,7 +19,7 @@ help:
 	@echo "- translate"
 	@echo "- prod"
 	@echo "- lint"
-	@echo "- gdal: install the gdal"
+	@echo "- gdal: install python 3 binding for the gdal"
 
 
 .PHONY: serve
@@ -32,9 +32,12 @@ development.ini: node_modules
 	fi
 
 venv:
+	# Install Cython before any deps as some need it to compile with
+	# optimizations
 	@if [ ! -d .venv ]; then \
 	    virtualenv-${PYTHON_VERSION} .venv; \
 	    ${PIP_CMD} install -U pip; \
+	    ${PIP_CMD} install Cython; \
 	    ${PYTHON_CMD} setup.py develop; \
 	fi
 

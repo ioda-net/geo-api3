@@ -30,7 +30,9 @@ def main(global_config, **settings):
     config.include('pyramid_mako')
 
     # init raster files for height/profile and preload COMB file
-    init_rasterfiles(settings.get('dtm_base_path'), ['DTM25'])
+    init_rasterfiles(
+        settings['dtm_base_path'],
+        settings['raster.preloaded'].split(','))
 
     # configure 'locale' dir as the translation dir for chsdi app
     config.add_translation_dirs('chsdi:locale/')

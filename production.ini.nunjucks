@@ -37,6 +37,7 @@ temp_dir = {{ deploy.temp_dir }}
 
 # Raster
 dtm_base_path = {{ raster.dtm_base_path }}
+raster.preloaded = {{ raster.preloaded | join(",") }}
 
 
 # Search

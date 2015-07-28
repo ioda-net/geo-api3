@@ -24,11 +24,11 @@ def init_rasterfiles(datapath, preloadtypes):
     _rasterfiles = {
          'MNT50': datapath + 'bt/MNT50.shp'
     }
-    #try:
-    for pt in preloadtypes:
-        get_raster(pt)
-    #except Exception as e:
-    #    log.error('Could not initialize raster files. Make sure they exist in the following directory: %s (Exception: %s)' % (datapath, e))
+    try:
+        for pt in preloadtypes:
+            get_raster(pt)
+    except Exception as e:
+        log.error('Could not initialize raster files. Make sure they exist in the following directory: %s (Exception: %s)' % (datapath, e))
 
 
 class Tile(object):

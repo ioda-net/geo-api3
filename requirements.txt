@@ -24,3 +24,4 @@ SQLAlchemy==1.0.7
 waitress
 WebTest==2.0.18
 toml
+lxml==3.4.4

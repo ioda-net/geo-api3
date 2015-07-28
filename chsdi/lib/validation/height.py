@@ -43,6 +43,6 @@ class HeightValidation(object):
         if not isinstance(value, list):
             value = value.split(',')
             for i in value:
-                if i not in ('DTM25', 'DTM2', 'COMB'):
+                if i not in ('MNT50'):
                     raise HTTPBadRequest("Please provide a valid name for the elevation model DTM25, DTM2 or COMB")
         self._layers = value

@@ -52,11 +52,11 @@ class ProfileValidation(object):
     @layers.setter
     def layers(self, value):
         if value is None:
-            self._layers = ['DTM25']
+            self._layers = ['MNT50']
         else:
             value = value.split(',')
             for i in value:
-                if i not in ('DTM25', 'DTM2', 'COMB'):
+                if i not in ('MNT50'):
                     raise HTTPBadRequest("Please provide a valid name for the elevation model DTM25, DTM2 or COMB")
             value.sort()
             self._layers = value

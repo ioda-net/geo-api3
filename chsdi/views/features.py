@@ -20,9 +20,9 @@ from chsdi.lib.validation.mapservice import MapServiceValidation
 class FeatureParams(MapServiceValidation):
 
     def __init__(self, request):
-        super(FeatureParams, self).__init__()
+        super().__init__()
         # Map and topic represent the same resource
-        self.mapName = request.matchdict.get('map')
+        self.portal_name = request.matchdict.get('portal')
         self.cbName = request.params.get('callback')
         self.lang = request.lang
         self.returnGeometry = request.params.get('returnGeometry')
@@ -31,19 +31,6 @@ class FeatureParams(MapServiceValidation):
         self.varnish_authorized = request.headers.get('X-SearchServer-Authorized', 'false').lower() == 'true'
 
 # for releases requests
-
-
-def _get_releases_params(request):
-    params = FeatureParams(request)
-    params.imageDisplay = request.params.get('imageDisplay')
-    params.mapExtent = request.params.get('mapExtent')
-    # our intersection geometry is the full mapExtent passed
-    params.geometry = request.params.get('mapExtent')
-    params.geometryType = 'esriGeometryEnvelope'
-    params.layer = request.matchdict.get('layerId')
-    return params
-
-# For identify services
 
 
 def _get_features_params(request):
@@ -125,9 +112,9 @@ def _identify(request):
 
     layerIds = params.layers
     models = [
-        models_from_name(layerId) for
+        models_from_name(params.portal_name, layerId) for
         layerId in layerIds
-        if models_from_name(layerId) is not None
+        if models_from_name(params.portal_name, layerId) is not None
     ]
     if models is None or len(models) == 0:
         raise exc.HTTPBadRequest('No GeoTable was found for %s' % ' '.join(layerIds))

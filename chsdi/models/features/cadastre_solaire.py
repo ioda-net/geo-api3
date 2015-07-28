@@ -25,4 +25,4 @@ class CadastreSolaire(Base, Feature):
     pente = Column(BigInteger())
 
 
-register('CADASTRESOLAIRE', CadastreSolaire)
+register('geojb', 'CADASTRESOLAIRE', CadastreSolaire)

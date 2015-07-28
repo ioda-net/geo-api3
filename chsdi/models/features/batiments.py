@@ -25,4 +25,4 @@ class Batiments(Base, Feature):
     genre_de = Column(Text(100))
 
 
-register('BATIMENTS', Batiments)
+register('geojb', 'BATIMENTS', Batiments)

@@ -21,4 +21,4 @@ class CDS(Base, Feature):
     genre_de = Column(Text(100))
 
 
-register('COUVERTUREDUSOL', CDS)
+register('geojb', 'COUVERTUREDUSOL', CDS)

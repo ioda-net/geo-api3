@@ -24,3 +24,4 @@ node_modules
 *.toml
 *.wsgi
 /cover
+/.venv

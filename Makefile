@@ -1,6 +1,7 @@
-PYTHON_CMD ?= .venv/bin/python
-PSERVE_CMD ?= .venv/bin/pserve
-NOSE_CMD ?= .venv/bin/nosetests
+PYTHON_CMD ?= $(shell pwd)/.venv/bin/python
+PIP_CMD ?= $(shell pwd)/.venv/bin/pip
+PSERVE_CMD ?= $(shell pwd)/.venv/bin/pserve
+NOSE_CMD ?= $(shell pwd)/.venv/bin/nosetests
 # We need GDAL which is hard to install in a venv, modify PYTHONPATH to use the
 # system wide version.
 PYTHON_VERSION := $(shell python3 --version | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
@@ -18,6 +19,7 @@ help:
 	@echo "- translate"
 	@echo "- prod"
 	@echo "- lint"
+	@echo "- gdal: install the gdal"
 
 
 .PHONY: serve
@@ -32,6 +34,7 @@ development.ini: node_modules
 venv:
 	@if [ ! -d .venv ]; then \
 	    virtualenv-${PYTHON_VERSION} .venv; \
+	    ${PIP_CMD} install -U pip; \
 	    ${PYTHON_CMD} setup.py develop; \
 	fi
 
@@ -60,6 +63,19 @@ translate: venv
 prod: node_modules venv
 	cd bin && ./node_modules/gulp/bin/gulp.js wsgi
 
+
+.PHONY: gdal
+gdal: venv
+	cd .venv && \
+	mkdir -p build && \
+	${PIP_CMD} install --download build GDAL==1.11.2 && \
+	cd build && \
+	tar -xzf GDAL-1.11.2.tar.gz && \
+	cd GDAL-1.11.2 && \
+	${PYTHON_CMD} setup.py build_ext --gdal-config=/usr/bin/gdal-config-64 --library-dirs=/usr/lib --include-dirs=/usr/include/gdal && \
+	${PYTHON_CMD} setup.py install --root / && \
+	cd ../.. && \
+	${PYTHON_CMD} -c "from osgeo import gdal; print('GDAL installed'); print(gdal.__version__, gdal.__file__)"
 
 .PHONY: clean
 clean:

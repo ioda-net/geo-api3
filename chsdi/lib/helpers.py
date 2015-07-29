@@ -1,7 +1,5 @@
 import re
 from osgeo import osr, ogr
-from pyramid.threadlocal import get_current_registry
-from pyramid.i18n import get_locale_name
 from pyramid.httpexceptions import HTTPBadRequest
 import unicodedata
 from urllib.parse import quote

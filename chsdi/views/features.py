@@ -5,7 +5,7 @@ import pyramid.httpexceptions as exc
 
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from sqlalchemy.exc import InternalError
-from sqlalchemy.sql.expression import cast, func
+from sqlalchemy.sql.expression import cast
 from sqlalchemy import Text, Integer, Boolean, Numeric, Date
 from sqlalchemy import text
 from geoalchemy2.types import Geometry

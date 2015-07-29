@@ -3,7 +3,6 @@ from chsdi.models import register
 from chsdi.models.features import Feature
 from geoalchemy2.types import Geometry
 from sqlalchemy import Column
-from sqlalchemy import Float
 from sqlalchemy import Integer
 from sqlalchemy import BigInteger
 from sqlalchemy import Text
@@ -12,17 +11,17 @@ from sqlalchemy import Text
 Base = bases['sit']
 
 
-class CadastreSolaire(Base, Feature):
-    __tablename__ = 'cadastre_solaire'
+class Communes(Base, Feature):
+    __tablename__ = 'geojb_communes'
     __table_args__ = ({'schema': 'features', 'autoload': False})
-    __bodId__ = 'CADASTRESOLAIRE'
+    __bodId__ = 'COMMUNES'
     id = Column('gid', Integer, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
                       dimension=2, srid=21781))
-    rayonnement = Column(Text())
-    surface = Column(Float())
-    orientation = Column(BigInteger())
-    pente = Column(BigInteger())
+    nom = Column(Text(440))
+    ofs = Column(BigInteger())
+    ofs_arr = Column(BigInteger())
 
 
-register('geojb', 'CADASTRESOLAIRE', CadastreSolaire)
+register('geojb', 'COMMUNES', Communes)
+

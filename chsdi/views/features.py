@@ -10,7 +10,7 @@ from sqlalchemy import Text, Integer, Boolean, Numeric, Date
 from sqlalchemy import text
 from geoalchemy2.types import Geometry
 
-from chsdi.models import models_from_name
+from chsdi.models import feature_model_from_name
 from chsdi.lib.helpers import format_query
 from chsdi.lib.filters import full_text_search
 from chsdi.lib.validation.mapservice import MapServiceValidation
@@ -26,7 +26,9 @@ class FeatureParams(MapServiceValidation):
         self.cbName = request.params.get('callback')
         self.returnGeometry = request.params.get('returnGeometry')
         self.request = request
-        self.varnish_authorized = request.headers.get('X-SearchServer-Authorized', 'false').lower() == 'true'
+        self.varnish_authorized = request.headers\
+            .get('X-SearchServer-Authorized', 'false')\
+            .lower() == 'true'
 
 # for releases requests
 
@@ -96,9 +98,9 @@ def _identify(request):
 
     layerIds = params.layers
     models = [
-        models_from_name(params.portal_name, layerId) for
+        feature_model_from_name(params.portal_name, layerId) for
         layerId in layerIds
-        if models_from_name(params.portal_name, layerId) is not None
+        if feature_model_from_name(params.portal_name, layerId) is not None
     ]
     if models is None or len(models) == 0:
         raise exc.HTTPBadRequest('No GeoTable was found for %s' % ' '.join(layerIds))
@@ -137,7 +139,7 @@ def _get_features(params, extended=False):
     ''' Returns exactly one feature or raises
     an excpetion '''
     featureIds = params.featureIds.split(',')
-    models = models_from_name(params.portal_name, params.layerId)
+    models = feature_model_from_name(params.portal_name, params.layerId)
     if models is None:
         raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layerId)
 
@@ -215,7 +217,7 @@ def _find(request):
     if params.searchText is None:
         raise exc.HTTPBadRequest('Please provide a searchText')
 
-    models = models_from_name(params.portal_name, params.layer)
+    models = feature_model_from_name(params.portal_name, params.layer)
     features = []
     findColumn = lambda x: (x, x.get_column_by_property_name(params.searchField))
     if models is None:

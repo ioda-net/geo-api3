@@ -109,18 +109,18 @@ class TestFeatureFind(TestsBase):
         self.feature_find_url = '/rest/services/geojb/MapServer/find'
         self.params = {
             'layer': self.test_config['layer_id'],
-            'searchText': 'Moutier',
-            'searchField': 'nom',
+            'searchText': 'jardin',
+            'searchField': 'genre_fr',
         }
 
     def test_find_wrong_parameters(self):
         self.testapp.get(self.feature_find_url, status=400)
         params = {'layers': self.test_config['layer_id']}
         self.testapp.get(self.feature_find_url, params=params, status=400)
-        params['searchText'] = 'Moutier'
+        params['searchText'] = 'jardin'
         self.testapp.get(self.feature_find_url, params=params, status=400)
         del params['searchText']
-        params['searchField'] = 'nom'
+        params['searchField'] = 'genre_fr'
         self.testapp.get(self.feature_find_url, params=params, status=400)
 
     def test_find_wrong_field(self):
@@ -152,7 +152,7 @@ class TestFeatureFind(TestsBase):
         self.failUnless('geometry' in resp.json['results'][0])
 
     def test_find_no_match(self):
-        self.params['searchText'] = 'not_a_city_in_Switzerland'
+        self.params['searchText'] = 'not_a_genre'
         resp = self.testapp.get(self.feature_find_url, params=self.params, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json['results']) == 0)
@@ -163,18 +163,21 @@ class TestFeatureFind(TestsBase):
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json['results']) > 0)
 
-        self.params['searchText'] = 'Moutie'
+        self.setUp()
+        self.params['searchText'] = 'jardi'
         resp = self.testapp.get(self.feature_find_url, params=self.params, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json['results']) > 0)
 
+        self.setUp()
         self.params['contains'] = 'false'
-        self.params['searchText'] = 'Moutie'
+        self.params['searchText'] = 'jardi'
         resp = self.testapp.get(self.feature_find_url, params=self.params, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json['results']) == 0)
 
-        self.params['searchText'] = 'Moutier'
+        self.setUp()
+        self.params['searchText'] = 'jardin'
         resp = self.testapp.get(self.feature_find_url, params=self.params, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json['results']) > 0)

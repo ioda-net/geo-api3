@@ -103,7 +103,6 @@ class FileView(object):
                     data = kml.read()
                 return Response(data, content_type='application/vnd.google-earth.kml+xml')
         except Exception as e:
-            print(e)
             raise exc.HTTPNotFound('File %s not found' % self.file_id)
 
     @view_config(request_method='POST')

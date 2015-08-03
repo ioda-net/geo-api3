@@ -54,6 +54,15 @@ class TestFeaturesIdentify(TestsBase):
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless('geometry' not in resp.json['results'][0])
 
+    def test_properties_names(self):
+        for layer_with_feature in registered_features['geojb']:
+            self.params['layers'] = 'all:' + layer_with_feature
+            resp = self.testapp.get(self.features_url, params=self.params, status=200)
+            self.failUnless(resp.content_type == 'application/json')
+            self.failUnless(len(resp.json['propertiesNames']) > 0)
+            for layer_id in resp.json['propertiesNames']:
+                self.failUnless(len(resp.json['propertiesNames'][layer_id]) > 0)
+
     def test_query_geometry(self):
         self.params['layers'] = 'all:' + self.test_config['layer_id']
         self.params['returnGeometry'] = 'true'
@@ -87,7 +96,7 @@ class TestFeature(TestsBase):
     def test_identify_feature_inexistant_layer(self):
         self.features_url = '/'.join(self.features_url.split('/')[:-2])
         self.features_url += '/dummy/1'
-        resp = self.testapp.get(self.features_url, status=400)
+        self.testapp.get(self.features_url, status=400)
 
     def test_identify_inexistant_feature(self):
         self.features_url = '/'.join(self.features_url.split('/')[:-1])

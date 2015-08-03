@@ -122,7 +122,11 @@ def _identify(request):
             if len(features) > maxFeatures:  # pragma: no cover
                 break
 
-    return {'results': features}
+    properties_names = {}
+    for index in range(len(models)):
+        for model in models[index]:
+            properties_names.setdefault(model.__bodId__, []).extend([column.name for column in model.__mapper__.columns])
+    return {'results': features, 'propertiesNames': properties_names}
 
 
 def _get_feature_service(request):

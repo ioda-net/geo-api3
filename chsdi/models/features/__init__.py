@@ -1,4 +1,5 @@
 from sys import maxsize
+from collections import OrderedDict
 import re
 import datetime
 import decimal
@@ -55,7 +56,7 @@ class Feature(GeoInterface):
     def __read__(self):
         id = None
         geom = None
-        properties = {}
+        properties = OrderedDict()
 
         for p in class_mapper(self.__class__).iterate_properties:
             if isinstance(p, ColumnProperty):

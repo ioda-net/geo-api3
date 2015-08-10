@@ -30,7 +30,7 @@ gulp.task('build-config', function () {
 
 
 gulp.task('wsgi', function (cb) {
-  ['developement', 'production'].forEach(function (stage) {
+  ['development', 'production'].forEach(function (stage) {
     gulp.src('../parts/*.wsgi.nunjucks')
         .pipe(data(function () {
           return {

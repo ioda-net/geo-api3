@@ -27,6 +27,7 @@ class Search(SearchValidation):
         self.portalName = request.matchdict.get('map')
         self.cbName = request.params.get('callback')
         self.bbox = request.params.get('bbox')
+        self.lang = request.params.get('lang')
         self.returnGeometry = request.params.get('returnGeometry', 'true').lower() == 'true'
         self.quadindex = None
         self.origins = request.params.get('origins')
@@ -114,7 +115,8 @@ class Search(SearchValidation):
         self.sphinx.SetLimits(0, layerLimit)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC')
-        index_name = '{}_layers'.format(self.portalName)
+        index_name = '{portal}_layers_{lang}'\
+            .format(portal=self.portalName, lang=self.lang)
         searchText = self._query_fields('@(layer,label)')
         try:
             temp = self.sphinx.Query(searchText, index=index_name)

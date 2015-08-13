@@ -7,11 +7,10 @@ from pyramid.httpexceptions import HTTPInternalServerError
 from smtplib import SMTPException
 
 
-# http://kutuma.blogspot.com/2007/08/sending-emails-via-gmail-with-python.html
 @view_config(route_name='feedback', renderer='json', request_method='POST')
 def feedback(self, request):
-    defaultRecipient = 'webgis@swisstopo.ch'
-    defaultSubject = 'Customer feedback'
+    defaultRecipient = request.registry.settings['feedback.default_recipient']
+    defaultSubject = request.registry.settings['feedback.default_subject']
 
     def getParam(param, defaultValue):
         val = request.params.get(param, defaultValue)
@@ -19,27 +18,24 @@ def feedback(self, request):
         return val
 
     def mail(to, subject, text, attachement, kml, kmlfilename, jsonToAttach):
-        from email.MIMEMultipart import MIMEMultipart
-        from email.MIMEBase import MIMEBase
-        from email.MIMEText import MIMEText
-        from email import Encoders
-        import unicodedata
+        from email.mime.multipart import MIMEMultipart
+        from email.mime.base import MIMEBase
+        from email.mime.text import MIMEText
+        from email import encoders
+#        import unicodedata
         import smtplib
 
         msg = MIMEMultipart()
 
         msg['To'] = to
+        msg['From'] = to
         msg['Subject'] = subject
 
-        msg.attach(
-            MIMEText(unicodedata.normalize('NFKD',
-                                           unicode(text)).encode('UTF-8',
-                                                                 'ignore'),
-                     _charset='utf-8'))
+        msg.attach(MIMEText(text, _charset='utf-8'))
         # Attach meta information
         part = MIMEBase('application', 'json')
         part.set_payload(json.dumps(jsonToAttach))
-        Encoders.encode_base64(part)
+        encoders.encode_base64(part)
         part.add_header('Content-Disposition', 'attachment; filename=' + jsonfilename)
         msg.attach(part)
 
@@ -51,7 +47,7 @@ def feedback(self, request):
             part = MIMEBase(types[0], types[1])
             filePart = attachement.file.read()
             part.set_payload(filePart)
-            Encoders.encode_base64(part)
+            encoders.encode_base64(part)
             part.add_header('Content-Disposition', 'attachment; filename="%s"' % attachement.filename)
             msg.attach(part)
 
@@ -59,17 +55,17 @@ def feedback(self, request):
         if kml is not None and kml is not '':
             part = MIMEBase('application', 'vnd.google-earth.kml+xml')
             part.set_payload(kml)
-            Encoders.encode_base64(part)
+            encoders.encode_base64(part)
             part.add_header('Content-Disposition', 'attachment; filename=' + kmlfilename)
             msg.attach(part)
 
-        mailServer = smtplib.SMTP('127.0.0.1', 25)
-        mailServer.ehlo()
-        mailServer.starttls()
-        mailServer.ehlo()
-        # Recipients and sender are always the same
-        mailServer.sendmail(to, to, msg.as_string())
-        mailServer.close()
+        mailServer = smtplib.SMTP(
+            request.registry.settings['feedback.mail_host_name'],
+            request.registry.settings['feedback.mail_host_port'])
+        err = mailServer.send_message(msg)
+        if err:
+            print(err)
+        mailServer.quit()
 
     ua = getParam('ua', 'no user-agent found')
     permalink = getParam('permalink', 'No permalink provided')
@@ -107,7 +103,8 @@ def feedback(self, request):
             kmlfilename,
             jsonAtt
         )
-    except SMTPException:
+    except SMTPException as e:
+        print(e)
         raise HTTPInternalServerError()
 
     return {'success': True}

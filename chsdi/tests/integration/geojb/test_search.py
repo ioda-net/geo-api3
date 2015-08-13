@@ -22,9 +22,13 @@ class TestSearchLayers(TestSearchServiceView):
         self.failUnless(resp.content_type == 'application/javascript')
 
     def test_search_layers_for_one_layer(self):
-        resp = self.testapp.get(self.search_uri, params={'searchText': self.layer_id, 'type': 'layers', 'limit': 1}, status=200)
+        resp = self.testapp.get(self.search_uri, params={'searchText': self.layer_id, 'type': 'layers', 'limit': 1, 'lang': 'fr'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json['results']) == 1)
+
+        resp = self.testapp.get(self.search_uri, params={'searchText': self.layer_id, 'type': 'layers', 'limit': 2, 'lang': 'fr'}, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(len(resp.json['results']) == 2)
 
     def test_search_layers_accents(self):
         resp = self.testapp.get(self.search_uri, params={'searchText': '*%+&/()=?!üäöéà$@i£$', 'type': 'layers'}, status=200)

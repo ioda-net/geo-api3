@@ -49,7 +49,7 @@ node_modules:
 
 .PHONY: test
 test: venv
-	PYTHONPATH=${PYTHONPATH} ${NOSE_CMD}
+	PYTHONPATH=${PYTHONPATH} ${NOSE_CMD} --cover-html
 
 
 .PHONY: lint

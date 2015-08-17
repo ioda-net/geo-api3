@@ -1,4 +1,5 @@
 import re
+from collections import OrderedDict
 
 from pyramid.view import view_config
 import pyramid.httpexceptions as exc
@@ -286,4 +287,17 @@ def _process_feature(feature, params):
     else:
         layerBodId = f.get('layerBodId')
         f['layerName'] = layerBodId
+    # In order for all translations, including the column genre to be handled
+    # the same way, we rename genre_fr into genre and we delete genre_de while
+    # preserving the original order.
+    if 'properties' in f:
+        properties = OrderedDict()
+        for key, value in f['properties'].items():
+            if key == 'genre_fr':
+                properties['genre'] = value
+            elif key == 'genre_de':
+                continue
+            else:
+                properties[key] = value
+            f['properties'] = properties
     return f

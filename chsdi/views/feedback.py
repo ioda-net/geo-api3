@@ -36,6 +36,7 @@ class Feedback:
         permalink = self.get_param('permalink', 'No permalink provided')
         feedback = self.get_param('feedback', 'No feedback provided')
         self.user_email = self.get_param('email', None)
+        self.recipient = self.get_param('to', None)
         self.subject = self.get_param('subject', None)
         text_format = {
             'user': self.user_email,
@@ -76,7 +77,7 @@ User-Agent: {ua}'''.format(**text_format)
 
     def prepare_message(self):
         msg = MIMEMultipart()
-        msg['To'] = self.default_recipient
+        msg['To'] = self.recipient if self.recipient else self.default_recipient
         msg['From'] = self.user_email if self.user_email else self.default_recipient
         msg['Subject'] = self.subject if self.subject else self.default_subject
         msg.attach(MIMEText(self.text, _charset='utf-8'))

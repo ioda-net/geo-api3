@@ -22,6 +22,9 @@ help:
 	@echo "- wsgi"
 	@echo "- lint"
 	@echo "- gdal: install python 3 binding for the gdal"
+	@echo "- release: tag the current commit and push it"
+	@echo "- prod: update git repo and go to last tag"
+	@echo "- revert: revert to the previous tag"
 
 
 .PHONY: serve
@@ -86,6 +89,26 @@ gdal: venv
 	${PYTHON_CMD} setup.py install --root / && \
 	cd ../.. && \
 	${PYTHON_CMD} -c "from osgeo import gdal; print('GDAL installed'); print(gdal.__version__, gdal.__file__)"
+
+
+.PHONY: release
+realease:
+	git tag $(shell date +"%Y-%m-%d-%H-%M-%S")
+	git push
+	git push --tags
+
+
+.PHONY: prod
+prod:
+	git pull && git checkout $(shell git tag | sort -nr | head -n 1) && \
+	    sudo systemctl restart apache2
+
+
+.PHONY: revert
+revert:
+	git pull && git checkout $(shell git tag | sort -nr | head -n 2 | tail -n 1) && \
+	    sudo systemctl restart apache2
+
 
 .PHONY: clean
 clean:

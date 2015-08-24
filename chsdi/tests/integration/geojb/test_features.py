@@ -70,8 +70,8 @@ class TestFeaturesIdentify(TestsBase):
 class TestFeature(TestsBase):
     def setUp(self):
         super().setUp()
-        self.feature_id = 1691925
-        self.complementary_feature_id = 1691926
+        self.feature_id = 1884498
+        self.complementary_feature_id = 1884496
         self.features_url = \
             '/rest/services/geojb/MapServer/{layer_id}/{feature_id}'\
             .format(

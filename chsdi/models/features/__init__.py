@@ -2,6 +2,7 @@ from sys import maxsize
 from collections import OrderedDict
 import datetime
 import decimal
+import pyramid.httpexceptions as exc
 from shapely.geometry import asShape
 from shapely.geometry import box
 from sqlalchemy.sql import func
@@ -68,6 +69,9 @@ class Feature(GeoInterface):
                 elif isinstance(col.type, Geometry) and \
                         col.name == self.geometry_column_to_return().name:
                     if val is not None:
+                        if len(val.data) > 1000000:  # pragma: no cover
+                            raise exc.HTTPRequestEntityTooLarge(
+                                'Feature ID %s: is too large' % self.id)
                         geom = to_shape(val)
                 elif not col.foreign_keys and not isinstance(col.type, Geometry):
                     properties[p.key] = val

@@ -1,14 +1,15 @@
 from pyramid.httpexceptions import HTTPBadRequest
 
+from chsdi.lib.helpers import float_raise_nan
 
 MAX_SPHINX_INDEX_LENGTH = 63
 MAX_SEARCH_TERMS = 10
 
 
-class SearchValidation(object):
+class SearchValidation:
 
     def __init__(self):
-        super(SearchValidation, self).__init__()
+        super().__init__()
         self._searchText = None
         self._bbox = None
         self._returnGeometry = None
@@ -59,7 +60,7 @@ class SearchValidation(object):
             if len(values) != 4:
                 raise HTTPBadRequest("Please provide 4 coordinates in a comma separated list")
             try:
-                values = [float(val) for val in values]
+                values = [float_raise_nan(val) for val in values]
             except ValueError:
                 raise HTTPBadRequest("Please provide numerical values for the parameter bbox")
             # Swiss extent

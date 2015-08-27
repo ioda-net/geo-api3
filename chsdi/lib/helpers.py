@@ -1,6 +1,7 @@
 import pyramid
 import unicodedata
 
+import math
 from osgeo import osr, ogr
 from urllib.parse import quote
 
@@ -76,3 +77,11 @@ def get_configuration():
 
 def get_from_configuration(key):
     return get_configuration().get(key, None)
+
+
+def float_raise_nan(val):
+    """float('NaN') does not raise an Exception. This function does."""
+    ret = float(val)
+    if math.isnan(ret):
+        raise ValueError('nan is not considered valid float')
+    return ret

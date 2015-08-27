@@ -78,6 +78,11 @@ def identify_geojson(request):
     return _identify(request)
 
 
+@view_config(route_name='identify', renderer='esrijson')
+def identify_esrijson(request):
+    return _identify(request)
+
+
 @view_config(route_name='feature', renderer='geojson',
              request_param='geometryFormat=geojson')
 def view_get_feature_geojson(request):

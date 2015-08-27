@@ -50,6 +50,7 @@ def main(global_config, **settings):
     config.add_route('identify', '/rest/services/{portal}/MapServer/identify')
     config.add_route('find', '/rest/services/{portal}/MapServer/find')
     config.add_route('feature', '/rest/services/{portal}/MapServer/{layerId}/{featureId}')
+    config.add_route('features_reload', '/features_reload')
     config.add_route('search', '/rest/services/{map}/SearchServer')
     config.add_route('profile_json', '/rest/services/profile.json')
     config.add_route('profile_csv', '/rest/services/profile.csv')

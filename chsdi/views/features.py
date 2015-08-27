@@ -12,6 +12,7 @@ from sqlalchemy import text
 from geoalchemy2.types import Geometry
 
 from chsdi.models import feature_model_from_name
+from chsdi.models.features.register import register_features
 from chsdi.lib.helpers import format_query
 from chsdi.lib.filters import full_text_search
 from chsdi.lib.validation.mapservice import MapServiceValidation
@@ -64,6 +65,12 @@ def _get_find_params(request):
     params.searchField = request.params.get('searchField')
     params.contains = request.params.get('contains')
     return params
+
+
+@view_config(route_name='features_reload', renderer='json')
+def features_reload(request):
+    register_features()
+    return {'success': True}
 
 
 @view_config(route_name='identify', renderer='geojson', request_param='geometryFormat=geojson')

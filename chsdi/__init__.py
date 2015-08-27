@@ -61,6 +61,7 @@ def main(global_config, **settings):
     config.add_route('checker', '/checker')
     config.add_route('files_collection', '/files')
     config.add_route('files', '/files/{id}')
+    config.add_route('protocol', '/protocol/{type}/{id}')
     config.add_route('communes', '/communes')
 
     # Shortener

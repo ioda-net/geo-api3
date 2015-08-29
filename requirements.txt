@@ -15,8 +15,8 @@ papyrus==2.0dev4
 pep8
 psycopg2==2.6.1
 pyflakes
-pyramid-debugtoolbar==1.0.9
-pyramid-mako==1.0.2
+pyramid-debugtoolbar>=1.0.9
+pyramid-mako>=1.0.2
 pyramid==1.5.7
 pyramid_tm==0.12
 qrcode==5.1

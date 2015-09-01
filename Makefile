@@ -18,7 +18,6 @@ help:
 	@echo "- clean"
 	@echo "- serve"
 	@echo "- test"
-	@echo "- translate"
 	@echo "- wsgi"
 	@echo "- lint"
 	@echo "- gdal: install python 3 binding for the gdal"
@@ -65,11 +64,6 @@ pep8:
 
 pyflakes:
 	${PYFLAKE_CMD} chsdi
-
-
-.PHONY: translate
-translate: venv
-	./bin/translate.sh
 
 
 .PHONY: wsgi development.ini

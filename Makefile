@@ -86,7 +86,7 @@ gdal: venv
 
 
 .PHONY: release
-realease:
+release:
 	git tag $(shell date +"%Y-%m-%d-%H-%M-%S")
 	git push
 	git push --tags

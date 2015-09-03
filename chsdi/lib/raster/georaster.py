@@ -27,7 +27,7 @@ def init_rasterfiles(datapath, preloadtypes):
     try:
         for pt in preloadtypes:
             get_raster(pt)
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         log.error('Could not initialize raster files. Make sure they exist in the following directory: %s (Exception: %s)' % (datapath, e))
 
 
@@ -42,7 +42,7 @@ class Tile(object):
     def contains(self, x, y):
         return self.minX<=x and self.maxX>x and self.minY<=y and self.maxY>y
 
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         return "%f, %f, %f, %f: %s" % (self.minX, self.minY, self.maxX, self.maxY, self.filename)
 
 class BTTile(Tile):
@@ -59,7 +59,7 @@ class BTTile(Tile):
         file.seek(256+(posY+posX*self.rows)*self.dataSize)
         if self.floatingPoint==1:
           val=unpack("<f", file.read(self.dataSize))[0]
-        else:
+        else:  # pragma: no cover
           if self.dataSize==2:
               format="<h"
           else:
@@ -74,8 +74,6 @@ class GeoRaster:
         self.tiles = []
         shpRecords = shputils.loadShapefile(shapefileName)
         dir = dirname(shapefileName)
-        if dir == "":
-            dir = "."
         for shape in shpRecords:
             filename = shape['dbf_data']['location'].rstrip()
             tileClass = None

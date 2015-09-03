@@ -6,7 +6,11 @@ PYTHONPATH=".venv/lib/python${PYTHON_VERSION}/site-packages:/usr/lib64/python${P
 
 pwd
 if [[ -n "$2" ]]; then
-    PYTHONPATH=$PYTHONPATH "${NOSE_CMD}" "$1:$2"
+    if [[ "$2" == -* ]]; then
+        PYTHONPATH=$PYTHONPATH "${NOSE_CMD}" "$1" "$2"
+    else
+        PYTHONPATH=$PYTHONPATH "${NOSE_CMD}" "$1:$2"
+    fi
 else
     PYTHONPATH=$PYTHONPATH "${NOSE_CMD}" "$1"
 fi

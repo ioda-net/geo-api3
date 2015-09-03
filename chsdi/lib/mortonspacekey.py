@@ -17,10 +17,10 @@ class BBox:
         self.maxx = float(maxx)
         self.maxy = float(maxy)
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         str(self)
 
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         return 'BBox(%s,%s,%s,%s)' % (self.minx, self.miny, self.maxx, self.maxy)
 
     def __eq__(self, other):
@@ -92,7 +92,7 @@ class QuadTree:
         self.bbox = bbox
         self.levels = int(levels)
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         return 'QuadTree(%s,%s)' % (self.bbox, self.levels)
 
     '''
@@ -150,7 +150,6 @@ class QuadTree:
                     return res
             if not has_quad:
                 return res
-        return res
 
     def bbox_to_morton(self, bbox):
         '''

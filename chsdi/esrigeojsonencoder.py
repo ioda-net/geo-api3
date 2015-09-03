@@ -216,7 +216,5 @@ def loads(obj):
     except:
         return json.loads(obj,
                           object_hook=EsriGeoJSON.to_instance)
-    else:
+    else:  # pragma: no cover
         raise ValueError("%r is not a recognized esri geometry type", obj)
-
-    return obj

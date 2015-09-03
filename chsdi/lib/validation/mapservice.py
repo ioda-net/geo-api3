@@ -4,10 +4,9 @@ from pyramid.httpexceptions import HTTPBadRequest
 from chsdi.esrigeojsonencoder import loads
 
 
-class MapServiceValidation(object):
+class MapServiceValidation:
 
     def __init__(self):
-        self._where = None
         self._geometry = None
         self._geometryType = None
         self._returnGeometry = None
@@ -28,10 +27,6 @@ class MapServiceValidation(object):
             'esriGeometryPolygon',
             'esriGeometryEnvelope'
         )
-
-    @property
-    def where(self):
-        return self._where
 
     @property
     def geometry(self):
@@ -89,17 +84,11 @@ class MapServiceValidation(object):
     def offset(self):
         return self._offset
 
-    @where.setter
-    def where(self, value):
-        ## TODO regexp to test validity of sql clause
-        if value is not None:
-            self._where = value
-
     @geometry.setter
     def geometry(self, value):
-        if value is None and self._where is not None:
+        if value is None:
             return
-        elif value is None and self._where is None:
+        elif value is None:
             raise HTTPBadRequest('Please provide the parameter geometry  (Required)')
         else:
             try:
@@ -109,9 +98,9 @@ class MapServiceValidation(object):
 
     @geometryType.setter
     def geometryType(self, value):
-        if value is None and self._where is not None:
+        if value is None:
             return
-        elif value is None and self._where is None:
+        elif value is None:
             raise HTTPBadRequest('Please provide the parameter geometryType  (Required)')
         if value not in self.esriGeometryTypes:
             raise HTTPBadRequest('Please provide a valid geometry type')
@@ -119,20 +108,18 @@ class MapServiceValidation(object):
 
     @returnGeometry.setter
     def returnGeometry(self, value):
-        if value is None and self._where is not None:
+        if value is None:
             return
         elif value is False or value == 'false':
             self._returnGeometry = False
         else:
-            if self._where is not None:
-              return
             self._returnGeometry = True
 
     @imageDisplay.setter
     def imageDisplay(self, value):
-        if value is None and self._where is not None:
+        if value is None:
             return
-        elif value is None and self._where is None:
+        elif value is None:
             raise HTTPBadRequest('Please provide the parameter imageDisplay  (Required)')
         value = value.split(',')
         if len(value) != 3:
@@ -144,9 +131,9 @@ class MapServiceValidation(object):
 
     @mapExtent.setter
     def mapExtent(self, value):
-        if value is None and self._where is not None:
+        if value is None:
             return
-        elif value is None and self._where is None:
+        elif value is None:
             raise HTTPBadRequest('Please provide the parameter mapExtent  (Required)')
         else:
             try:
@@ -157,9 +144,9 @@ class MapServiceValidation(object):
 
     @tolerance.setter
     def tolerance(self, value):
-        if value is None and self._where is not None:
+        if value is None:
             return
-        elif value is None and self._where is None:
+        elif value is None:
             raise HTTPBadRequest('Please provide the parameter tolerance (Required)')
         try:
             self._tolerance = float(value)

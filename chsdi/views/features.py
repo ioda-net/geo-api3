@@ -41,7 +41,6 @@ def _get_features_params(request):
     params.mapExtent = request.params.get('mapExtent')
     params.tolerance = request.params.get('tolerance')
     params.layers = request.params.get('layers', 'all')
-    params.offset = request.params.get('offset')
     return params
 
 
@@ -184,11 +183,6 @@ def _get_features_for_filters(params, models, maxFeatures=None):
 
             # Add limit
             query = query.limit(maxFeatures) if maxFeatures is not None else query
-
-            # Add offset
-            if params.offset is not None:
-                query = query.offset(params.offset)
-
 
             for feature in query:
                 yield feature

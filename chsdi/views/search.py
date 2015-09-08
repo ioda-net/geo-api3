@@ -30,7 +30,6 @@ class Search(SearchValidation):
         self.quadindex = None
         self.origins = request.params.get('origins')
         self.featureIndexes = request.params.get('features')
-        self.timeInstant = request.params.get('timeInstant')
         self.timeEnabled = request.params.get('timeEnabled')
         self.timeStamps = request.params.get('timeStamps')
         self.typeInfo = request.params.get('type')

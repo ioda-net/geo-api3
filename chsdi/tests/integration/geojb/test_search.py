@@ -11,6 +11,23 @@ class TestSearchServiceView(TestsBase):
     def test_no_type(self):
         self.testapp.get(self.search_uri, params={'searchText': 'ga'}, status=400)
 
+    def test_inexistant_type(self):
+        self.testapp.get(self.search_uri, params={'searchText': 'ga', 'type': 'gnu_linux'}, status=400)
+
+    def test_no_search_text(self):
+        self.testapp.get(self.search_uri, params={'type': 'layers'}, status=400)
+
+    def test_wrong_bbox(self):
+        # Wrong number
+        self.testapp.get(self.search_uri, params={'searchText': 'couverture', 'type': 'layers', 'bbox': '789.52,456.54'}, status=400)
+        # Wrong separator
+        self.testapp.get(self.search_uri, params={'searchText': 'couverture', 'type': 'layers', 'bbox': '789.52|456.54'}, status=400)
+        # Not numeric
+        self.testapp.get(self.search_uri, params={'searchText': 'couverture', 'type': 'layers', 'bbox': '2,aaa,bbbb,2'}, status=400)
+        # Invalid coords for Swiss
+        self.testapp.get(self.search_uri, params={'searchText': 'couverture', 'type': 'layers', 'bbox': '420000,420001,0,2'}, status=400)
+        self.testapp.get(self.search_uri, params={'searchText': 'couverture', 'type': 'layers', 'bbox': '2,0,420000,420001'}, status=400)
+
 
 class TestSearchLayers(TestSearchServiceView):
     def test_search_layers(self):

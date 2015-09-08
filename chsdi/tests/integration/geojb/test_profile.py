@@ -53,3 +53,19 @@ class TestProfileView(TestsBase):
     def test_profile_json_invalid_linestring(self):
         resp = self.testapp.get('/rest/services/profile.json', params={'geom': '{"type":"LineString","coordinates":[[550050,206550]]}'}, status=400)
         resp.mustcontain('Invalid Linestring syntax')
+
+    def test_profile_layer(self):
+        params = {'geom': '{"type":"LineString","coordinates":[[550050,206550],[556950,204150],[561050,207950]]}', 'layers': ['MNT50']}
+        self.testapp.get('/rest/services/profile.json', params=params, status=200)
+
+    def test_profile_wrong_layer(self):
+        params = {'geom': '{"type":"LineString","coordinates":[[550050,206550],[556950,204150],[561050,207950]]}', 'layers': ['toto']}
+        self.testapp.get('/rest/services/profile.json', params=params, status=400)
+
+    def test_profile_offset(self):
+        params = {'geom': '{"type":"LineString","coordinates":[[550050,206550],[556950,204150],[561050,207950]]}', 'offset': 3}
+        self.testapp.get('/rest/services/profile.json', params=params, status=200)
+
+    def test_profile_wrong_offset(self):
+        params = {'geom': '{"type":"LineString","coordinates":[[550050,206550],[556950,204150],[561050,207950]]}', 'offset': 'aaa'}
+        self.testapp.get('/rest/services/profile.json', params=params, status=400)

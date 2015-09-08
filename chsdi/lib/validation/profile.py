@@ -40,7 +40,7 @@ class ProfileValidation(object):
             raise HTTPBadRequest("Error loading geometry in JSON string")
         try:
             shape = asShape(geom)
-        except:
+        except:  # pragma: no cover
             raise HTTPBadRequest("Error converting JSON to Shape")
         try:
             shape.is_valid

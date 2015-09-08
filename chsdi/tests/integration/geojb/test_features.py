@@ -32,7 +32,9 @@ class TestFeaturesIdentify(TestsBase):
         params['tolerance'] = 5
         self.testapp.get(self.features_url, params=params, status=400)
 
-    def test_no_layers(self):
+    def test_wrong_layers(self):
+        reps = self.testapp.get(self.features_url, params=self.params, status=400)
+        self.params['layers'] = 'toto'
         self.testapp.get(self.features_url, params=self.params, status=400)
 
     def test_query(self):
@@ -67,6 +69,28 @@ class TestFeaturesIdentify(TestsBase):
         resp = self.testapp.get(self.features_url, params=self.params, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless('geometry' in resp.json['results'][0])
+
+    def test_wrong_geometry_type(self):
+        self.params['layers'] = 'all:' + self.test_config['layer_id']
+        self.params['geometryType'] = 'toto'
+        self.testapp.get(self.features_url, params=self.params, status=400)
+
+    def test_wrong_image_display(self):
+        self.params['layers'] = 'all:' + self.test_config['layer_id']
+        self.params['imageDisplay'] = '1920,778'
+        self.testapp.get(self.features_url, params=self.params, status=400)
+        self.params['imageDisplay'] = '1920,778,auie'
+        self.testapp.get(self.features_url, params=self.params, status=400)
+
+    def test_wrong_map_extent(self):
+        self.params['layers'] = 'all:' + self.test_config['layer_id']
+        self.params['mapExtent'] = 'toto,234543.77,591610.84,236488.77'
+        self.testapp.get(self.features_url, params=self.params, status=400)
+
+    def test_wrong_tolerance(self):
+        self.params['layers'] = 'all:' + self.test_config['layer_id']
+        self.params['tolerance'] = 'toto'
+        self.testapp.get(self.features_url, params=self.params, status=400)
 
 
 class TestFeature(TestsBase):
@@ -185,3 +209,13 @@ class TestFeatureFind(TestsBase):
         resp = self.testapp.get(self.feature_find_url, params=self.params, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json['results']) > 0)
+
+    def test_find_wrong_search_fiels(self):
+        # No search field
+        params = dict(self.params)
+        del params['searchField']
+        self.testapp.get(self.feature_find_url, params=params, status=400)
+
+        # Multiple search fields
+        params['searchField'] = 'genre_de,genre_fr'
+        self.testapp.get(self.feature_find_url, params=params, status=400)

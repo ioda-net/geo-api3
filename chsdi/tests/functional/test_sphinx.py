@@ -79,12 +79,9 @@ class Test_SphinxApi(unittest.TestCase):
             i += 1
 
         api.SetServer(host, port)
-        api.SetWeights([100, 1])
         api.SetMatchMode(mode)
         if filtervals:
             api.SetFilter(filtercol, filtervals)
-        if groupby:
-            api.SetGroupBy(groupby, sphinxapi.SPH_GROUPBY_ATTR, groupsort)
         if sortby:
             api.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, sortby)
         if limit:

@@ -43,6 +43,7 @@ feedback.mail_host_port = {{feedback.mail_host_port}}
 
 # Raster
 dtm_base_path = {{ raster.dtm_base_path }}
+raster.available = {{ raster.available | join(",") }}
 raster.preloaded = {{ raster.preloaded | join(",") }}
 
 

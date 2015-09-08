@@ -1,15 +1,16 @@
 import geojson
 
 from pyramid.httpexceptions import HTTPBadRequest
-
 from shapely.geometry import asShape
 
+from chsdi.lib.helpers import get_from_configuration
 
-class ProfileValidation(object):
+
+class ProfileValidation:
 
     def __init__(self):
         self._linestring = None
-        self._layers = None
+        self._elevation_models = None
         self._nb_points = None
         self._ma_offset = None
 
@@ -18,8 +19,8 @@ class ProfileValidation(object):
         return self._linestring
 
     @property
-    def layers(self):
-        return self._layers
+    def elevation_models(self):
+        return self._elevation_models
 
     @property
     def nb_points(self):
@@ -49,17 +50,18 @@ class ProfileValidation(object):
 
         self._linestring = shape
 
-    @layers.setter
-    def layers(self, value):
+    @elevation_models.setter
+    def elevation_models(self, value):
         if value is None:
-            self._layers = ['MNT50']
+            available_rasters = get_from_configuration('raster.available').split(',')
+            self._elevation_models = [model.strip() for model in available_rasters]
         else:
             value = value.split(',')
             for i in value:
-                if i not in ('MNT50'):
+                if i not in get_from_configuration('raster.available'):
                     raise HTTPBadRequest("Please provide a valid name for the elevation model DTM25, DTM2 or COMB")
             value.sort()
-            self._layers = value
+            self._elevation_models = value
 
     @nb_points.setter
     def nb_points(self, value):
@@ -69,7 +71,7 @@ class ProfileValidation(object):
             if value.isdigit():
                 self._nb_points = int(value)
             else:
-                raise HTTPBadRequest("Please provide a numerical value for the parameter 'NbPoints'/'nb_points'")
+                raise HTTPBadRequest("Please provide a numerical value for the parameter 'NbPoints'")
 
 
     @ma_offset.setter

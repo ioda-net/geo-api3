@@ -1,12 +1,14 @@
 from pyramid.httpexceptions import HTTPBadRequest
 
+from chsdi.lib.helpers import get_from_configuration
 
-class HeightValidation(object):
+
+class HeightValidation:
 
     def __init__(self):
         self._lon = None
         self._lat = None
-        self._layers = None
+        self._elevation_models = None
 
     @property
     def lon(self):
@@ -17,8 +19,8 @@ class HeightValidation(object):
         return self._lat
 
     @property
-    def layers(self):
-        return self._layers
+    def elevation_models(self):
+        return self._elevation_models
 
     @lon.setter
     def lon(self, value):
@@ -38,11 +40,14 @@ class HeightValidation(object):
         except ValueError:
             raise HTTPBadRequest("Please provide numerical values for the parameter 'northing'/'lat'")
 
-    @layers.setter
-    def layers(self, value):
+    @elevation_models.setter
+    def elevation_models(self, value):
+        if value is None:
+            value = get_from_configuration('raster.available')
+
         if not isinstance(value, list):
-            value = value.split(',')
+            value = [model.strip() for model in value.split(',')]
             for i in value:
-                if i not in ('MNT50'):
+                if i not in get_from_configuration('raster.available'):
                     raise HTTPBadRequest("Please provide a valid name for the elevation model DTM25, DTM2 or COMB")
-        self._layers = value
+        self._elevation_models = value

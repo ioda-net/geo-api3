@@ -21,8 +21,8 @@ class TestHeightView(TestsBase):
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['height'])
 
-    def test_height_wrong_layer(self):
-        resp = self.testapp.get('/rest/services/height', params={'easting': '600000', 'northing': '200000', 'layers': 'TOTO'}, status=400)
+    def test_height_wrong_elevation_model(self):
+        resp = self.testapp.get('/rest/services/height', params={'easting': '600000', 'northing': '200000', 'elevationModel': 'TOTO'}, status=400)
         resp.mustcontain("Please provide a valid name for the elevation")
 
     def test_height_wrong_lon_value(self):

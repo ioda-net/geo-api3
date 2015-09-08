@@ -5,6 +5,8 @@ import unicodedata
 from urllib.parse import quote
 from urllib.parse import urlparse
 
+import pyramid
+
 
 def make_agnostic(path):
     handle_path = lambda x: x.split('://')[1] if len(x.split('://')) == 2 else path
@@ -101,3 +103,12 @@ def transformCoordinate(wkt, srid_from, srid_to):
     geom.AssignSpatialReference(srid_in)
     geom.TransformTo(srid_out)
     return geom
+
+
+def get_configuration():
+    registry = pyramid.threadlocal.get_current_registry()
+    return registry.settings
+
+
+def get_from_configuration(key):
+    return get_configuration().get(key, None)

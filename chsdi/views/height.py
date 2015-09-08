@@ -16,12 +16,10 @@ class Height(HeightValidation):
             self.lat = request.params.get('northing')
         else:
             self.lat = request.params.get('lat')
-        if 'layers' in request.params:
-            self.layers = request.params.get('layers')
-        elif 'elevation_model' in request.params:
-            self.layers = request.params.get('elevation_model')
+        if 'elevationModel' in request.params:
+            self.elevation_models = request.params.get('elevationModel')
         else:
-            self.layers = [model.strip() for model in
+            self.elevation_models = [model.strip() for model in
                            request.registry
                            .settings['raster.preloaded']
                            .split(',')]
@@ -29,7 +27,7 @@ class Height(HeightValidation):
 
     @view_config(route_name='height', renderer='jsonp', http_cache=0)
     def height(self):
-        rasters = [get_raster(layer) for layer in self.layers]
+        rasters = [get_raster(layer) for layer in self.elevation_models]
         alt = self._filter_alt(rasters[0].getVal(self.lon, self.lat))
         alt = alt if alt is not None else ''
 

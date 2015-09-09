@@ -44,7 +44,7 @@ class FileView:
             return self.query(Files)\
                 .filter(Files.admin_id == self.admin_id)\
                 .one()
-        except NoResultFound:
+        except NoResultFound:  # pragma: no cover
             raise exc.HTTPNotFound('File %s not found' % self.admin_id)
 
     def _get_uuid(self):
@@ -52,13 +52,21 @@ class FileView:
             .replace(b'=', b'')\
             .decode('ascii')
 
-    @view_config(route_name='files_collection', request_method='OPTIONS', renderer='string')
-    def options_files_collection(self):
-        # TODO: doesn't seem to be applied
+    @view_config(request_method='OPTIONS')
+    def options_file(self):
+        """respond to /files/{id}"""
+        self._handle_options_request()
+
+    def _handle_options_request(self):
         self.request.response.headers.update({
             'Access-Control-Allow-Methods': 'POST,GET,DELETE,OPTIONS',
-            'Access-Control-Allow-Credentials': 'true'})
-        return ''
+            'Access-Control-Allow-Credentials': 'true'
+        })
+
+    @view_config(route_name='files_collection', request_method='OPTIONS')
+    def options_files_collection(self):
+        """Respond to /files"""
+        self._handle_options_request()
 
     @view_config(route_name='files_collection', request_method='POST')
     @validate_kml_input()
@@ -115,7 +123,7 @@ class FileView:
                 self._save_kml(data, mime, update=True)
 
                 return {'adminId': self.admin_id, 'fileId': self.file_id, 'status': 'updated'}
-            except Exception as e:
+            except Exception as e:  # pragma: no cover
                 raise exc.HTTPInternalServerError('Cannot update file with id=%s %s' % (self.admin_id, e))
         else:
             # Fork file, get new file ids
@@ -134,7 +142,7 @@ class FileView:
             try:
                 self._delete_file()
                 return {'success': True}
-            except Exception as e:
+            except Exception as e:  # pragma: no cover
                 raise exc.HTTPInternalServerError('Error while deleting file %s. %e' % (self.file_id, e))
         elif self._file_exists():
             raise exc.HTTPUnauthorized('You are not authorized to delete file %s' % self.file_id)
@@ -149,12 +157,3 @@ class FileView:
 
     def _file_exists(self):
         return os.path.isfile(self._get_save_path())
-
-    @view_config(request_method='OPTIONS', renderer='string')
-    def options_file(self):
-        # TODO: doesn't seem to be applied
-        self.request.response.headers.update({
-            'Access-Control-Allow-Methods': 'POST,GET,DELETE,OPTIONS',
-            'Access-Control-Allow-Credentials': 'true'
-        })
-        return ''

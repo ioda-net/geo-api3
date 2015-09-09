@@ -36,9 +36,35 @@ class TestFileView(TestsBase):
         super().setUp()
         self.headers = {'Content-Type': 'application/vnd.google-earth.kml+xml'}
 
-    def test_create_kml(self):
+    def test_options(self):
+        resp = self.testapp.options('/files', status=200)
+        self.assertEqual(resp.headers['Access-Control-Allow-Methods'], 'POST,GET,DELETE,OPTIONS')
+        self.assertEqual(resp.headers['Access-Control-Allow-Credentials'], 'true')
+
+        resp = self.testapp.options('/files/toto', status=200)
+        self.assertEqual(resp.headers['Access-Control-Allow-Methods'], 'POST,GET,DELETE,OPTIONS')
+        self.assertEqual(resp.headers['Access-Control-Allow-Credentials'], 'true')
+
+    def test_create_get_kml(self):
         resp = self.testapp.post('/files', VALID_KML, headers=self.headers, status=200)
         self.assertIn('adminId', resp.json)
+        self.assertIn('fileId', resp.json)
+
+        # Get with admin id
+        admin_id = resp.json['adminId']
+        resp = self.testapp.get('/files/{}'.format(admin_id), status=200)
+        self.assertIn('fileId', resp.json)
+
+        # Get with file id
+        file_id = resp.json['fileId']
+        resp = self.testapp.get('/files/{}'.format(file_id), status=200)
+        self.assertIn('Content-Type', resp.headers)
+        self.assertEqual('application/vnd.google-earth.kml+xml; charset=UTF-8', resp.headers['Content-Type'])
+        self.assertEqual(resp.body.decode('utf-8'), VALID_KML)
+
+    def test_inexistant_id(self):
+        self.testapp.get('/files/toto', status=404)
+        self.testapp.delete('/files/toto', status=404)
 
     def test_file_invalid_content_type(self):
         self.testapp.post('/files', VALID_KML, headers={'Content-Type': WRONG_CONTENT_TYPE}, status=415)

@@ -38,3 +38,9 @@ class TestOwsChecker(TestsBase):
         resp = self.testapp.get('/owschecker/bykvp', params={'service': 'WFS', 'base_url': base_url}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         resp.mustcontain("Checked Service: WFS")
+
+    def test_form_minimal_wms_request(self):
+        base_url = 'http://wms.geo.admin.ch'
+        resp = self.testapp.get('/owschecker/form', params={'service': 'WMS', 'base_url': base_url}, status=200)
+        self.failUnless(resp.content_type == 'text/html')
+        resp.mustcontain("Checked Service: WMS")

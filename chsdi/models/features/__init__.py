@@ -42,7 +42,7 @@ def getToleranceMeters(imageDisplay, mapExtent, tolerance):
     if all((tolerance, imgPixelWidth, mapMeterWidth, imgPixelHeight, mapMeterHeight)):
         toleranceMeters = max(mapMeterWidth / imgPixelWidth, mapMeterHeight / imgPixelHeight) * tolerance
         return toleranceMeters
-    return 0.0
+    return 0.0  # pragma: no cover
 
 
 class Feature(GeoInterface):
@@ -67,9 +67,7 @@ class Feature(GeoInterface):
                 if col.primary_key:
                     id = val
                 elif isinstance(col.type, Geometry) and col.name == self.geometry_column_to_return().name:
-                    if hasattr(self, '_shape'):
-                        geom = self._shape
-                    elif val is not None:
+                    if val is not None:
                         geom = to_shape(val)
                 elif not col.foreign_keys and not isinstance(col.type, Geometry):
                     properties[p.key] = val
@@ -91,11 +89,7 @@ class Feature(GeoInterface):
             extents.append(shape.bounds)
         except:  # pragma: no cover
             pass
-        try:
-            for geom in feature.geometry.geometries:
-                extents.append(asShape(geom).bounds)
-        except:  # pragma: no cover
-            pass
+
         return geojson.Feature(
             id=self.id,
             geometry=feature.geometry,
@@ -165,8 +159,6 @@ class Feature(GeoInterface):
         geomColumnToReturnKey = self.__mapper__.get_property_by_column(self.geometry_column_to_return()).key
         if excludePkey:
             keysToExclude = (primaryKeyColumn, geomColumnKey, geomColumnToReturnKey)
-        else:
-            keysToExclude = (geomColumnKey, geomColumnToReturnKey)
 
         for column in self.__mapper__.columns:
             ormColumnName = self.__mapper__.get_property_by_column(column).key

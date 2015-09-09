@@ -13,10 +13,7 @@ def validate_kml_input():
     def decorator(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
-            if hasattr(self, 'request'):
-                request = self.request
-            else:
-                request = self
+            request = getattr(self, 'request', self)
 
             MAX_FILE_SIZE = 1024 * 1024 * 2
 

@@ -50,6 +50,7 @@ protocol.pdc = {{protocol.pdc}}
 
 # Raster
 dtm_base_path = {{ raster.dtm_base_path }}
+raster.available = {{ raster.available | join(",") }}
 raster.preloaded = {{ raster.preloaded | join(",") }}
 
 

@@ -1,8 +1,6 @@
-import re
-
-from pyramid.view import view_config
 import pyramid.httpexceptions as exc
 
+from pyramid.view import view_config
 from shapely.geometry import box, Point
 
 from chsdi.lib.validation.search import SearchValidation
@@ -18,7 +16,7 @@ class Search(SearchValidation):
     FEATURE_LIMIT = 20
 
     def __init__(self, request):
-        super(Search, self).__init__()
+        super().__init__()
         self.quadtree = msk.QuadTree(
             msk.BBox(420000, 30000, 900000, 510000), 20)
         self.sphinx = sphinxapi.SphinxClient()
@@ -32,7 +30,6 @@ class Search(SearchValidation):
         self.quadindex = None
         self.origins = request.params.get('origins')
         self.featureIndexes = request.params.get('features')
-        self.timeInstant = request.params.get('timeInstant')
         self.timeEnabled = request.params.get('timeEnabled')
         self.timeStamps = request.params.get('timeStamps')
         self.typeInfo = request.params.get('type')
@@ -99,16 +96,15 @@ class Search(SearchValidation):
         elif len(searchList) == 1:
             searchTextFinal = searchList[0]
 
+        query_results = None
         if len(searchList) != 0:
             try:
-                temp = self.sphinx.Query(searchTextFinal, index='{}_locations'.format(self.portalName))
+                query_results = self.sphinx.Query(searchTextFinal, index='{}_locations'.format(self.portalName))
             except IOError:  # pragma: no cover
                 raise exc.HTTPGatewayTimeout()
-            temp = temp['matches'] if temp is not None else temp
-        else:  # pragma: no cover
-            temp = []
-        if temp is not None and len(temp) > 0:
-            self._parse_location_results(temp)
+            query_results = query_results['matches'] if query_results is not None else query_results
+        if query_results is not None and len(query_results) > 0:
+            self._parse_location_results(query_results)
 
     def _layer_search(self):
         layerLimit = self.limit if self.limit and self.limit <= self.LAYER_LIMIT else self.LAYER_LIMIT
@@ -131,7 +127,7 @@ class Search(SearchValidation):
             quadindex windows. '''
         if self.quadindex is not None:
             buildQuadQuery = lambda x: ''.join(('@geom_quadindex ', x, ' | '))
-            if len(self.quadindex) == 1:
+            if len(self.quadindex) == 1:  # pragma: no cover
                 quadSearch = ''.join(('@geom_quadindex ', self.quadindex, '*'))
             else:
                 quadSearch = ''.join(('@geom_quadindex ', self.quadindex, '* | '))
@@ -140,7 +136,8 @@ class Search(SearchValidation):
                     for x in range(1, len(self.quadindex))
                 )[:-len(' | ')]
             return quadSearch
-        return ''
+        else:  # pragma: no cover
+            return ''
 
     def _get_geoanchor_from_bbox(self):
         centerX = (self.bbox[2] + self.bbox[0]) / 2
@@ -195,10 +192,10 @@ class Search(SearchValidation):
             firstWord = self.searchText[0].lower()
             if firstWord in PARCEL_KEYWORDS:
                 # As one cannot apply filters on string attributes, we use the rank information
-                self.sphinx.SetFilter('rank', self._origins_to_ranks(['parcel']))
+                self.sphinx.SetFilter('rank', self._origins_to_ranks(['parcels']))
                 del self.searchText[0]
             if firstWord in ADDRESS_KEYWORDS:
-                self.sphinx.SetFilter('rank', self._origins_to_ranks(self.addressOrigins))
+                self.sphinx.SetFilter('rank', self._origins_to_ranks(['cities', 'streetnames']))
                 del self.searchText[0]
 
     def _filter_locations_by_origins(self):
@@ -215,16 +212,11 @@ class Search(SearchValidation):
     def _parse_location_results(self, results):
         nb_address = 0
         for res in results:
-            origin = res['attrs']['origin']
-            if origin in self.addressOrigins:
-                if nb_address < self.LOCATION_LIMIT:
-                    if not self.bbox or self._bbox_intersection(self.bbox, res['attrs']['geom_st_box2d']):
-                        res['attrs'] = self._parse_address(res['attrs'])
-                        self.results['results'].append(res)
-                        nb_address += 1
-            else:
+            if nb_address < self.LOCATION_LIMIT:
                 if not self.bbox or self._bbox_intersection(self.bbox, res['attrs']['geom_st_box2d']):
+                    res['attrs'] = self._parse_address(res['attrs'])
                     self.results['results'].append(res)
+                    nb_address += 1
 
     def _get_quad_index(self):
         try:
@@ -249,7 +241,7 @@ class Search(SearchValidation):
             arr = [float(value) for value in result.replace('BOX(', '').replace(')', '')
                       .replace(',', ' ').split(' ')]
             resbox = box(arr[0], arr[1], arr[2], arr[3]) if not _is_point(arr) else Point(arr[0], arr[1])
-        except:
+        except:  # pragma: no cover
             # We bail with True to be conservative and
             # not exclude this geometry from the result
             # set. Only happens if result does not

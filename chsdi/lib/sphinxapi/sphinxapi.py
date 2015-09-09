@@ -155,20 +155,6 @@ class SphinxClient:
             self._socket.close()
 
 
-    def GetLastError (self):
-        """
-        Get last error message (string).
-        """
-        return self._error
-
-
-    def GetLastWarning (self):
-        """
-        Get last warning message (string).
-        """
-        return self._warning
-
-
     def SetServer (self, host, port = None):
         """
         Set searchd server host and port.
@@ -358,51 +344,6 @@ class SphinxClient:
         self._sortby = clause
 
 
-    def SetWeights (self, weights): 
-        """
-        Set per-field weights.
-        WARNING, DEPRECATED; do not use it! use SetFieldWeights() instead
-        """
-        assert(isinstance(weights, list))
-        for w in weights:
-            AssertUInt32 ( w )
-        self._weights = weights
-
-
-    def SetFieldWeights (self, weights):
-        """
-        Bind per-field weights by name; expects (name,field_weight) dictionary as argument.
-        """
-        assert(isinstance(weights,dict))
-        for key,val in weights.items():
-            assert(isinstance(key,str))
-            AssertUInt32 ( val )
-        self._fieldweights = weights
-
-
-    def SetIndexWeights (self, weights):
-        """
-        Bind per-index weights by name; expects (name,index_weight) dictionary as argument.
-        """
-        assert(isinstance(weights,dict))
-        for key,val in weights.items():
-            assert(isinstance(key,str))
-            AssertUInt32(val)
-        self._indexweights = weights
-
-
-    def SetIDRange (self, minid, maxid):
-        """
-        Set IDs range to match.
-        Only match records if document ID is beetwen $min and $max (inclusive).
-        """
-        assert(isinstance(minid, int))
-        assert(isinstance(maxid, int))
-        assert(minid<=maxid)
-        self._min_id = minid
-        self._max_id = maxid
-
-
     def SetFilter ( self, attribute, values, exclude=0 ):
         """
         Set values set filter.
@@ -417,27 +358,6 @@ class SphinxClient:
         self._filters.append ( { 'type':SPH_FILTER_VALUES, 'attr':attribute, 'exclude':exclude, 'values':values } )
 
 
-    def SetFilterRange (self, attribute, min_, max_, exclude=0 ):
-        """
-        Set range filter.
-        Only match records if 'attribute' value is beetwen 'min_' and 'max_' (inclusive).
-        """
-        assert(isinstance(attribute, str))
-        AssertInt32(min_)
-        AssertInt32(max_)
-        assert(min_<=max_)
-
-        self._filters.append ( { 'type':SPH_FILTER_RANGE, 'attr':attribute, 'exclude':exclude, 'min':min_, 'max':max_ } )
-
-
-    def SetFilterFloatRange (self, attribute, min_, max_, exclude=0 ):
-        assert(isinstance(attribute,str))
-        assert(isinstance(min_,float))
-        assert(isinstance(max_,float))
-        assert(min_ <= max_)
-        self._filters.append ( {'type':SPH_FILTER_FLOATRANGE, 'attr':attribute, 'exclude':exclude, 'min':min_, 'max':max_} ) 
-
-
     def SetGeoAnchor (self, attrlat, attrlong, latitude, longitude):
         assert isinstance(attrlat,str)
         assert isinstance(attrlong,str)
@@ -447,73 +367,6 @@ class SphinxClient:
         self._anchor['attrlong'] = attrlong.encode('utf-8')
         self._anchor['lat'] = latitude
         self._anchor['long'] = longitude
-
-
-    def SetGroupBy ( self, attribute, func, groupsort='@group desc' ):
-        """
-        Set grouping attribute and function.
-        """
-        assert(isinstance(attribute, str))
-        assert(func in [SPH_GROUPBY_DAY, SPH_GROUPBY_WEEK, SPH_GROUPBY_MONTH, SPH_GROUPBY_YEAR, SPH_GROUPBY_ATTR, SPH_GROUPBY_ATTRPAIR] )
-        assert(isinstance(groupsort, str))
-
-        self._groupby = attribute
-        self._groupfunc = func
-        self._groupsort = groupsort
-
-
-    def SetGroupDistinct (self, attribute):
-        assert(isinstance(attribute,str))
-        self._groupdistinct = attribute
-
-
-    def SetRetries (self, count, delay=0):
-        assert(isinstance(count,int) and count>=0)
-        assert(isinstance(delay,int) and delay>=0)
-        self._retrycount = count
-        self._retrydelay = delay
-
-
-    def SetOverride (self, name, type, values):
-        assert(isinstance(name, str))
-        assert(type in SPH_ATTR_TYPES)
-        assert(isinstance(values, dict))
-
-        self._overrides[name] = {'name': name, 'type': type, 'values': values}
-
-    def SetSelect (self, select):
-        assert(isinstance(select, str))
-        self._select = select
-
-
-    def ResetOverrides (self):
-        self._overrides = {}
-
-
-    # jeg: added function
-    def ResetFiltersOnly (self):
-        """
-        Clear filers only, not anchor as well
-        """
-        self._filters = []
-
-
-    def ResetFilters (self):
-        """
-        Clear all filters (for multi-queries).
-        """
-        self._filters = []
-        self._anchor = {}
-
-
-    def ResetGroupBy (self):
-        """
-        Clear groupby settings (for multi-queries).
-        """
-        self._groupby = ''
-        self._groupfunc = SPH_GROUPBY_DAY
-        self._groupsort = '@group desc'
-        self._groupdistinct = ''
 
 
     def Query (self, query, index='*', comment=''):
@@ -918,224 +771,9 @@ class SphinxClient:
         return res
 
 
-    def UpdateAttributes ( self, index, attrs, values, mva=False ):
-        """
-        Update given attribute values on given documents in given indexes.
-        Returns amount of updated documents (0 or more) on success, or -1 on failure.
-
-        'attrs' must be a list of strings.
-        'values' must be a dict with int key (document ID) and list of int values (new attribute values).
-        optional boolean parameter 'mva' points that there is update of MVA attributes.
-        In this case the 'values' must be a dict with int key (document ID) and list of lists of int values
-        (new MVA attribute values).
-
-        Example:
-            res = cl.UpdateAttributes ( 'test1', [ 'group_id', 'date_added' ], { 2:[123,1000000000], 4:[456,1234567890] } )
-        """
-        assert ( isinstance ( index, str ) )
-        assert ( isinstance ( attrs, list ) )
-        assert ( isinstance ( values, dict ) )
-        for attr in attrs:
-            assert ( isinstance ( attr, str ) )
-        for docid, entry in values.items():
-            AssertUInt32(docid)
-            assert ( isinstance ( entry, list ) )
-            assert ( len(attrs)==len(entry) )
-            for val in entry:
-                if mva:
-                    assert ( isinstance ( val, list ) )
-                    for vals in val:
-                        AssertInt32(vals)
-                else:
-                    AssertInt32(val)
-
-        # build request
-        req = [ pack('>L',len(index)), index ]
-
-        req.append ( pack('>L',len(attrs)) )
-        mva_attr = 0
-        if mva: mva_attr = 1
-        for attr in attrs:
-            req.append ( pack('>L',len(attr)) + attr )
-            req.append ( pack('>L', mva_attr ) )
-
-        req.append ( pack('>L',len(values)) )
-        for docid, entry in values.items():
-            req.append ( pack('>Q',docid) )
-            for val in entry:
-                val_len = val
-                if mva: val_len = len ( val )
-                req.append ( pack('>L',val_len ) )
-                if mva:
-                    for vals in val:
-                        req.append ( pack ('>L',vals) )
-
-        # connect, send query, get response
-        sock = self._Connect()
-        if not sock:
-            return None
-
-        req = ''.join(req)
-        length = len(req)
-        req = pack ( '>2HL', SEARCHD_COMMAND_UPDATE, VER_COMMAND_UPDATE, length ) + req
-        self._Send ( sock, req )
-
-        response = self._GetResponse ( sock, VER_COMMAND_UPDATE )
-        if not response:
-            return -1
-
-        # parse response
-        updated = unpack ( '>L', response[0:4] )[0]
-        return updated
-
-
-    def BuildKeywords ( self, query, index, hits ):
-        """
-        Connect to searchd server, and generate keywords list for a given query.
-        Returns None on failure, or a list of keywords on success.
-        """
-        assert ( isinstance ( query, str ) )
-        assert ( isinstance ( index, str ) )
-        assert ( isinstance ( hits, int ) )
-
-        # build request
-        req = [ pack ( '>L', len(query) ) + query ]
-        req.append ( pack ( '>L', len(index) ) + index )
-        req.append ( pack ( '>L', hits ) )
-
-        # connect, send query, get response
-        sock = self._Connect()
-        if not sock:
-            return None
-
-        req = ''.join(req)
-        length = len(req)
-        req = pack ( '>2HL', SEARCHD_COMMAND_KEYWORDS, VER_COMMAND_KEYWORDS, length ) + req
-        self._Send ( sock, req )
-
-        response = self._GetResponse ( sock, VER_COMMAND_KEYWORDS )
-        if not response:
-            return None
-
-        # parse response
-        res = []
-
-        nwords = unpack ( '>L', response[0:4] )[0]
-        p = 4
-        max_ = len(response)
-
-        while nwords>0 and p<max_:
-            nwords -= 1
-
-            length = unpack ( '>L', response[p:p+4] )[0]
-            p += 4
-            tokenized = response[p:p+length]
-            p += length
-
-            length = unpack ( '>L', response[p:p+4] )[0]
-            p += 4
-            normalized = response[p:p+length]
-            p += length
-
-            entry = { 'tokenized':tokenized, 'normalized':normalized }
-            if hits:
-                entry['docs'], entry['hits'] = unpack ( '>2L', response[p:p+8] )
-                p += 8
-
-            res.append ( entry )
-
-        if nwords>0 or p>max_:
-            self._error = 'incomplete reply'
-            return None
-
-        return res
-
-    def Status ( self ):
-        """
-        Get the status
-        """
-
-        # connect, send query, get response
-        sock = self._Connect()
-        if not sock:
-            return None
-
-        req = pack ( '>2HLL', SEARCHD_COMMAND_STATUS, VER_COMMAND_STATUS, 4, 1 )
-        self._Send ( sock, req )
-
-        response = self._GetResponse ( sock, VER_COMMAND_STATUS )
-        if not response:
-            return None
-
-        # parse response
-        res = []
-
-        p = 8
-        max_ = len(response)
-
-        while p<max_:
-            length = unpack ( '>L', response[p:p+4] )[0]
-            k = response[p+4:p+length+4]
-            p += 4+length
-            length = unpack ( '>L', response[p:p+4] )[0]
-            v = response[p+4:p+length+4]
-            p += 4+length
-            res += [[k, v]]
-
-        return res
-
-    ### persistent connections
-
-    def Open(self):
-        if self._socket:
-            self._error = 'already connected'
-            return None
-        
-        server = self._Connect()
-        if not server:
-            return None
-
-        # command, command version = 0, body length = 4, body = 1
-        request = pack ( '>hhII', SEARCHD_COMMAND_PERSIST, 0, 4, 1 )
-        self._Send ( server, request )
-        
-        self._socket = server
-        return True
-
-    def Close(self):
-        if not self._socket:
-            self._error = 'not connected'
-            return
-        self._socket.close()
-        self._socket = None
-    
-    def EscapeString(self, string):
-        return re.sub(r"([=\(\)|\-!@~\"&/\\\^\$\=])", r"\\\1", string)
-
-
-    def FlushAttributes(self):
-        sock = self._Connect()
-        if not sock:
-            return -1
-
-        request = pack ( '>hhI', SEARCHD_COMMAND_FLUSHATTRS, VER_COMMAND_FLUSHATTRS, 0 ) # cmd, ver, bodylen
-        self._Send ( sock, request )
-
-        response = self._GetResponse ( sock, VER_COMMAND_FLUSHATTRS )
-        if not response or len(response)!=4:
-            self._error = 'unexpected response length'
-            return -1
-
-        tag = unpack ( '>L', response[0:4] )[0]
-        return tag
-
 def AssertInt32 ( value ):
     assert(isinstance(value, int))
     assert(value>=-2**32-1 and value<=2**32-1)
-
-def AssertUInt32 ( value ):
-    assert(isinstance(value, int))
-    assert(value>=0 and value<=2**32-1)
 
 
 class QueryRequest(list):
@@ -1151,7 +789,3 @@ class QueryRequest(list):
         if isinstance(elt, str):
             elt = elt.encode('utf-8')
         super().append(elt)
-#
-# $Id: sphinxapi.py 3436 2012-10-08 09:17:18Z kevg $
-#
-

@@ -8,12 +8,10 @@ from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from sqlalchemy.exc import InternalError
 from sqlalchemy.sql.expression import cast
 from sqlalchemy import Text, Integer, Boolean, Numeric, Date
-from sqlalchemy import text
 from geoalchemy2.types import Geometry
 
 from chsdi.models import feature_model_from_name
 from chsdi.models.features.register import register_features
-from chsdi.lib.helpers import format_query
 from chsdi.lib.filters import full_text_search
 from chsdi.lib.validation.mapservice import MapServiceValidation
 
@@ -26,7 +24,7 @@ class FeatureParams(MapServiceValidation):
         # Map and topic represent the same resource
         self.portal_name = request.matchdict.get('portal')
         self.cbName = request.params.get('callback')
-        self.returnGeometry = request.params.get('returnGeometry')
+        self.returnGeometry = request.params.get('returnGeometry', True)
         self.request = request
         self.varnish_authorized = request.headers\
             .get('X-SearchServer-Authorized', 'false')\
@@ -37,8 +35,6 @@ class FeatureParams(MapServiceValidation):
 
 def _get_features_params(request):
     params = FeatureParams(request)
-    # where must come first order matters, see MapServiceValidation
-    params.where = request.params.get('where')
     params.searchText = request.params.get('searchText')
     params.geometry = request.params.get('geometry')
     params.geometryType = request.params.get('geometryType')
@@ -46,7 +42,6 @@ def _get_features_params(request):
     params.mapExtent = request.params.get('mapExtent')
     params.tolerance = request.params.get('tolerance')
     params.layers = request.params.get('layers', 'all')
-    params.offset = request.params.get('offset')
     return params
 
 
@@ -115,7 +110,7 @@ def _identify(request):
 
     maxFeatures = 201
     features = []
-    feature_gen = _get_features_for_filters(params, models, maxFeatures=maxFeatures, where=params.where)
+    feature_gen = _get_features_for_filters(params, models, maxFeatures=maxFeatures)
     while True:
         try:
             feature = next(feature_gen)
@@ -174,22 +169,12 @@ def _get_features(params, extended=False):
         yield feature, vectorModel
 
 
-def _get_features_for_filters(params, models, maxFeatures=None, where=None):
+def _get_features_for_filters(params, models, maxFeatures=None):
     ''' Returns a generator function that yields
     a feature. '''
     for vectorLayer in models:
         for model in vectorLayer:
             query = params.request.db.query(model)
-
-            # Filter by sql query
-            # Only one filter = one layer
-            if where is not None:
-                txt = format_query(model, where)
-                if txt is None:
-                    raise exc.HTTPBadRequest('The where clause is not valid.')
-                query = query.filter(text(
-                    txt
-                ))
             # Filter by bbox
             if params.geometry is not None:
                 geomFilter = model.geom_filter(
@@ -201,22 +186,13 @@ def _get_features_for_filters(params, models, maxFeatures=None, where=None):
                 )
                 # Can be None because of max and min scale
                 if geomFilter is not None:
-                    # TODO Remove code specific clauses
-                    query = query.order_by(model.bgdi_order) if hasattr(model, 'bgdi_order') else query
                     query = query.filter(geomFilter)
 
             # Add limit
             query = query.limit(maxFeatures) if maxFeatures is not None else query
 
-            # Add offset
-            if params.offset is not None:
-                query = query.offset(params.offset)
-
-            # We need either where or geomFilter (geomFilter especially for zeitreihen layer)
-            # This probably needs refactoring...
-            if where is not None or geomFilter is not None:
-                for feature in query:
-                    yield feature
+            for feature in query:
+                yield feature
 
 
 def _find(request):
@@ -242,7 +218,7 @@ def _find(request):
                 params.searchText
             )
         else:
-            if isinstance(searchColumn.type, Date):
+            if isinstance(searchColumn.type, Date):  # pragma: no cover
                 query = query.filter(
                     cast(searchColumn, Date) == params.searchText
                 )
@@ -259,7 +235,7 @@ def _find(request):
     return {'results': features}
 
 
-def _format_search_text(columnType, searchText):
+def _format_search_text(columnType, searchText):  # pragma: no cover
     if isinstance(columnType, Text):
         return searchText
     elif isinstance(columnType, Boolean):
@@ -288,12 +264,9 @@ def _process_feature(feature, params):
         f = feature.__geo_interface__
     else:
         f = feature.__interface__
-    if hasattr(f, 'extra'):
-        layerBodId = f.extra['layerBodId']
-        f.extra['layerName'] = layerBodId
-    else:
-        layerBodId = f.get('layerBodId')
-        f['layerName'] = layerBodId
+
+    layerBodId = f.get('layerBodId')
+    f['layerName'] = layerBodId
     # In order for all translations, including the column genre to be handled
     # the same way, we rename genre_fr into genre and we delete genre_de while
     # preserving the original order.

@@ -9,16 +9,10 @@ from chsdi.lib.raster.georaster import get_raster
 class Profile(ProfileValidation):
 
     def __init__(self, request):
-        super(Profile, self).__init__()
+        super().__init__()
         self.linestring = request.params.get('geom')
-        if 'layers' in request.params:
-            self.layers = request.params.get('layers')
-        else:
-            self.layers = request.params.get('elevation_models')
-        if 'nbPoints' in request.params:
-            self.nb_points = request.params.get('nbPoints')
-        else:
-            self.nb_points = request.params.get('nb_points')
+        self.elevation_models = request.params.get('elevationModels')
+        self.nb_points = request.params.get('nbPoints')
         self.ma_offset = request.params.get('offset')
         self.request = request
 
@@ -34,7 +28,7 @@ class Profile(ProfileValidation):
 
     def _compute_points(self):
         """Compute the alt=fct(dist) array and store it in c.points"""
-        rasters = [get_raster(layer) for layer in self.layers]
+        rasters = [get_raster(model) for model in self.elevation_models]
 
         # Simplify input line with a tolerance of 2 m
         if self.nb_points < len(self.linestring.coords):
@@ -44,31 +38,31 @@ class Profile(ProfileValidation):
 
         coords = self._create_points(linestring.coords, self.nb_points)
         zvalues = {}
-        for i in range(0, len(self.layers)):
-            zvalues[self.layers[i]] = []
+        for i in range(0, len(self.elevation_models)):
+            zvalues[self.elevation_models[i]] = []
             for j in range(0, len(coords)):
                 z = rasters[i].getVal(coords[j][0], coords[j][1])
-                zvalues[self.layers[i]].append(z)
+                zvalues[self.elevation_models[i]].append(z)
 
         factor = lambda x: float(1) / (abs(x) + 1)
         zvalues2 = {}
-        for i in range(0, len(self.layers)):
-            zvalues2[self.layers[i]] = []
-            for j in range(0, len(zvalues[self.layers[i]])):
+        for i in range(0, len(self.elevation_models)):
+            zvalues2[self.elevation_models[i]] = []
+            for j in range(0, len(zvalues[self.elevation_models[i]])):
                 s = 0
                 d = 0
-                if zvalues[self.layers[i]][j] is None:
-                    zvalues2[self.layers[i]].append(None)
+                if zvalues[self.elevation_models[i]][j] is None:
+                    zvalues2[self.elevation_models[i]].append(None)
                     continue
                 for k in range(-self.ma_offset, self.ma_offset + 1):
                     p = j + k
-                    if p < 0 or p >= len(zvalues[self.layers[i]]):
+                    if p < 0 or p >= len(zvalues[self.elevation_models[i]]):
                         continue
-                    if zvalues[self.layers[i]][p] is None:
+                    if zvalues[self.elevation_models[i]][p] is None:  # pragma: no cover
                         continue
-                    s += zvalues[self.layers[i]][p] * factor(k)
+                    s += zvalues[self.elevation_models[i]][p] * factor(k)
                     d += factor(k)
-                zvalues2[self.layers[i]].append(s / d)
+                zvalues2[self.elevation_models[i]].append(s / d)
 
         dist = 0
         prev_coord = None
@@ -77,7 +71,7 @@ class Profile(ProfileValidation):
         # If the renderer is a csv file
         else:
             profile = {'headers': ['Distance'], 'rows': []}
-            for i in self.layers:
+            for i in self.elevation_models:
                 profile['headers'].append(i)
             profile['headers'].append('Easting')
             profile['headers'].append('Northing')
@@ -86,10 +80,10 @@ class Profile(ProfileValidation):
             if prev_coord is not None:
                 dist += self._dist(prev_coord, coords[j])
             alts = {}
-            for i in range(0, len(self.layers)):
-                if zvalues2[self.layers[i]][j] is not None:
-                    alts[self.layers[i]] = self._filter_alt(
-                        zvalues2[self.layers[i]][j])
+            for i in range(0, len(self.elevation_models)):
+                if zvalues2[self.elevation_models[i]][j] is not None:
+                    alts[self.elevation_models[i]] = self._filter_alt(
+                        zvalues2[self.elevation_models[i]][j])
             if len(alts) > 0:
                 rounded_dist = self._filter_dist(dist)
                 if self.json:
@@ -102,7 +96,7 @@ class Profile(ProfileValidation):
                 # For csv file
                 else:
                     temp = [rounded_dist]
-                    for i in alts.iteritems():
+                    for i in alts.items():
                         temp.append(i[1])
                     temp.append(self._filter_coordinate(coords[j][0]))
                     temp.append(self._filter_coordinate(coords[j][1]))
@@ -153,8 +147,6 @@ class Profile(ProfileValidation):
         if alt is not None and alt > 0.0:
             # 10cm accuracy is enough for altitudes
             return round(alt * 10.0) / 10.0
-        else:
-            return None
 
     def _filter_dist(self, dist):
         # 10cm accuracy is enough for distances

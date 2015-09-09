@@ -18,7 +18,6 @@ help:
 	@echo "- clean"
 	@echo "- serve"
 	@echo "- test"
-	@echo "- translate"
 	@echo "- wsgi"
 	@echo "- lint"
 	@echo "- gdal: install python 3 binding for the gdal"
@@ -67,11 +66,6 @@ pyflakes:
 	${PYFLAKE_CMD} chsdi
 
 
-.PHONY: translate
-translate: venv
-	./bin/translate.sh
-
-
 .PHONY: wsgi development.ini
 wsgi: node_modules venv
 	cd bin && ./node_modules/gulp/bin/gulp.js wsgi
@@ -92,7 +86,7 @@ gdal: venv
 
 
 .PHONY: release
-realease:
+release:
 	git tag $(shell date +"%Y-%m-%d-%H-%M-%S")
 	git push
 	git push --tags

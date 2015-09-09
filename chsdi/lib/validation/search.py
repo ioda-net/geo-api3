@@ -42,7 +42,7 @@ class SearchValidation(object):
     @searchText.setter
     def searchText(self, value):
         if value is None:
-            raise exc.HTTPBadRequest("Please provide a search text")
+            raise HTTPBadRequest("Please provide a search text")
         searchTextList = value.split(' ')
         # Remove empty strings
         searchTextList = [searchText for searchText in searchTextList

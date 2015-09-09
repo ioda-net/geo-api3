@@ -1,28 +1,24 @@
-import requests
-import json
+import qrcode
 from io import BytesIO
 
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.response import Response
 
-from chsdi.lib.helpers import check_url, make_api_url, quoting
+from chsdi.lib.helpers import quoting
+from chsdi.lib.url_shortener import create_short_url
 
 
 @view_config(route_name='qrcodegenerator')
-def qrcode(request):
-
-    url = quoting(check_url(
-        request.params.get('url'), request.registry.settings
-    ))
-    url = _shorten_url(request, url)
+def create_qrcode(request):
+    short_url = create_short_url(request)
+    url = quoting(short_url)
     img = _make_qrcode_img(url)
     response = Response(img, content_type='image/png')
     return response
 
 
 def _make_qrcode_img(url):
-    import qrcode
     # For a qrcode of 128px
     qr = qrcode.QRCode(
         box_size=4,
@@ -38,14 +34,3 @@ def _make_qrcode_img(url):
     except:  # pragma: no cover
         raise HTTPBadRequest('An error occured during the qrcode generation')
     return output.getvalue()
-
-
-def _shorten_url(request, url):
-    API3_SHORTEN_URL = make_api_url(request) + '/shorten.json?url=%s'
-    try:
-        resp = requests.get(API3_SHORTEN_URL % url)
-        resp = json.loads(resp.text)
-        url = resp['shorturl']
-        return url
-    except:  # pragma: no cover
-        return url

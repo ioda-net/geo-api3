@@ -11,7 +11,7 @@ class EsriJSON(GeoJSON):
 
     def __call__(self, info):
         def _render(value, system):
-            if isinstance(value, (list, tuple)):
+            if isinstance(value, (list, tuple)):  # pragma: no cover
                 value = self.collection_type(value)
             ret = esri_dumps(value)
             request = system.get('request')

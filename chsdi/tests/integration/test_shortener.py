@@ -1,6 +1,9 @@
 import re
 import time
 
+from pyramid.httpexceptions import HTTPBadRequest
+
+from chsdi.lib.url_shortener import check_url
 from chsdi.tests.integration import TestsBase
 
 
@@ -17,6 +20,29 @@ class TestShortener(TestsBase):
             status=200)
         self.shorturl = self.resp.json['shorturl']
         self.api_host = self.config['template']['debug']['host']
+
+    def test_check_url(self):
+        url = None
+        config = {'shortener.allowed_hosts': 'admin.ch,swisstopo.ch,bgdi.ch'}
+        try:
+            check_url(url, config)
+        except Exception as e:
+            self.failUnless(isinstance(e, HTTPBadRequest))
+
+        url = 'dummy'
+        try:
+            check_url(url, config)
+        except Exception as e:
+            self.failUnless(isinstance(e, HTTPBadRequest))
+
+        url = 'http://dummy.com'
+        try:
+            check_url(url, config)
+        except Exception as e:
+            self.failUnless(isinstance(e, HTTPBadRequest))
+
+        url = 'http://admin.ch'
+        self.assertEqual(url, check_url(url, config))
 
     def test_no_url(self):
         self.testapp.get('/shorten.json', status=400)

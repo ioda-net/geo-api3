@@ -11,7 +11,7 @@ Checkout the source code:
 The build process relies on a Makefile. Templates are generated with gulp by the
 nunjucks render. The gulpfile and utility scripts are located in the bin folder.
 
-Each target is detailed below. You don't have to install dependencies, the
+Each target is detailed in the Makefile. You don't have to install the dependencies, the
 Makefile will do this for you if you haven't downloaded them already.
 
 You can customize the build in a copy of `config.dist.toml`. This copy must be
@@ -23,22 +23,44 @@ from the templates.
 
 # Serve
 
-Launch pserve with the development configuration.
+- Launch pserve with the development configuration: `make serve`
 
 
 # Test
 
-Use nose to launch the tests. Launch all tests by default. Call `.venv/bin/nose`
-to launch a test in particular.
+- To launch all test, use make: `make test`
+- To launch only some test, use bin/test.sh:
+  `./bin/tests.sh chsdi/tests/integration/test_file_storage.py`. You can pass it as many files and
+  options recognized by nose as you want.
 
 
 # Lint
 
-Use `pep8` to check the respect of the python coding style. More details in the
-lint script (`bin/lint.sh`).
+Use `make lint`.
 
 
 # Prod
 
 Use `make prod` to generate the wsgi configuration file for apache. This is the
 only thing this target does.
+
+
+# Recommanded hooks
+
+git hooks allow you to launch a script before or after a git command. They are very handy to
+automatically perform checks. If the script exits with a non 0 status, the git command will be
+aborted. You must write them in the `.git/hooks/` folder in a file following the convention :
+<pre|post>-<git-action>. You must not forget to make them executable, eg:
+`chmod +x .git/hooks/pre-commit`.
+
+## pre-commit
+
+```shell
+make lint || exit 1
+```
+
+## pre-push
+
+```shell
+make check || exit 1
+```

@@ -14,7 +14,7 @@ from chsdi.models.utilities import Files
 
 
 @view_defaults(renderer='jsonp', route_name='files')
-class FileView(object):
+class FileView:
 
     def __init__(self, request):
         self.request = request

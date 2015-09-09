@@ -20,7 +20,6 @@ DEFAULT_ENCODING = 'utf-8'
 
 
 class OgcProxy:
-
     def __init__(self, request):
         self.request = request
 

@@ -7,7 +7,8 @@ from pyramid.view import view_config
 class Height(HeightValidation):
 
     def __init__(self, request):
-        super(Height, self).__init__()
+        super().__init__()
+        self.elevation_models = request.params.get('elevationModel')
         if 'easting' in request.params:
             self.lon = request.params.get('easting')
         else:
@@ -16,13 +17,6 @@ class Height(HeightValidation):
             self.lat = request.params.get('northing')
         else:
             self.lat = request.params.get('lat')
-        if 'elevationModel' in request.params:
-            self.elevation_models = request.params.get('elevationModel')
-        else:
-            self.elevation_models = [model.strip() for model in
-                           request.registry
-                           .settings['raster.preloaded']
-                           .split(',')]
         self.request = request
 
     @view_config(route_name='height', renderer='jsonp', http_cache=0)

@@ -10,8 +10,8 @@ import ows_checker._checker
 class Bunch(dict):
 
     def __init__(self, d):
-        dict.__init__(self, d)
-        self.__dict__.update(d)
+        super().__init__(self, d)
+        self.update(d)
 
 
 def to_bunch(d):

@@ -16,7 +16,7 @@ class Search(SearchValidation):
     FEATURE_LIMIT = 20
 
     def __init__(self, request):
-        super(Search, self).__init__()
+        super().__init__()
         self.quadtree = msk.QuadTree(
             msk.BBox(420000, 30000, 900000, 510000), 20)
         self.sphinx = sphinxapi.SphinxClient()

@@ -11,8 +11,8 @@ class Profile(ProfileValidation):
     def __init__(self, request):
         super().__init__()
         self.linestring = request.params.get('geom')
-        self.elevation_models = request.params.get('elevationModels', None)
-        self.nb_points = request.params.get('nbPoints', None)
+        self.elevation_models = request.params.get('elevationModels')
+        self.nb_points = request.params.get('nbPoints')
         self.ma_offset = request.params.get('offset')
         self.request = request
 

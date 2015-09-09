@@ -1,20 +1,14 @@
-from urllib.parse import urlparse
 import requests
+
+from io import BytesIO
+from urllib.parse import urlparse
+from zipfile import ZipFile
 
 from pyramid.view import view_config
 
 from pyramid.httpexceptions import HTTPBadRequest, HTTPBadGateway, HTTPNotAcceptable
 from pyramid.response import Response
 
-
-from io import StringIO
-from urllib.request import urlopen
-from zipfile import ZipFile
-
-
-allowed_hosts = (
-    # list allowed hosts here (no port limiting)
-)
 
 DEFAULT_ENCODING = 'utf-8'
 
@@ -32,7 +26,7 @@ class OgcProxy:
 
         # check for full url
         parsed_url = urlparse(url)
-        if not parsed_url.netloc or parsed_url.scheme not in ("http", "https"):
+        if not parsed_url.netloc or parsed_url.scheme not in ("http", "https"):  # pragma: no cover
             raise HTTPBadRequest()
 
         # forward request to target (without Host Header)
@@ -43,7 +37,7 @@ class OgcProxy:
                                     data=self.request.body, headers=h,
                                     verify=False)
             content = resp.content
-        except:
+        except:  # pragma: no cover
             raise HTTPBadGateway()
 
         #  All content types are allowed
@@ -52,18 +46,21 @@ class OgcProxy:
             if ct == "application/vnd.google-earth.kmz":
                 zipfile = None
                 try:
-                    zipurl = urlopen(url)
-                    zipfile = ZipFile(StringIO(zipurl.read()))
+                    zipfile = ZipFile(BytesIO(content))
                     content = ''
-                    for line in zipfile.open(zipfile.namelist()[0]).readlines():
-                        content = content + line
-                    ct = 'application/vnd.google-earth.kml+xml'
-                except:
+                    kml_files = [filename for filename in zipfile.namelist()
+                                 if filename.endswith('.kml')]
+                    # Normally we should only have one kml in the kmz
+                    if len(kml_files) > 0:
+                        kml_file = kml_files[0]
+                        content = zipfile.open(kml_file).read()
+                        ct = 'application/vnd.google-earth.kml+xml'
+                except Exception as e:  # pragma: no cover
                     raise HTTPBadGateway()
                 finally:
                     if zipfile:
-                        zipurl.close()
-        else:
+                        zipfile.close()
+        else:  # pragma: no cover
             raise HTTPNotAcceptable()
 
         if resp.encoding:
@@ -71,7 +68,7 @@ class OgcProxy:
             if doc_encoding.lower() != DEFAULT_ENCODING:
                 try:
                     data = content.decode(doc_encoding, "replace")
-                except Exception:
+                except Exception:  # pragma: no cover
                     raise HTTPNotAcceptable("Cannot decode requested content from advertized encoding: %s into unicode." % doc_encoding)
                 content = data.encode(DEFAULT_ENCODING)
                 content = content.replace(

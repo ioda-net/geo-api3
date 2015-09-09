@@ -20,7 +20,9 @@ class Search(SearchValidation):
         self.quadtree = msk.QuadTree(
             msk.BBox(420000, 30000, 900000, 510000), 20)
         self.sphinx = sphinxapi.SphinxClient()
-        self.sphinx.SetServer(request.registry.settings['sphinxhost'], request.registry.settings['sphinxport'])
+        self.sphinx.SetServer(
+            request.registry.settings['sphinxhost'],
+            request.registry.settings['sphinxport'])
         self.sphinx.SetMatchMode(sphinxapi.SPH_MATCH_EXTENDED)
         self.portalName = request.matchdict.get('map')
         self.cbName = request.params.get('callback')
@@ -65,7 +67,8 @@ class Search(SearchValidation):
     def _location_search(self):
         if len(self.searchText) < 1 and self.bbox is None:
             raise exc.HTTPBadRequest('You must at least provide a bbox or a searchText parameter')
-        limit = self.limit if self.limit and self.limit <= self.LOCATION_LIMIT else self.LOCATION_LIMIT
+        limit = self.limit if (self.limit and self.limit <= self.LOCATION_LIMIT) \
+            else self.LOCATION_LIMIT
         self.sphinx.SetLimits(0, limit)
 
         # Define ranking mode
@@ -99,15 +102,19 @@ class Search(SearchValidation):
         query_results = None
         if len(searchList) != 0:
             try:
-                query_results = self.sphinx.Query(searchTextFinal, index='{}_locations'.format(self.portalName))
+                query_results = self.sphinx.Query(
+                    searchTextFinal,
+                    index='{}_locations'.format(self.portalName))
             except IOError:  # pragma: no cover
                 raise exc.HTTPGatewayTimeout()
-            query_results = query_results['matches'] if query_results is not None else query_results
+            query_results = query_results['matches'] if query_results is not None \
+                else query_results
         if query_results is not None and len(query_results) > 0:
             self._parse_location_results(query_results)
 
     def _layer_search(self):
-        layerLimit = self.limit if self.limit and self.limit <= self.LAYER_LIMIT else self.LAYER_LIMIT
+        layerLimit = self.limit if (self.limit and self.limit <= self.LAYER_LIMIT) else \
+            self.LAYER_LIMIT
         self.sphinx.SetLimits(0, layerLimit)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC')
@@ -126,7 +133,9 @@ class Search(SearchValidation):
         ''' Recursive and inclusive search through
             quadindex windows. '''
         if self.quadindex is not None:
-            buildQuadQuery = lambda x: ''.join(('@geom_quadindex ', x, ' | '))
+            def buildQuadQuery(x):
+                return ''.join(('@geom_quadindex ', x, ' | '))
+
             if len(self.quadindex) == 1:  # pragma: no cover
                 quadSearch = ''.join(('@geom_quadindex ', self.quadindex, '*'))
             else:
@@ -146,10 +155,17 @@ class Search(SearchValidation):
         return transformCoordinate(wkt, 21781, 4326)
 
     def _query_fields(self, fields):
-        exact_nondigit_prefix_digit = lambda x: ''.join((x, '*')) if x.isdigit() else x
-        prefix_nondigit_exact_digit = lambda x: x if x.isdigit() else ''.join((x, '*'))
-        prefix_match_all = lambda x: ''.join((x, '*'))
-        infix_nondigit_prefix_digit = lambda x: ''.join((x, '*')) if x.isdigit() else ''.join(('*', x, '*'))
+        def exact_nondigit_prefix_digit(x):
+            return ''.join((x, '*')) if x.isdigit() else x
+
+        def prefix_nondigit_exact_digit(x):
+            return x if x.isdigit() else ''.join((x, '*'))
+
+        def prefix_match_all(x):
+            return ''.join((x, '*'))
+
+        def infix_nondigit_prefix_digit(x):
+            return''.join((x, '*')) if x.isdigit() else ''.join(('*', x, '*'))
 
         exactAll = ' '.join(self.searchText)
         exactNonDigitPreDigit = ' '.join(
@@ -213,7 +229,8 @@ class Search(SearchValidation):
         nb_address = 0
         for res in results:
             if nb_address < self.LOCATION_LIMIT:
-                if not self.bbox or self._bbox_intersection(self.bbox, res['attrs']['geom_st_box2d']):
+                if not self.bbox or \
+                        self._bbox_intersection(self.bbox, res['attrs']['geom_st_box2d']):
                     res['attrs'] = self._parse_address(res['attrs'])
                     self.results['results'].append(res)
                     nb_address += 1
@@ -237,10 +254,15 @@ class Search(SearchValidation):
             else:
                 return False
         try:
-            refbox = box(ref[0], ref[1], ref[2], ref[3]) if not _is_point(ref) else Point(ref[0], ref[1])
-            arr = [float(value) for value in result.replace('BOX(', '').replace(')', '')
-                      .replace(',', ' ').split(' ')]
-            resbox = box(arr[0], arr[1], arr[2], arr[3]) if not _is_point(arr) else Point(arr[0], arr[1])
+            refbox = box(ref[0], ref[1], ref[2], ref[3]) \
+                if not _is_point(ref) else Point(ref[0], ref[1])
+            results = result.replace('BOX(', '')\
+                .replace(')', '')\
+                .replace(',', ' ')\
+                .split(' ')
+            arr = [float(value) for value in results]
+            resbox = box(arr[0], arr[1], arr[2], arr[3]) \
+                if not _is_point(arr) else Point(arr[0], arr[1])
         except:  # pragma: no cover
             # We bail with True to be conservative and
             # not exclude this geometry from the result

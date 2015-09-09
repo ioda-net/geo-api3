@@ -110,7 +110,7 @@ class FileView:
                 with open(self._get_save_path()) as kml:
                     data = kml.read()
                 return Response(data, content_type='application/vnd.google-earth.kml+xml')
-        except Exception as e:
+        except Exception:
             raise exc.HTTPNotFound('File %s not found' % self.file_id)
 
     @view_config(request_method='POST')
@@ -124,7 +124,8 @@ class FileView:
 
                 return {'adminId': self.admin_id, 'fileId': self.file_id, 'status': 'updated'}
             except Exception as e:  # pragma: no cover
-                raise exc.HTTPInternalServerError('Cannot update file with id=%s %s' % (self.admin_id, e))
+                raise exc.HTTPInternalServerError(
+                    'Cannot update file with id=%s %s' % (self.admin_id, e))
         else:
             # Fork file, get new file ids
             self.file_id = self._get_uuid()
@@ -143,7 +144,8 @@ class FileView:
                 self._delete_file()
                 return {'success': True}
             except Exception as e:  # pragma: no cover
-                raise exc.HTTPInternalServerError('Error while deleting file %s. %e' % (self.file_id, e))
+                raise exc.HTTPInternalServerError(
+                    'Error while deleting file %s. %e' % (self.file_id, e))
         elif self._file_exists():
             raise exc.HTTPUnauthorized('You are not authorized to delete file %s' % self.file_id)
         else:

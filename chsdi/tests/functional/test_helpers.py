@@ -1,11 +1,9 @@
 import unittest
 
-from pyramid import testing
-
 from chsdi.lib.helpers import transformCoordinate
 
 
-class Test_Helpers(unittest.TestCase):
+class TestHelpers(unittest.TestCase):
 
     def test_transformCoordinate(self):
         from osgeo.ogr import Geometry

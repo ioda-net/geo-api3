@@ -4,6 +4,7 @@ from pyramid.httpexceptions import HTTPBadRequest
 MAX_SPHINX_INDEX_LENGTH = 63
 MAX_SEARCH_TERMS = 10
 
+
 class SearchValidation(object):
 
     def __init__(self):
@@ -58,7 +59,7 @@ class SearchValidation(object):
             if len(values) != 4:
                 raise HTTPBadRequest("Please provide 4 coordinates in a comma separated list")
             try:
-                values = [float(value) for value in values]
+                values = [float(val) for val in values]
             except ValueError:
                 raise HTTPBadRequest("Please provide numerical values for the parameter bbox")
             # Swiss extent
@@ -69,7 +70,7 @@ class SearchValidation(object):
                 if values[2] < values[3]:
                     raise HTTPBadRequest("The third coordinate must be higher than the fourth")
             self._bbox = values
- 
+
     @returnGeometry.setter
     def returnGeometry(self, value):
         if value is False or value == 'false':
@@ -86,9 +87,13 @@ class SearchValidation(object):
     def typeInfo(self, value):
         acceptedTypes = ['locations', 'layers', 'featuresearch', 'locations_preview']
         if value is None:
-            raise HTTPBadRequest('Please provide a type parameter. Possible values are %s' % (', '.join(acceptedTypes)))
+            message = 'Please provide a type parameter. Possible values are {}'\
+                .format(', '.join(acceptedTypes))
+            raise HTTPBadRequest(message)
         elif value not in acceptedTypes:
-            raise HTTPBadRequest('The type parameter you provided is not valid. Possible values are %s' % (', '.join(acceptedTypes)))
+            message = 'The type parameter you provided is not valid. Possible values are {}'\
+                .format(', '.join(acceptedTypes))
+            raise HTTPBadRequest(message)
         self._typeInfo = value
 
     @limit.setter
@@ -97,4 +102,4 @@ class SearchValidation(object):
             if value.isdigit():
                 self._limit = int(value)
             else:
-              raise HTTPBadRequest('The limit parameter should be an integer')
+                raise HTTPBadRequest('The limit parameter should be an integer')

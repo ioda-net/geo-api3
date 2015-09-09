@@ -53,10 +53,10 @@ def _get_feature_names(engine):
 
 def _get_feature_model(meta, map_layers_features, feature):
     feature_table = Table(
-    feature,
-    meta,
-    Column('gid', BigInteger, primary_key=True, key='id'),
-    autoload=True)
+        feature,
+        meta,
+        Column('gid', BigInteger, primary_key=True, key='id'),
+        autoload=True)
     return type(
         feature,
         (Base, Feature),

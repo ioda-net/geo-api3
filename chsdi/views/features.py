@@ -161,7 +161,8 @@ def _get_features(params, extended=False):
             except NoResultFound:
                 feature = None
             except MultipleResultsFound:  # pragma: no cover
-                raise exc.HTTPInternalServerError('Multiple features found for the same id %s' % featureId)
+                raise exc.HTTPInternalServerError(
+                    'Multiple features found for the same id %s' % featureId)
 
             if feature is not None:
                 vectorModel = model
@@ -201,6 +202,9 @@ def _get_features_for_filters(params, models, maxFeatures=None):
 
 
 def _find(request):
+    def findColumn(x):
+        return (x, x.get_column_by_property_name(params.searchField))
+
     MaxFeatures = 50
     params = _get_find_params(request)
     if params.searchText is None:
@@ -208,7 +212,6 @@ def _find(request):
 
     models = feature_model_from_name(params.portal_name, params.layer)
     features = []
-    findColumn = lambda x: (x, x.get_column_by_property_name(params.searchField))
     if models is None:
         raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layer)
     for model in models:

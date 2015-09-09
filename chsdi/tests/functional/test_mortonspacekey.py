@@ -86,25 +86,59 @@ class Test_QuadTree(unittest.TestCase):
     # 1ms per call
     def test_multialgorithm(self):
         quadtree = self._callFUT()
-        self.assertEqual('', quadtree.points_to_morton([msk.Point(600000, 899999), msk.Point(420000.3, 509999.7)]))
-        self.assertEqual('0', quadtree.points_to_morton([msk.Point(420000, 30000), msk.Point(900000, 510000)]))
-        self.assertEqual('0', quadtree.points_to_morton([msk.Point(659999.8, 269999.8), msk.Point(660000.1, 270000.1)]))
-        self.assertEqual('012222222222222222222', quadtree.points_to_morton([msk.Point(660000.2, 270000.2), msk.Point(660000.1, 270000.1)]))
-        self.assertEqual('01222222222222222222', quadtree.points_to_morton([msk.Point(660000.2, 270000.2), msk.Point(660000.6, 270000.6)]))
-        self.assertEqual('03333333333333333333',
-                         quadtree.points_to_morton([msk.Point(900000, 30000), msk.Point(899999.2, 30000.8)]))
+        self.assertEqual(
+            '',
+            quadtree.points_to_morton(
+                [msk.Point(600000, 899999), msk.Point(420000.3, 509999.7)]))
+        self.assertEqual(
+            '0',
+            quadtree.points_to_morton(
+                [msk.Point(420000, 30000), msk.Point(900000, 510000)]))
+        self.assertEqual(
+            '0',
+            quadtree.points_to_morton(
+                [msk.Point(659999.8, 269999.8), msk.Point(660000.1, 270000.1)]))
+        self.assertEqual(
+            '012222222222222222222',
+            quadtree.points_to_morton(
+                [msk.Point(660000.2, 270000.2), msk.Point(660000.1, 270000.1)]))
+        self.assertEqual(
+            '01222222222222222222',
+            quadtree.points_to_morton(
+                [msk.Point(660000.2, 270000.2), msk.Point(660000.6, 270000.6)]))
+        self.assertEqual(
+            '03333333333333333333',
+            quadtree.points_to_morton([msk.Point(900000, 30000), msk.Point(899999.2, 30000.8)]))
 
     def test_compare_single_to_multi_algorithm(self):
         quadtree = self._callFUT()
-        self.assertEqual(quadtree.xy_to_morton(600000, 899999), quadtree.points_to_morton([msk.Point(600000, 899999)]))
-        self.assertEqual(quadtree.xy_to_morton(420000.3, 509999.7), quadtree.points_to_morton([msk.Point(420000.3, 509999.7)]))
-        self.assertEqual(quadtree.xy_to_morton(420000.6, 509999.4), quadtree.points_to_morton([msk.Point(420000.6, 509999.4)]))
-        self.assertEqual(quadtree.xy_to_morton(420000.3, 30000.3), quadtree.points_to_morton([msk.Point(420000.3, 30000.3)]))
-        self.assertEqual(quadtree.xy_to_morton(420000.6, 30000.6), quadtree.points_to_morton([msk.Point(420000.6, 30000.6)]))
-        self.assertEqual(quadtree.xy_to_morton(899999.8, 30000.3), quadtree.points_to_morton([msk.Point(899999.8, 30000.3)]))
-        self.assertEqual(quadtree.xy_to_morton(899999.4, 30000.6), quadtree.points_to_morton([msk.Point(899999.4, 30000.6)]))
-        self.assertEqual(quadtree.xy_to_morton(899999.8, 509999.7), quadtree.points_to_morton([msk.Point(899999.8, 509999.7)]))
-        self.assertEqual(quadtree.xy_to_morton(899999.4, 509999.4), quadtree.points_to_morton([msk.Point(899999.4, 509999.4)]))
+        self.assertEqual(
+            quadtree.xy_to_morton(600000, 899999),
+            quadtree.points_to_morton([msk.Point(600000, 899999)]))
+        self.assertEqual(
+            quadtree.xy_to_morton(420000.3, 509999.7),
+            quadtree.points_to_morton([msk.Point(420000.3, 509999.7)]))
+        self.assertEqual(
+            quadtree.xy_to_morton(420000.6, 509999.4),
+            quadtree.points_to_morton([msk.Point(420000.6, 509999.4)]))
+        self.assertEqual(
+            quadtree.xy_to_morton(420000.3, 30000.3),
+            quadtree.points_to_morton([msk.Point(420000.3, 30000.3)]))
+        self.assertEqual(
+            quadtree.xy_to_morton(420000.6, 30000.6),
+            quadtree.points_to_morton([msk.Point(420000.6, 30000.6)]))
+        self.assertEqual(
+            quadtree.xy_to_morton(899999.8, 30000.3),
+            quadtree.points_to_morton([msk.Point(899999.8, 30000.3)]))
+        self.assertEqual(
+            quadtree.xy_to_morton(899999.4, 30000.6),
+            quadtree.points_to_morton([msk.Point(899999.4, 30000.6)]))
+        self.assertEqual(
+            quadtree.xy_to_morton(899999.8, 509999.7),
+            quadtree.points_to_morton([msk.Point(899999.8, 509999.7)]))
+        self.assertEqual(
+            quadtree.xy_to_morton(899999.4, 509999.4),
+            quadtree.points_to_morton([msk.Point(899999.4, 509999.4)]))
 
     def test_single_points_all(self):
         quadtree = self._callFUT()

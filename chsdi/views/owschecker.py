@@ -17,14 +17,17 @@ def bykvp(request):
 
         restful = request.params.get('restful', False)
         ssurl = request.params.get('ssurl', "")
-        c = ows_checker.OWSCheck(base_url=base_url,
-                                          service=service,
-                                          version=version,
-                                          auto=True,
-                                          cwd=os.path.join(request.registry.settings['install_directory'], "ows_checker/settings/"),
-                                          ssurl=ssurl,
-                                          restful=bool(restful)
-                                          )
+        cwd = os.path.join(
+            request.registry.settings['install_directory'],
+            "ows_checker/settings/")
+        c = ows_checker.OWSCheck(
+            base_url=base_url,
+            service=service,
+            version=version,
+            auto=True,
+            cwd=cwd,
+            ssurl=ssurl,
+            restful=bool(restful))
         return c.getResultsOverview(aggregate=True)
 
 
@@ -37,14 +40,17 @@ def form(request):
         version = request.params.get('version', '1.1.1')
 
         if base_url and service:
-            c = ows_checker.OWSCheck(base_url=base_url,
-                                              service=service,
-                                              version=version,
-                                              auto=True,
-                                              cwd=os.path.join(request.registry.settings['install_directory'], "ows_checker/settings/"),
-                                              ssurl=ssurl,
-                                              restful=bool(restful)
-                                              )
+            cwd = os.path.join(
+                request.registry.settings['install_directory'],
+                "ows_checker/settings/")
+            c = ows_checker.OWSCheck(
+                base_url=base_url,
+                service=service,
+                version=version,
+                auto=True,
+                cwd=cwd,
+                ssurl=ssurl,
+                restful=bool(restful))
             results_dict = c.getResultsOverview(aggregate=True)
 
         else:

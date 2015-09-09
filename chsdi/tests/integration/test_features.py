@@ -8,5 +8,5 @@ class TestFeatures(TestsBase):
 
     def test_relead(self):
         resp = self.testapp.get('/features_reload')
-        self.failUnless(resp.json['success'] == True)
+        self.failUnless(resp.json['success'])
         self.failUnless(len(registered_features) > 1)

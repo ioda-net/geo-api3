@@ -1,3 +1,4 @@
+import json
 import unittest
 
 
@@ -17,7 +18,13 @@ class Test_EsriGeoJSON(unittest.TestCase):
         from geojson import Point
         point = Point([600000, 200000], properties={'name': 'toto'})
         result = encoder.default(point)
-        self.assertEqual(result, {'spatialReference': {'wkid': 21781}, 'attributes': {'name': 'toto'}, 'y': 200000, 'x': 600000})
+        self.assertEqual(
+            result,
+            {
+                'spatialReference': {'wkid': 21781},
+                'attributes': {'name': 'toto'},
+                'y': 200000,
+                'x': 600000})
 
     def test_dumps(self):
         from chsdi.esrigeojsonencoder import dumps as esri_dumps
@@ -25,7 +32,13 @@ class Test_EsriGeoJSON(unittest.TestCase):
         point = Point([600000, 200000], properties={'name': 'toto'})
 
         result = esri_dumps(point, sort_keys=True)
-        self.assertEqual(result, '{"attributes": {"name": "toto"}, "spatialReference": {"wkid": 21781}, "x": 600000, "y": 200000}')
+        self.assertEqual(
+            json.loads(result),
+            {
+                "attributes": {"name": "toto"},
+                "spatialReference": {"wkid": 21781},
+                "x": 600000,
+                "y": 200000})
 
     # Testing loading EsriGeometries
     def test_loads_simple_point(self):
@@ -48,8 +61,9 @@ class Test_EsriGeoJSON(unittest.TestCase):
     def test_loads_linestring(self):
         from chsdi.esrigeojsonencoder import loads as esri_loads
         from geojson import LineString
-        line = """{"paths": [[[ 600000,200000], [ 623000,210000], [ 654000,201000], [ 655000, 208000]]],
-             "spatialReference": {"wkid": 21781 }}"""
+        line = """{"paths":
+[[[ 600000,200000], [ 623000,210000], [ 654000,201000], [ 655000, 208000]]],
+"spatialReference": {"wkid": 21781 }}"""
 
         result = esri_loads(line)
         self.assertEqual(type(result), LineString)
@@ -59,8 +73,9 @@ class Test_EsriGeoJSON(unittest.TestCase):
     def test_loads_polygon(self):
         from chsdi.esrigeojsonencoder import loads as esri_loads
         from geojson import Polygon
-        polygon = """{"rings": [[[ 600000,200000], [ 623000,210000], [ 654000,201000], [ 655000, 208000], [ 600000,200000]]],
-             "spatialReference": {"wkid": 21781 }}"""
+        polygon = """{"rings":
+[[[ 600000,200000], [ 623000,210000], [ 654000,201000], [ 655000, 208000], [ 600000,200000]]],
+"spatialReference": {"wkid": 21781 }}"""
 
         result = esri_loads(polygon)
         self.assertTrue(isinstance(result, Polygon))

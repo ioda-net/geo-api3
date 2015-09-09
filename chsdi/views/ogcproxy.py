@@ -55,7 +55,7 @@ class OgcProxy:
                         kml_file = kml_files[0]
                         content = zipfile.open(kml_file).read()
                         ct = 'application/vnd.google-earth.kml+xml'
-                except Exception as e:  # pragma: no cover
+                except Exception:  # pragma: no cover
                     raise HTTPBadGateway()
                 finally:
                     if zipfile:
@@ -69,7 +69,9 @@ class OgcProxy:
                 try:
                     data = content.decode(doc_encoding, "replace")
                 except Exception:  # pragma: no cover
-                    raise HTTPNotAcceptable("Cannot decode requested content from advertized encoding: %s into unicode." % doc_encoding)
+                    message = "Cannot decode requested content from advertized encoding: %s into "
+                    "unicode." % doc_encoding
+                    raise HTTPNotAcceptable(message)
                 content = data.encode(DEFAULT_ENCODING)
                 content = content.replace(
                     doc_encoding.encode('utf-8'),

@@ -1,5 +1,3 @@
-import unittest
-
 from chsdi.models import engines
 from chsdi.models import registered_features
 from chsdi.tests.integration import TestsBase
@@ -34,7 +32,7 @@ class TestFeaturesIdentify(TestsBase):
         self.testapp.get(self.features_url, params=params, status=400)
 
     def test_wrong_layers(self):
-        reps = self.testapp.get(self.features_url, params=self.params, status=400)
+        self.testapp.get(self.features_url, params=self.params, status=400)
         self.params['layers'] = 'toto'
         self.testapp.get(self.features_url, params=self.params, status=400)
 
@@ -114,7 +112,8 @@ class TestFeature(TestsBase):
         self.failUnless(resp.json['feature']['id'] == self.feature_id)
 
     def test_identify_feature_format_geojson(self):
-        resp = self.testapp.get(self.features_url, params={'geometryFormat': 'geojson'}, status=200)
+        params = {'geometryFormat': 'geojson'}
+        resp = self.testapp.get(self.features_url, params=params, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json) == 1)
         self.failUnless(resp.json['feature']['id'] == self.feature_id)
@@ -122,7 +121,7 @@ class TestFeature(TestsBase):
     def test_identify_feature_inexistant_layer(self):
         self.features_url = '/'.join(self.features_url.split('/')[:-2])
         self.features_url += '/dummy/1'
-        resp = self.testapp.get(self.features_url, status=400)
+        self.testapp.get(self.features_url, status=400)
 
     def test_identify_inexistant_feature(self):
         self.features_url = '/'.join(self.features_url.split('/')[:-1])

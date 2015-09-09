@@ -52,7 +52,8 @@ class EsriGeoJSONEncoder(GeoJSONEncoder):
             if 'coordinates' in ret.keys():
                 coordinates = ret['coordinates']
 
-            if isinstance(obj, (geojson.Feature, geojson.feature.Feature)) or geom_type == 'Feature':
+            if isinstance(obj, (geojson.Feature, geojson.feature.Feature)) or \
+                    geom_type == 'Feature':
                 ret = dict(obj)
                 geometry = self.default(obj.geometry)
                 ret = dict(obj)
@@ -112,7 +113,8 @@ class EsriGeoJSONEncoder(GeoJSONEncoder):
 
                 return self._cleanup(ret)
 
-            if isinstance(obj, (geojson.Polygon, geojson.geometry.Polygon)) or geom_type == 'Polygon':
+            if isinstance(obj, (geojson.Polygon, geojson.geometry.Polygon)) or \
+                    geom_type == 'Polygon':
                 ret = dict(obj)
 
                 rings = coordinates
@@ -156,7 +158,9 @@ class EsriSimple():
             crs = Named(properties=dict(name="urn:ogc:def:crs:EPSG:%d" % wkid))
             minx, miny, maxx, maxy = coords
 
-            return geojson.geometry.Polygon([[[minx, miny], [minx, maxy], [maxx, maxy], [maxx, miny], [minx, miny]]], crs=crs)
+            return geojson.geometry.Polygon(
+                [[[minx, miny], [minx, maxy], [maxx, maxy], [maxx, miny], [minx, miny]]],
+                crs=crs)
 
         else:
             raise ValueError("%r is not a simplified esri geometry", coords)
@@ -201,6 +205,7 @@ class EsriGeoJSON(dict):
             return geojson.geometry.Polygon(coords, crs=crs)
 
         return d
+
 
 def dumps(obj, sort_keys=False):
     encoder = EsriGeoJSONEncoder()

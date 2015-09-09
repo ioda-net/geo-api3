@@ -11,7 +11,7 @@ class TestProtocol(TestsBase):
     def test_correct_request_pfp(self):
         resp = self.testapp.get('/protocol/pfp/TOV70', status=200)
         self.failUnless(resp.content_type == 'application/pdf')
-        
+
     def test_correct_request_pdc(self):
         resp = self.testapp.get('/protocol/pdc/1640_00008871', status=200)
         self.failUnless(resp.content_type == 'application/pdf')

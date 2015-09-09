@@ -27,7 +27,8 @@ def remove_accents(input_str):
         'Ö': 'oe',
         'ü': 'ue',
     }))
-    return ''.join(c for c in unicodedata.normalize('NFD', input_str) if unicodedata.category(c) != 'Mn')
+    return ''.join(c for c in unicodedata.normalize('NFD', input_str)
+                   if unicodedata.category(c) != 'Mn')
 
 
 def escape_sphinx_syntax(input_str):

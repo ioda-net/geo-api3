@@ -1,5 +1,3 @@
-import geojson
-
 from pyramid.httpexceptions import HTTPBadRequest
 from shapely.geometry import asShape
 
@@ -7,7 +5,6 @@ from chsdi.lib.helpers import get_from_configuration
 
 
 class ProfileValidation:
-
     def __init__(self):
         self._linestring = None
         self._elevation_models = None
@@ -59,7 +56,8 @@ class ProfileValidation:
             value = value.split(',')
             for i in value:
                 if i not in get_from_configuration('raster.available'):
-                    raise HTTPBadRequest("Please provide a valid name for the elevation model DTM25, DTM2 or COMB")
+                    raise HTTPBadRequest(
+                        "Please provide a valid name for the elevation model DTM25, DTM2 or COMB")
             value.sort()
             self._elevation_models = value
 
@@ -71,8 +69,8 @@ class ProfileValidation:
             if value.isdigit():
                 self._nb_points = int(value)
             else:
-                raise HTTPBadRequest("Please provide a numerical value for the parameter 'NbPoints'")
-
+                raise HTTPBadRequest(
+                    "Please provide a numerical value for the parameter 'NbPoints'")
 
     @ma_offset.setter
     def ma_offset(self, value):

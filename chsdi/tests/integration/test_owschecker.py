@@ -23,24 +23,28 @@ class TestOwsChecker(TestsBase):
 
     def test_bykvp_minimal_wms_request(self):
         base_url = 'http://wms.geo.admin.ch'
-        resp = self.testapp.get('/owschecker/bykvp', params={'service': 'WMS', 'base_url': base_url}, status=200)
+        params = {'service': 'WMS', 'base_url': base_url}
+        resp = self.testapp.get('/owschecker/bykvp', params=params, status=200)
         self.failUnless(resp.content_type == 'application/json')
         resp.mustcontain("Checked Service: WMS")
 
     def test_bykvp_minimal_wmts_request(self):
         base_url = 'http://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml'
-        resp = self.testapp.get('/owschecker/bykvp', params={'service': 'WMTS', 'base_url': base_url}, status=200)
+        params = {'service': 'WMTS', 'base_url': base_url}
+        resp = self.testapp.get('/owschecker/bykvp', params=params, status=200)
         self.failUnless(resp.content_type == 'application/json')
         resp.mustcontain("Checked Service: WMTS")
 
     def test_bykvp_minimal_wfs_request(self):
         base_url = 'http://wfs.geo.admin.ch'
-        resp = self.testapp.get('/owschecker/bykvp', params={'service': 'WFS', 'base_url': base_url}, status=200)
+        params = {'service': 'WFS', 'base_url': base_url}
+        resp = self.testapp.get('/owschecker/bykvp', params=params, status=200)
         self.failUnless(resp.content_type == 'application/json')
         resp.mustcontain("Checked Service: WFS")
 
     def test_form_minimal_wms_request(self):
         base_url = 'http://wms.geo.admin.ch'
-        resp = self.testapp.get('/owschecker/form', params={'service': 'WMS', 'base_url': base_url}, status=200)
+        params = {'service': 'WMS', 'base_url': base_url}
+        resp = self.testapp.get('/owschecker/form', params=params, status=200)
         self.failUnless(resp.content_type == 'text/html')
         resp.mustcontain("Checked Service: WMS")

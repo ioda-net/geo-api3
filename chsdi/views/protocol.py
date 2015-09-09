@@ -15,10 +15,10 @@ class Protocol:
     def __init__(self, request):
         self.request = request
         self.config = {
-          'filename': request.registry.settings['protocol.filename'],
-          'pfp': request.registry.settings['protocol.pfp'],
-          'geo': request.registry.settings['protocol.geo'],
-          'pdc': request.registry.settings['protocol.pdc']
+            'filename': request.registry.settings['protocol.filename'],
+            'pfp': request.registry.settings['protocol.pfp'],
+            'geo': request.registry.settings['protocol.geo'],
+            'pdc': request.registry.settings['protocol.pdc']
         }
 
     @view_config(route_name='protocol')

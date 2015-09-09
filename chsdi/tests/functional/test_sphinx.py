@@ -16,10 +16,19 @@ class Test_SphinxApi(unittest.TestCase):
 
     def test_sphinx_api(self):
         api = self._callFUT()
-        docs = ['this is my test text to be highlighted', 'this is another test text to be highlighted']
+        docs = [
+            'this is my test text to be highlighted',
+            'this is another test text to be highlighted'
+        ]
         words = 'test text'
         index = 'test1'
-        opts = {'before_match': '<b>', 'after_match': '</b>', 'chunk_separator': ' ... ', 'limit': 400, 'around': 15}
+        opts = {
+            'before_match': '<b>',
+            'after_match': '</b>',
+            'chunk_separator': ' ... ',
+            'limit': 400,
+            'around': 15
+        }
         res = api.BuildExcerpts(docs, index, words, opts)
         self.assertFalse(res)
 
@@ -35,8 +44,6 @@ class Test_SphinxApi(unittest.TestCase):
         filtercol = 'group_id'
         filtervals = []
         sortby = ''
-        groupby = ''
-        groupsort = '@group desc'
         limit = 0
         i = 1
         while (i < len(sys.argv)):
@@ -65,12 +72,6 @@ class Test_SphinxApi(unittest.TestCase):
             elif arg == '-v' or arg == '--value':
                 i += 1
                 filtervals.append(int(sys.argv[i]))
-            elif arg == '-g' or arg == '--groupby':
-                i += 1
-                groupby = sys.argv[i]
-            elif arg == '-gs' or arg == '--groupsort':
-                i += 1
-                groupsort = sys.argv[i]
             elif arg == '-l' or arg == '--limit':
                 i += 1
                 limit = int(sys.argv[i])

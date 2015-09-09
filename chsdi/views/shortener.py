@@ -26,5 +26,7 @@ def shorten_redirect(request):
 
     url = expand_short_url(request, short_url)
     if url is None:
-        raise exc.HTTPBadRequest('This short url doesn\'t exist: http://{}/{}'.format(request.registry.settings['shortener.host'], short_url))
+        message = 'This short url doesn\'t exist: http://{}/{}'\
+            .format(request.registry.settings['shortener.host'], short_url)
+        raise exc.HTTPBadRequest(message)
     raise exc.HTTPMovedPermanently(location=url)

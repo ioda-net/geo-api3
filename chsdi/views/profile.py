@@ -28,6 +28,9 @@ class Profile(ProfileValidation):
 
     def _compute_points(self):
         """Compute the alt=fct(dist) array and store it in c.points"""
+        def factor(x):
+            return float(1) / (abs(x) + 1)
+
         rasters = [get_raster(model) for model in self.elevation_models]
 
         # Simplify input line with a tolerance of 2 m
@@ -44,7 +47,6 @@ class Profile(ProfileValidation):
                 z = rasters[i].getVal(coords[j][0], coords[j][1])
                 zvalues[self.elevation_models[i]].append(z)
 
-        factor = lambda x: float(1) / (abs(x) + 1)
         zvalues2 = {}
         for i in range(0, len(self.elevation_models)):
             zvalues2[self.elevation_models[i]] = []

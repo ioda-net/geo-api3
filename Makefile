@@ -2,8 +2,7 @@ PYTHON_CMD ?= $(shell pwd)/.venv/bin/python
 PIP_CMD ?= $(shell pwd)/.venv/bin/pip
 PSERVE_CMD ?= $(shell pwd)/.venv/bin/pserve
 NOSE_CMD ?= $(shell pwd)/.venv/bin/nosetests
-PEP8_CMD=$(shell pwd)/.venv/bin/pep8
-PYFLAKE_CMD=$(shell pwd)/.venv/bin/pyflakes
+FLAKE8_CMD=$(shell pwd)/.venv/bin/flake8
 # We need GDAL which is hard to install in a venv, modify PYTHONPATH to use the
 # system wide version.
 PYTHON_VERSION := $(shell python3 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
@@ -20,6 +19,7 @@ help:
 	@echo "- test"
 	@echo "- wsgi"
 	@echo "- lint"
+	@echo "- check: lint + test"
 	@echo "- gdal: install python 3 binding for the gdal"
 	@echo "- release: tag the current commit and push it"
 	@echo "- prod: update git repo and go to last tag"
@@ -57,13 +57,12 @@ test: venv
 
 
 .PHONY: lint
-lint: pep pyflakes
+lint:
+	${FLAKE8_CMD}  --max-line-length 99 --exclude "conf.py" chsdi
 
-pep8:
-	${PEP8_CMD} --max-line-length 99 chsdi
 
-pyflakes:
-	${PYFLAKE_CMD} chsdi
+.PHONY: check
+check: lint test
 
 
 .PHONY: wsgi development.ini

@@ -1,9 +1,7 @@
 from sys import maxsize
 from collections import OrderedDict
-import re
 import datetime
 import decimal
-from pyramid.threadlocal import get_current_registry
 from shapely.geometry import asShape
 from shapely.geometry import box
 from sqlalchemy.sql import func
@@ -40,7 +38,8 @@ def getToleranceMeters(imageDisplay, mapExtent, tolerance):
 
     # Test for null values
     if all((tolerance, imgPixelWidth, mapMeterWidth, imgPixelHeight, mapMeterHeight)):
-        toleranceMeters = max(mapMeterWidth / imgPixelWidth, mapMeterHeight / imgPixelHeight) * tolerance
+        toleranceMeters = max(mapMeterWidth / imgPixelWidth, mapMeterHeight / imgPixelHeight) * \
+            tolerance
         return toleranceMeters
     return 0.0  # pragma: no cover
 
@@ -66,7 +65,8 @@ class Feature(GeoInterface):
                 val = getattr(self, p.key)
                 if col.primary_key:
                     id = val
-                elif isinstance(col.type, Geometry) and col.name == self.geometry_column_to_return().name:
+                elif isinstance(col.type, Geometry) and \
+                        col.name == self.geometry_column_to_return().name:
                     if val is not None:
                         geom = to_shape(val)
                 elif not col.foreign_keys and not isinstance(col.type, Geometry):
@@ -116,7 +116,8 @@ class Feature(GeoInterface):
         return cls.__mapper__.columns['the_geom']
 
     def geometry_column_to_return(cls):
-        geomColumnName = cls.__returnedGeometry__ if hasattr(cls, '__returnedGeometry__') else 'the_geom'
+        geomColumnName = cls.__returnedGeometry__ if hasattr(cls, '__returnedGeometry__') \
+            else 'the_geom'
         return cls.__mapper__.columns[geomColumnName]
 
     @classmethod
@@ -125,7 +126,8 @@ class Feature(GeoInterface):
 
     @classmethod
     def label_column(cls):
-        return cls.__mapper__.columns[cls.__label__] if hasattr(cls, '__label__') else cls.__mapper__.primary_key[0]
+        return cls.__mapper__.columns[cls.__label__] if hasattr(cls, '__label__') \
+            else cls.__mapper__.primary_key[0]
 
     @classmethod
     def geom_filter(cls, geometry, geometryType, imageDisplay, mapExtent, tolerance):
@@ -136,12 +138,16 @@ class Feature(GeoInterface):
         maxScale = cls.__maxscale__ if hasattr(cls, '__maxscale__') else None
         minResolution = cls.__minresolution__ if hasattr(cls, '__minresolution__') else None
         maxResolution = cls.__maxresolution__ if hasattr(cls, '__maxresolution__') else None
-        if None not in (minScale, maxScale) and all(val != 0.0 for val in imageDisplay) and mapExtent.area != 0.0:
+        if None not in (minScale, maxScale) and \
+                all(val != 0.0 for val in imageDisplay) and mapExtent.area != 0.0:
             scale = getScale(imageDisplay, mapExtent)
-        if None not in (minResolution, maxResolution) and all(val != 0.0 for val in imageDisplay) and mapExtent.area != 0.0:
+        if None not in (minResolution, maxResolution) and \
+                all(val != 0.0 for val in imageDisplay) and \
+                mapExtent.area != 0.0:
             resolution = getResolution(imageDisplay, mapExtent)
         if (scale is None or (scale > cls.__minscale__ and scale <= cls.__maxscale__)) and \
-           (resolution is None or (resolution > cls.__minresolution__ and resolution <= cls.__maxresolution__)):
+                (resolution is None or
+                    (resolution > cls.__minresolution__ and resolution <= cls.__maxresolution__)):
             geom = esriRest2Shapely(geometry, geometryType)
             wkbGeometry = WKBElement(memoryview(geom.wkb), 21781)
             geomColumn = cls.geometry_column()
@@ -156,7 +162,9 @@ class Feature(GeoInterface):
     def getOrmColumnsNames(self, excludePkey=True):
         primaryKeyColumn = self.__mapper__.get_property_by_column(self.primary_key_column()).key
         geomColumnKey = self.__mapper__.get_property_by_column(self.geometry_column()).key
-        geomColumnToReturnKey = self.__mapper__.get_property_by_column(self.geometry_column_to_return()).key
+        geomColumnToReturnKey = self.__mapper__\
+            .get_property_by_column(self.geometry_column_to_return())\
+            .key
         if excludePkey:
             keysToExclude = (primaryKeyColumn, geomColumnKey, geomColumnToReturnKey)
 

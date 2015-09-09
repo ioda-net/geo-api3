@@ -1,6 +1,11 @@
-# file taken from http://indiemaps.com/blog/2008/03/easy-shapefile-loading-in-python/
+"""file taken from http://indiemaps.com/blog/2008/03/easy-shapefile-loading-in-python/
+"""
 
-import struct, datetime, decimal, itertools
+
+import struct
+import datetime
+import decimal
+
 
 def dbfreader(f):
     """Returns an iterator over records in a Xbase DBF file.

@@ -29,7 +29,8 @@ class HeightValidation:
         try:
             self._lon = float(value)
         except ValueError:
-            raise HTTPBadRequest("Please provide numerical values for the parameter 'easting'/'lon'")
+            raise HTTPBadRequest(
+                "Please provide numerical values for the parameter 'easting'/'lon'")
 
     @lat.setter
     def lat(self, value):
@@ -38,7 +39,8 @@ class HeightValidation:
         try:
             self._lat = float(value)
         except ValueError:
-            raise HTTPBadRequest("Please provide numerical values for the parameter 'northing'/'lat'")
+            raise HTTPBadRequest(
+                "Please provide numerical values for the parameter 'northing'/'lat'")
 
     @elevation_models.setter
     def elevation_models(self, value):
@@ -49,5 +51,6 @@ class HeightValidation:
             value = [model.strip() for model in value.split(',')]
             for i in value:
                 if i not in get_from_configuration('raster.available'):
-                    raise HTTPBadRequest("Please provide a valid name for the elevation model DTM25, DTM2 or COMB")
+                    raise HTTPBadRequest(
+                        "Please provide a valid name for the elevation model DTM25, DTM2 or COMB")
         self._elevation_models = value

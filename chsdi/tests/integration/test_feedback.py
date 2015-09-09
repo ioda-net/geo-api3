@@ -44,7 +44,7 @@ class TestFeedback(TestsBase):
 
     def test_send_mail_all(self):
         self.payload['kml'] = self.kml
-        resp =  self.testapp.post(
+        resp = self.testapp.post(
             '/feedback',
             params=self.payload,
             upload_files=[self.file],

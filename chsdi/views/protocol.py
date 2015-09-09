@@ -3,7 +3,6 @@ import requests
 from pyramid.view import view_config
 
 from pyramid.httpexceptions import (
-    HTTPBadRequest,
     HTTPBadGateway,
     HTTPNotAcceptable,
     HTTPNotFound
@@ -35,17 +34,17 @@ class Protocol:
         try:
             resp = requests.get(url)
             content = resp.content
-        except:
+        except:  # pragma: no cover
             raise HTTPBadGateway()
 
-        if "content-type" in resp.headers:
-            ct = resp.headers["content-type"]
-            if ct == "application/pdf":
+        if 'content-type' in resp.headers:
+            ct = resp.headers['content-type']
+            if ct == 'application/pdf':
                 return Response(content, status=resp.status_code,
-                                headers={"Content-Type": ct})
+                                headers={'Content-Type': ct})
             else:
                 raise HTTPNotFound()
 
         # We should only get pdf response.
         # Anything else is not valid
-        raise HTTPNotAcceptable()
+        raise HTTPNotAcceptable()  # pragma: no cover

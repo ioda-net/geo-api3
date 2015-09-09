@@ -1,7 +1,8 @@
 import unittest
 
-from chsdi.tests.integration import TestsBase
+from chsdi.models import engines
 from chsdi.models import registered_features
+from chsdi.tests.integration import TestsBase
 
 
 class TestFeaturesIdentify(TestsBase):
@@ -96,17 +97,24 @@ class TestFeaturesIdentify(TestsBase):
 class TestFeature(TestsBase):
     def setUp(self):
         super().setUp()
-        self.feature_id = 1884498
-        self.complementary_feature_id = 1884496
+        sit_engine = engines['sit']
+        ids = iter(sit_engine.execute('select gid from features.geojb_cds'))
+        self.feature_id = int(next(ids)['gid'])
+        self.complementary_feature_id = int(next(ids)['gid'])
         self.features_url = \
             '/rest/services/geojb/MapServer/{layer_id}/{feature_id}'\
             .format(
                 layer_id=self.test_config['layer_id'],
                 feature_id=self.feature_id)
 
-    @unittest.skip('id change with each new database. Cannot reliably test')
     def test_identify_feature(self):
         resp = self.testapp.get(self.features_url, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(len(resp.json) == 1)
+        self.failUnless(resp.json['feature']['id'] == self.feature_id)
+
+    def test_identify_feature_format_geojson(self):
+        resp = self.testapp.get(self.features_url, params={'geometryFormat': 'geojson'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json) == 1)
         self.failUnless(resp.json['feature']['id'] == self.feature_id)
@@ -121,7 +129,6 @@ class TestFeature(TestsBase):
         self.features_url += '/1'
         self.testapp.get(self.features_url, status=404)
 
-    @unittest.skip('id change with each new database. Cannot reliably test')
     def test_identify_multiple_features(self):
         url = '{},{}'.format(self.features_url, self.complementary_feature_id)
         resp = self.testapp.get(url, status=200)
@@ -164,6 +171,19 @@ class TestFeatureFind(TestsBase):
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json['results']) > 0)
         self.failUnless('geometry' in resp.json['results'][0])
+
+    def test_find_geojson(self):
+        params = dict(self.params)
+        params['geometryFormat'] = 'geojson'
+        resp = self.testapp.get(self.feature_find_url, params=params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(len(resp.json['results']) > 0)
+        self.failUnless('geometry' in resp.json['results'][0])
+
+    def test_find_no_search_text(self):
+        params = dict(self.params)
+        del params['searchText']
+        self.testapp.get(self.feature_find_url, params=params, status=400)
 
     def test_find_no_geometry(self):
         self.params['returnGeometry'] = 'false'

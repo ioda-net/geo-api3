@@ -211,7 +211,7 @@ def _find(request):
                 params.searchText
             )
         else:
-            if isinstance(searchColumn.type, Date):
+            if isinstance(searchColumn.type, Date):  # pragma: no cover
                 query = query.filter(
                     cast(searchColumn, Date) == params.searchText
                 )
@@ -228,7 +228,7 @@ def _find(request):
     return {'results': features}
 
 
-def _format_search_text(columnType, searchText):
+def _format_search_text(columnType, searchText):  # pragma: no cover
     if isinstance(columnType, Text):
         return searchText
     elif isinstance(columnType, Boolean):
@@ -257,12 +257,9 @@ def _process_feature(feature, params):
         f = feature.__geo_interface__
     else:
         f = feature.__interface__
-    if hasattr(f, 'extra'):
-        layerBodId = f.extra['layerBodId']
-        f.extra['layerName'] = layerBodId
-    else:
-        layerBodId = f.get('layerBodId')
-        f['layerName'] = layerBodId
+
+    layerBodId = f.get('layerBodId')
+    f['layerName'] = layerBodId
     # In order for all translations, including the column genre to be handled
     # the same way, we rename genre_fr into genre and we delete genre_de while
     # preserving the original order.

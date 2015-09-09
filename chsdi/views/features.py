@@ -12,6 +12,7 @@ from geoalchemy2.types import Geometry
 
 from chsdi.models import feature_model_from_name
 from chsdi.models.features.register import register_features
+from chsdi.models import registered_features
 from chsdi.lib.filters import full_text_search
 from chsdi.lib.validation.mapservice import MapServiceValidation
 
@@ -64,6 +65,10 @@ def _get_find_params(request):
 
 @view_config(route_name='features_reload', renderer='json')
 def features_reload(request):
+    # We need to clear the list of features before registering them to remove
+    # those that don't exist any more and avoid to consume too much memory.
+    if len(registered_features) > 0:
+        registered_features.clear()
     register_features()
     return {'success': True}
 

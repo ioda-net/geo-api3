@@ -20,6 +20,8 @@ help:
 	@echo "- wsgi"
 	@echo "- lint"
 	@echo "- check: lint + test"
+	@echo "- testprotocal: test the protocols"
+	@echo "- checkall: check + testprotocol"
 	@echo "- gdal: install python 3 binding for the gdal"
 	@echo "- release: tag the current commit and push it"
 	@echo "- prod: update git repo and go to last tag"
@@ -53,7 +55,7 @@ node_modules:
 
 .PHONY: test
 test: venv
-	PYTHONPATH=${PYTHONPATH} ${NOSE_CMD} --cover-html
+	PYTHONPATH=${PYTHONPATH} ${NOSE_CMD} --ignore-files test_protocol.py --cover-html
 
 
 .PHONY: lint
@@ -63,6 +65,15 @@ lint:
 
 .PHONY: check
 check: lint test
+
+
+.PHONY: testprotocol
+testprotocol:
+	PYTHONPATH=${PYTHONPATH} ${NOSE_CMD} chsdi/tests/integration/test_protocol.py
+
+
+.PHONY: checkall
+checkall: check testprotocol
 
 
 .PHONY: wsgi development.ini

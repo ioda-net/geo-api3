@@ -11,6 +11,6 @@ class TestHelpers(unittest.TestCase):
         srid_from = 4326
         srid_to = 21781
         wkt_21781 = transformCoordinate(wkt, srid_from, srid_to)
-        self.failUnless(isinstance(wkt_21781, Geometry))
+        self.assertTrue(isinstance(wkt_21781, Geometry))
         self.assertEqual(int(wkt_21781.GetX()), 595324)
         self.assertEqual(int(wkt_21781.GetY()), 84952)

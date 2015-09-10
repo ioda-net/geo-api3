@@ -16,7 +16,7 @@ class TestFeedback(TestsBase):
 
     def test_send_mail(self):
         resp = self.testapp.post('/feedback', params=self.payload, status=200)
-        self.failUnless(resp.json['success'])
+        self.assertTrue(resp.json['success'])
 
     def test_send_mail_with_empty_kml(self):
         self.payload['kml'] = self.empty_kml
@@ -24,7 +24,7 @@ class TestFeedback(TestsBase):
             '/feedback',
             params=self.payload,
             status=200)
-        self.failUnless(resp.json['success'])
+        self.assertTrue(resp.json['success'])
 
     def test_send_mail_with_kml(self):
         self.payload['kml'] = self.kml
@@ -32,7 +32,7 @@ class TestFeedback(TestsBase):
             '/feedback',
             params=self.payload,
             status=200)
-        self.failUnless(resp.json['success'])
+        self.assertTrue(resp.json['success'])
 
     def test_send_mail_with_file(self):
         resp = self.testapp.post(
@@ -40,7 +40,7 @@ class TestFeedback(TestsBase):
             params=self.payload,
             upload_files=[self.file],
             status=200)
-        self.failUnless(resp.json['success'])
+        self.assertTrue(resp.json['success'])
 
     def test_send_mail_all(self):
         self.payload['kml'] = self.kml
@@ -49,4 +49,4 @@ class TestFeedback(TestsBase):
             params=self.payload,
             upload_files=[self.file],
             status=200)
-        self.failUnless(resp.json['success'])
+        self.assertTrue(resp.json['success'])

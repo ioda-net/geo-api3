@@ -40,7 +40,7 @@ class TestFeaturesIdentify(TestsBase):
         for layer_with_feature in registered_features['geojb']:
             self.params['layers'] = 'all:' + layer_with_feature
             resp = self.testapp.get(self.features_url, params=self.params, status=200)
-            self.failUnless(resp.content_type == 'application/json')
+            self.assertTrue(resp.content_type == 'application/json')
 
     def test_query_bbox(self):
         self.params['geometry'] = '588823.34,235243.77,589583.34,235733.77'
@@ -48,26 +48,26 @@ class TestFeaturesIdentify(TestsBase):
         for layer_with_feature in registered_features['geojb']:
             self.params['layers'] = 'all:' + layer_with_feature
             resp = self.testapp.get(self.features_url, params=self.params, status=200)
-            self.failUnless(resp.content_type == 'application/json')
+            self.assertTrue(resp.content_type == 'application/json')
 
     def test_query_no_geometry(self):
         self.params['layers'] = 'all:' + self.test_config['layer_id']
         self.params['returnGeometry'] = 'false'
         resp = self.testapp.get(self.features_url, params=self.params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless('geometry' not in resp.json['results'][0])
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue('geometry' not in resp.json['results'][0])
 
     def test_query_geometry(self):
         self.params['layers'] = 'all:' + self.test_config['layer_id']
         self.params['returnGeometry'] = 'true'
         resp = self.testapp.get(self.features_url, params=self.params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless('geometry' in resp.json['results'][0])
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue('geometry' in resp.json['results'][0])
 
         del self.params['returnGeometry']
         resp = self.testapp.get(self.features_url, params=self.params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless('geometry' in resp.json['results'][0])
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue('geometry' in resp.json['results'][0])
 
     def test_wrong_geometry_type(self):
         self.params['layers'] = 'all:' + self.test_config['layer_id']
@@ -107,16 +107,16 @@ class TestFeature(TestsBase):
 
     def test_identify_feature(self):
         resp = self.testapp.get(self.features_url, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(len(resp.json) == 1)
-        self.failUnless(resp.json['feature']['id'] == self.feature_id)
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue(len(resp.json) == 1)
+        self.assertTrue(resp.json['feature']['id'] == self.feature_id)
 
     def test_identify_feature_format_geojson(self):
         params = {'geometryFormat': 'geojson'}
         resp = self.testapp.get(self.features_url, params=params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(len(resp.json) == 1)
-        self.failUnless(resp.json['feature']['id'] == self.feature_id)
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue(len(resp.json) == 1)
+        self.assertTrue(resp.json['feature']['id'] == self.feature_id)
 
     def test_identify_feature_inexistant_layer(self):
         self.features_url = '/'.join(self.features_url.split('/')[:-2])
@@ -131,10 +131,10 @@ class TestFeature(TestsBase):
     def test_identify_multiple_features(self):
         url = '{},{}'.format(self.features_url, self.complementary_feature_id)
         resp = self.testapp.get(url, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(len(resp.json['features']) == 2)
-        self.failUnless(resp.json['features'][0]['feature']['id'] == self.feature_id)
-        self.failUnless(resp.json['features'][1]['feature']['id'] == self.complementary_feature_id)
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue(len(resp.json['features']) == 2)
+        self.assertTrue(resp.json['features'][0]['feature']['id'] == self.feature_id)
+        self.assertTrue(resp.json['features'][1]['feature']['id'] == self.complementary_feature_id)
 
 
 class TestFeatureFind(TestsBase):
@@ -167,17 +167,17 @@ class TestFeatureFind(TestsBase):
 
     def test_find(self):
         resp = self.testapp.get(self.feature_find_url, params=self.params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(len(resp.json['results']) > 0)
-        self.failUnless('geometry' in resp.json['results'][0])
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue(len(resp.json['results']) > 0)
+        self.assertTrue('geometry' in resp.json['results'][0])
 
     def test_find_geojson(self):
         params = dict(self.params)
         params['geometryFormat'] = 'geojson'
         resp = self.testapp.get(self.feature_find_url, params=params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(len(resp.json['results']) > 0)
-        self.failUnless('geometry' in resp.json['results'][0])
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue(len(resp.json['results']) > 0)
+        self.assertTrue('geometry' in resp.json['results'][0])
 
     def test_find_no_search_text(self):
         params = dict(self.params)
@@ -187,47 +187,47 @@ class TestFeatureFind(TestsBase):
     def test_find_no_geometry(self):
         self.params['returnGeometry'] = 'false'
         resp = self.testapp.get(self.feature_find_url, params=self.params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(len(resp.json['results']) > 0)
-        self.failUnless('geometry' not in resp.json['results'][0])
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue(len(resp.json['results']) > 0)
+        self.assertTrue('geometry' not in resp.json['results'][0])
 
     def test_find_geometry(self):
         self.params['returnGeometry'] = 'true'
         resp = self.testapp.get(self.feature_find_url, params=self.params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(len(resp.json['results']) > 0)
-        self.failUnless('geometry' in resp.json['results'][0])
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue(len(resp.json['results']) > 0)
+        self.assertTrue('geometry' in resp.json['results'][0])
 
     def test_find_no_match(self):
         self.params['searchText'] = 'not_a_genre'
         resp = self.testapp.get(self.feature_find_url, params=self.params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(len(resp.json['results']) == 0)
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue(len(resp.json['results']) == 0)
 
     def test_find_contains(self):
         self.params['contains'] = 'true'
         resp = self.testapp.get(self.feature_find_url, params=self.params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(len(resp.json['results']) > 0)
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue(len(resp.json['results']) > 0)
 
         self.setUp()
         self.params['searchText'] = 'jardi'
         resp = self.testapp.get(self.feature_find_url, params=self.params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(len(resp.json['results']) > 0)
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue(len(resp.json['results']) > 0)
 
         self.setUp()
         self.params['contains'] = 'false'
         self.params['searchText'] = 'jardi'
         resp = self.testapp.get(self.feature_find_url, params=self.params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(len(resp.json['results']) == 0)
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue(len(resp.json['results']) == 0)
 
         self.setUp()
         self.params['searchText'] = 'jardin'
         resp = self.testapp.get(self.feature_find_url, params=self.params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(len(resp.json['results']) > 0)
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue(len(resp.json['results']) > 0)
 
     def test_find_wrong_search_fiels(self):
         # No search field

@@ -23,11 +23,11 @@ class TestProfileView(TestsBase):
             'elevationModel': elevation_model
         }
         resp = self.testapp.get('/rest/services/profile.json', params=params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json[0]['dist'] == 0)
-        self.failUnless(resp.json[0]['alts'][elevation_model] == 874)
-        self.failUnless(resp.json[0]['easting'] == 589590.8)
-        self.failUnless(resp.json[0]['northing'] == 235646.3)
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue(resp.json[0]['dist'] == 0)
+        self.assertTrue(resp.json[0]['alts'][elevation_model] == 874)
+        self.assertTrue(resp.json[0]['easting'] == 589590.8)
+        self.assertTrue(resp.json[0]['northing'] == 235646.3)
 
         geom = {
             "type": "LineString",
@@ -55,7 +55,7 @@ class TestProfileView(TestsBase):
             'callback': 'callback'
         }
         resp = self.testapp.get('/rest/services/profile.json', params=params, status=200)
-        self.failUnless(resp.content_type == 'application/javascript')
+        self.assertTrue(resp.content_type == 'application/javascript')
         resp.mustcontain('callback([')
 
     def test_profile_json_missing_geom(self):
@@ -81,7 +81,7 @@ class TestProfileView(TestsBase):
             'nbPoints': '150'
         }
         resp = self.testapp.get('/rest/services/profile.json', params=params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
+        self.assertTrue(resp.content_type == 'application/json')
 
         geom = {
             "type": "LineString",
@@ -96,7 +96,7 @@ class TestProfileView(TestsBase):
             'nbPoints': '1'
         }
         resp = self.testapp.get('/rest/services/profile.json', params=params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
+        self.assertTrue(resp.content_type == 'application/json')
 
     def test_profile_wrong_line_string(self):
         geom = {
@@ -161,7 +161,7 @@ class TestProfileView(TestsBase):
             'geom': json.dumps(geom)
             }
         resp = self.testapp.get('/rest/services/profile.csv', params=params, status=200)
-        self.failUnless(resp.content_type == 'text/csv')
+        self.assertTrue(resp.content_type == 'text/csv')
 
     def test_profile_cvs_wrong_geom(self):
         params = {'geom': 'toto'}

@@ -27,19 +27,19 @@ class TestShortener(TestsBase):
         try:
             check_url(url, config)
         except Exception as e:
-            self.failUnless(isinstance(e, HTTPBadRequest))
+            self.assertTrue(isinstance(e, HTTPBadRequest))
 
         url = 'dummy'
         try:
             check_url(url, config)
         except Exception as e:
-            self.failUnless(isinstance(e, HTTPBadRequest))
+            self.assertTrue(isinstance(e, HTTPBadRequest))
 
         url = 'http://dummy.com'
         try:
             check_url(url, config)
         except Exception as e:
-            self.failUnless(isinstance(e, HTTPBadRequest))
+            self.assertTrue(isinstance(e, HTTPBadRequest))
 
         url = 'http://admin.ch'
         self.assertEqual(url, check_url(url, config))
@@ -52,7 +52,7 @@ class TestShortener(TestsBase):
 
     def test_create_short_link(self):
         regexp = 'https?://' + self.api_host + '/shorten/[0-9a-f]{10}'
-        self.failUnless(re.match(regexp, self.shorturl))
+        self.assertTrue(re.match(regexp, self.shorturl))
 
     def test_get_short_link(self):
         self.testapp.get(self.shorturl, status=301)
@@ -68,4 +68,4 @@ class TestShortener(TestsBase):
             headers=headers,
             status=200)
         resp = self.testapp.get(resp.json['shorturl'], status=301)
-        self.failUnless(resp.headers['location'] == self.base_url)
+        self.assertTrue(resp.headers['location'] == self.base_url)

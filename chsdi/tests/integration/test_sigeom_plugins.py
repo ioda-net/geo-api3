@@ -12,8 +12,8 @@ class TestCommunes(TestsBase):
 
     def test_no_result(self):
         resp = self.testapp.get('/communes?x=-1&y=-1', status=200)
-        self.failUnless(resp.json == {})
+        self.assertTrue(resp.json == {})
 
     def test_commune(self):
         resp = self.testapp.get('/communes?x=594171&y=236290', status=200)
-        self.failUnless(resp.json['commune'] == 'Moutier')
+        self.assertTrue(resp.json['commune'] == 'Moutier')

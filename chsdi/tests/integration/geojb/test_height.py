@@ -9,20 +9,20 @@ class TestHeightView(TestsBase):
     def test_height_outside(self):
         params = {'easting': '600000.1', 'northing': '200000.1'}
         resp = self.testapp.get('/rest/services/height', params=params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json['height'] == '')
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue(resp.json['height'] == '')
 
     def test_height_valid(self):
         params = {'easting': '594171', 'northing': '236290'}
         resp = self.testapp.get('/rest/services/height', params=params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json['height'])
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue(resp.json['height'])
 
     def test_height_valid_with_lonlat(self):
         params = {'lon': '594171', 'lat': '236290'}
         resp = self.testapp.get('/rest/services/height', params=params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json['height'])
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue(resp.json['height'])
 
     def test_height_wrong_elevation_model(self):
         params = {'easting': '600000', 'northing': '200000', 'elevationModel': 'TOTO'}
@@ -42,7 +42,7 @@ class TestHeightView(TestsBase):
     def test_height_with_callback_valid(self):
         params = {'easting': '600000', 'northing': '200000', 'callback': 'callback'}
         resp = self.testapp.get('/rest/services/height', params=params, status=200)
-        self.failUnless(resp.content_type == 'application/javascript')
+        self.assertTrue(resp.content_type == 'application/javascript')
         resp.mustcontain('callback({')
 
     def test_height_miss_northing(self):

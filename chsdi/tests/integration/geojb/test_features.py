@@ -17,7 +17,7 @@ class TestFeaturesIdentify(TestsBase):
         }
 
     def test_no_params(self):
-        self.testapp.get(self.features_url, status=404)
+        self.testapp.get(self.features_url, status=400)
         params = {'geometryFormat': 'geojson'}
         self.testapp.get(self.features_url, params=params, status=400)
         params['geometry'] = '589635.84,235603.77'

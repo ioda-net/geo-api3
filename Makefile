@@ -1,12 +1,15 @@
+# We need GDAL which is hard to install in a venv, modify PYTHONPATH to use the
+# system wide version.
+PYTHON_VERSION := $(shell python3 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
+
+-include local.mk
+
+PYTHONPATH ?= .venv/lib/python${PYTHON_VERSION}/site-packages:/usr/lib64/python${PYTHON_VERSION}/site-packages
 PYTHON_CMD ?= $(shell pwd)/.venv/bin/python
 PIP_CMD ?= $(shell pwd)/.venv/bin/pip
 PSERVE_CMD ?= $(shell pwd)/.venv/bin/pserve
 NOSE_CMD ?= $(shell pwd)/.venv/bin/nosetests
-FLAKE8_CMD=$(shell pwd)/.venv/bin/flake8
-# We need GDAL which is hard to install in a venv, modify PYTHONPATH to use the
-# system wide version.
-PYTHON_VERSION := $(shell python3 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
-PYTHONPATH ?= .venv/lib/python${PYTHON_VERSION}/site-packages:/usr/lib64/python${PYTHON_VERSION}/site-packages
+FLAKE8_CMD ?= $(shell pwd)/.venv/bin/flake8
 
 .PHONY: help
 help:
@@ -20,7 +23,7 @@ help:
 	@echo "- wsgi"
 	@echo "- lint"
 	@echo "- check: lint + test"
-	@echo "- testprotocal: test the protocols"
+	@echo "- testprotocol: test the protocols"
 	@echo "- checkall: check + testprotocol"
 	@echo "- gdal: install python 3 binding for the gdal"
 	@echo "- release: tag the current commit and push it"
@@ -29,7 +32,7 @@ help:
 
 
 .PHONY: serve
-serve: development.ini venv node_modules
+serve: development.ini 
 	PYTHONPATH=${PYTHONPATH} ${PSERVE_CMD} development.ini --reload
 
 development.ini: node_modules
@@ -37,6 +40,7 @@ development.ini: node_modules
 	    cd bin && ./node_modules/gulp/bin/gulp.js build-config; \
 	fi
 
+.PHONY: venv
 venv:
 	# Install Cython before any deps as some need it to compile with
 	# optimizations
@@ -47,6 +51,7 @@ venv:
 	    ${PYTHON_CMD} setup.py develop; \
 	fi
 
+.PHONY: node_modules
 node_modules:
 	@if [ ! -d bin/node_modules ]; then \
 	    cd bin && npm install; \
@@ -54,7 +59,7 @@ node_modules:
 
 
 .PHONY: test
-test: venv
+test: 
 	PYTHONPATH=${PYTHONPATH} ${NOSE_CMD} --ignore-files test_protocol.py --cover-html
 
 
@@ -77,7 +82,7 @@ checkall: check testprotocol
 
 
 .PHONY: wsgi development.ini
-wsgi: node_modules venv
+wsgi: node_modules
 	cd bin && ./node_modules/gulp/bin/gulp.js wsgi
 
 

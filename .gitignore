@@ -23,5 +23,6 @@ deploy/hooks/pre-create-code
 node_modules
 *.toml
 *.wsgi
+local.mk
 /cover
 /.venv

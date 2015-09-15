@@ -32,10 +32,10 @@ help:
 
 
 .PHONY: serve
-serve: development.ini 
+serve: ini_files
 	PYTHONPATH=${PYTHONPATH} ${PSERVE_CMD} development.ini --reload
 
-development.ini: node_modules
+ini_files: node_modules
 	@if [ ! -e production.ini ] || [ ! -e development.ini ]; then \
 	    cd bin && ./node_modules/gulp/bin/gulp.js build-config; \
 	fi
@@ -59,7 +59,7 @@ node_modules:
 
 
 .PHONY: test
-test: 
+test:
 	PYTHONPATH=${PYTHONPATH} ${NOSE_CMD} --ignore-files test_protocol.py --cover-html
 
 
@@ -81,7 +81,7 @@ testprotocol:
 checkall: check testprotocol
 
 
-.PHONY: wsgi development.ini
+.PHONY: wsgi ini_files
 wsgi: node_modules
 	cd bin && ./node_modules/gulp/bin/gulp.js wsgi
 

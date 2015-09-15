@@ -18,10 +18,12 @@ gulp.task('build-config', function () {
   return gulp.src('../*.ini.nunjucks')
           .pipe(data(function () {
             var config = toml.parse(fs.readFileSync('../config.toml', 'utf-8'));
-            config.template.app_version = new Date().getTime();
-            config.template.install_directory = path.join(__dirname, '..');
+            // Nothing from the test section must be used in the templates.
+            delete config['test'];
+            config.app_version = new Date().getTime();
+            config.install_directory = path.join(__dirname, '..');
 
-            return config.template;
+            return config;
           }))
           .pipe(nunjucksRender())
           .pipe(extReplace('.ini', '.ini.html'))

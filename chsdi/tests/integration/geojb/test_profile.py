@@ -9,7 +9,7 @@ class TestProfileView(TestsBase):
         super().setUp()
 
     def test_profile_json_valid(self):
-        elevation_model = self.config['template']['raster']['preloaded'][0]
+        elevation_model = self.config['raster']['preloaded'][0]
         geom = {
             "type": "LineString",
             "coordinates": [

@@ -10,8 +10,9 @@ from chsdi.tests.integration import TestsBase
 class TestShortener(TestsBase):
     def setUp(self):
         super().setUp()
-        self.allowed_domain = self.config['template']['shortener']['allowed_domains'].split(',')[0]
-        self.base_url = 'http://{}/'.format(self.allowed_domain)
+        self.allowed_shortener_domain = self.config['shortener']['allowed_domains'][0]
+        self.base_url = 'http://{}/'.format(self.allowed_shortener_domain)
+        self.shortener_host = self.config['shortener']['host']
         # Link is only added if not in database. So we create a random one each time.
         location = self.base_url + str(int(time.time()))
         self.resp = self.testapp.get(
@@ -19,7 +20,6 @@ class TestShortener(TestsBase):
             params={'url': location},
             status=200)
         self.shorturl = self.resp.json['shorturl']
-        self.api_host = self.config['template']['debug']['host']
 
     def test_check_url(self):
         url = None
@@ -51,7 +51,7 @@ class TestShortener(TestsBase):
         self.testapp.get('/shorten/dummy', status=400)
 
     def test_create_short_link(self):
-        regexp = 'https?://' + self.api_host + '/shorten/[0-9a-f]{10}'
+        regexp = 'https?://' + self.shortener_host + '/shorten/[0-9a-f]{10}'
         self.assertTrue(re.match(regexp, self.shorturl))
 
     def test_get_short_link(self):

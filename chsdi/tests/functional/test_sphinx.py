@@ -8,7 +8,7 @@ from chsdi.lib.sphinxapi import sphinxapi
 class Test_SphinxApi(unittest.TestCase):
     def setUp(self):
         with open('config.toml', 'r') as test_config_file:
-            self.config = toml.load(test_config_file)['template']['search']
+            self.search_config = toml.load(test_config_file)['search']
 
     def _callFUT(self):
         api = sphinxapi.SphinxClient()
@@ -38,8 +38,8 @@ class Test_SphinxApi(unittest.TestCase):
         api = self._callFUT()
         q = ''
         mode = sphinxapi.SPH_MATCH_ALL
-        host = self.config['host']
-        port = self.config['port']
+        host = self.search_config['host']
+        port = self.search_config['port']
         index = '*'
         filtercol = 'group_id'
         filtervals = []

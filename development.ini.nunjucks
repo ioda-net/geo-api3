@@ -20,15 +20,15 @@ mako.imports =
 
 # By default, the toolbar only appears for clients from IP addresses
 # '127.0.0.1' and '::1'.
-debugtoolbar.hosts = {{ debug.ip }}/0
+debugtoolbar.hosts = {{ waitress.ip }}/0
 
 ###
 # wsgi server configuration
 ###
 [server:main]
 use = egg:waitress#main
-host = {{ debug.ip }}
-port = {{ debug.port }}
+host = {{ waitress.ip }}
+port = {{ waitress.port }}
 
 ###
 # logging configuration

@@ -35,17 +35,17 @@ temp_dir = {{ deploy.temp_dir }}
 
 
 # Feedback
-feedback.default_recipient = {{feedback.default_recipient}}
-feedback.default_subject = {{feedback.default_subject}}
-feedback.mail_host_name = {{feedback.mail_host_name}}
-feedback.mail_host_port = {{feedback.mail_host_port}}
+feedback.default_recipient = {{ feedback.default_recipient }}
+feedback.default_subject = {{ feedback.default_subject }}
+feedback.mail_host_name = {{ feedback.mail_host_name }}
+feedback.mail_host_port = {{ feedback.mail_host_port }}
 
 
 # Protocol
-protocol.filename = {{protocol.filename}}
-protocol.pfp = {{protocol.pfp}}
-protocol.geo = {{protocol.geo}}
-protocol.pdc = {{protocol.pdc}}
+protocol.filename = {{ protocol.filename }}
+protocol.pfp = {{ protocol.pfp }}
+protocol.geo = {{ protocol.geo }}
+protocol.pdc = {{ protocol.pdc }}
 
 
 # Raster
@@ -66,8 +66,8 @@ sphinxport = {{ search.port }}
 
 
 # Shortener
-shortener.allowed_hosts = {{ shortener.allowed_hosts }}
-shortener.allowed_domains = {{ shortener.allowed_domains }}
+shortener.allowed_hosts = {{ shortener.allowed_hosts | join(",") }}
+shortener.allowed_domains = {{ shortener.allowed_domains | join(",") }}
 shortener.host = {{ shortener.host }}
 
 

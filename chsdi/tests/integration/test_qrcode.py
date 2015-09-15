@@ -4,9 +4,8 @@ from chsdi.tests.integration import TestsBase
 class TestQRCodeView(TestsBase):
 
     def test_qrcode(self):
-        allowed_hosts = self.settings['shortener.allowed_domains'].split(',')
-        allowed_host = allowed_hosts[0].strip()
-        allowed_url = 'http://{}/e83c57af1'.format(allowed_host)
+        shortener_allowed_domain = self.config['shortener']['allowed_domains'][0]
+        allowed_url = 'http://{}/e83c57af1'.format(shortener_allowed_domain)
         resp = self.testapp.get('/qrcodegenerator', params={'url': allowed_url}, status=200)
         self.assertTrue(resp.content_type == 'image/png')
 

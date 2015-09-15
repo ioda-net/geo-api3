@@ -1,13 +1,12 @@
 from lxml import etree
 import xml.dom.minidom as dom
 import xml.etree.ElementTree as ET
-import urllib2
 import time
-import pprint
 import socket
 import csv
-import math
 import numpy
+import io
+import requests
 socket.setdefaulttimeout(2)
 
 SERVICES = [
@@ -133,8 +132,8 @@ def checkWithLXML(url):
         tree = etree.parse(url)
         root = tree.getroot()
         ch = root.getchildren()
-    except Exception, e:
-        #print "Skipped", url, e
+    except Exception as e:
+        print("Skipped", url, e)
         return 0.0
     return time.time() - start
 
@@ -144,22 +143,21 @@ def checkWithMinidom(url):
             'User-Agent' : 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'
     }
     try:
-        req = urllib2.Request(url, None, headers)
-        file = urllib2.urlopen(url=req, timeout=2)
-        tree = dom.parse(file)
-        file.close()
+        resp = requests.get(url, headers=headers, timeout=2)
+        filelike = io.BytesIo(resp.content)
+        tree = dom.parse(filelike)
         for node in tree.childNodes:
             if node.nodeType == dom.Node.ELEMENT_NODE:
                 body = node.toxml('utf-8')
                 t = ET.fromstring(body)
                 ch = t.getchildren()
-    except Exception, e:
-        #print "Skipped", url, e
+    except Exception as e:
+        print("Skipped", url, e)
         return 0.0
     return time.time() - start
 
 fn = 'lxml_vs_minidom_%s.csv' % time.time()
-wr = csv.writer(open(fn, 'wb'), delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+wr = csv.writer(open(fn, 'w'), delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 wr.writerow(['URL', 'Dienst', 'LXML_Mean', 'DOM_Mean', 'LXML_Std', 'DOM_Std'])
 
 for i in range(20):
@@ -170,15 +168,9 @@ for i in range(20):
         service['time_lxml'].append(l)
         m = checkWithMinidom(url)
         service['time_dom'].append(m)
-        print "Mean's of %s after %d steps:" %(service['s'], i) , numpy.mean(service['time_lxml']), numpy.mean(service['time_dom']), numpy.std(service['time_lxml']), numpy.std(service['time_dom'])#
+        print("Mean's of %s after %d steps:" %(service['s'], i) , numpy.mean(service['time_lxml']), numpy.mean(service['time_dom']), numpy.std(service['time_lxml']), numpy.std(service['time_dom']))
 
-"""    
-pprint.pprint(SERVICES)
-fn = 'lxml_vs_minidom_%s.csv' % time.time()
-wr = csv.writer(open(fn, 'wb'), delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-wr.writerow(['URL', 'Dienst', 'LXML', 'DOM'])
-"""
 for s in SERVICES:
-    print s['time_lxml']
-    print s['time_dom']
+    print(s['time_lxml'])
+    print(s['time_dom'])
     wr.writerow([s['url'], s['s'], numpy.mean(s['time_lxml']), numpy.mean(s['time_dom']), numpy.std(service['time_lxml']), numpy.std(service['time_dom'])])

@@ -203,14 +203,69 @@ class Search(SearchValidation):
 
     def _detect_keywords(self):
         if len(self.searchText) > 0:
+            # rank 110
+            SURV_KEYWORDS = ('surv', 'survey', 'surveillance')
+            # rank 100
+            KMS_KEYWORDS = ('km', 'kms')
+            # rank 90
+            PFP_KEYWORDS = ('pfp', 'fixed_point', 'point_fixe', 'punkte')
+            # rank 80
+            GEO_KEYWORDS = ('geo', 'geology', 'geologie')
+            # rank 70
+            CABINETV_KEYWORDS = ('cabinetv', 'kk')
+            # rank 60
+            HYDRANTS_KEYWORDS = ('hydrant', 'hydrante')
+            # rank 50
+            EGID_KEYWORDS = ('egid')
+            # rank 40 nomemclatures no need for keyword
+            # rank 30
             PARCEL_KEYWORDS = ('parzelle', 'parcelle', 'parcella', 'parcel')
+            # rank 20
             ADDRESS_KEYWORDS = ('addresse', 'adresse', 'indirizzo', 'address')
+            # rank 10 cities no need for keyword
             firstWord = self.searchText[0].lower()
-            if firstWord in PARCEL_KEYWORDS:
+
+            if firstWord in SURV_KEYWORDS:
+                # As one cannot apply filters on string attributes, we use the rank information
+                self.sphinx.SetFilter('rank', self._origins_to_ranks(['surv']))
+                del self.searchText[0]
+
+            elif firstWord in KMS_KEYWORDS:
+                # As one cannot apply filters on string attributes, we use the rank information
+                self.sphinx.SetFilter('rank', self._origins_to_ranks(['kms']))
+                del self.searchText[0]
+
+            elif firstWord in PFP_KEYWORDS:
+                # As one cannot apply filters on string attributes, we use the rank information
+                self.sphinx.SetFilter('rank', self._origins_to_ranks(['pfp']))
+                del self.searchText[0]
+
+            elif firstWord in GEO_KEYWORDS:
+                # As one cannot apply filters on string attributes, we use the rank information
+                self.sphinx.SetFilter('rank', self._origins_to_ranks(['geo']))
+                del self.searchText[0]
+
+            elif firstWord in CABINETV_KEYWORDS:
+                # As one cannot apply filters on string attributes, we use the rank information
+                self.sphinx.SetFilter('rank', self._origins_to_ranks(['cabinetv']))
+                del self.searchText[0]
+
+            elif firstWord in HYDRANTS_KEYWORDS:
+                # As one cannot apply filters on string attributes, we use the rank information
+                self.sphinx.SetFilter('rank', self._origins_to_ranks(['hydrants']))
+                del self.searchText[0]
+
+            elif firstWord in EGID_KEYWORDS:
+                # As one cannot apply filters on string attributes, we use the rank information
+                self.sphinx.SetFilter('rank', self._origins_to_ranks(['egid']))
+                del self.searchText[0]
+
+            elif firstWord in PARCEL_KEYWORDS:
                 # As one cannot apply filters on string attributes, we use the rank information
                 self.sphinx.SetFilter('rank', self._origins_to_ranks(['parcels']))
                 del self.searchText[0]
-            if firstWord in ADDRESS_KEYWORDS:
+
+            elif firstWord in ADDRESS_KEYWORDS:
                 self.sphinx.SetFilter('rank', self._origins_to_ranks(['cities', 'streetnames']))
                 del self.searchText[0]
 

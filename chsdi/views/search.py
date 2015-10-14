@@ -204,22 +204,25 @@ class Search(SearchValidation):
     def _detect_keywords(self):
         if len(self.searchText) > 0:
             # rank 110
-            SURV_KEYWORDS = ('surv', 'survey', 'surveillance')
+            SURV_KEYWORDS = ('surv', 'survey', 'surveillance',
+                             'uberwachung', 'ueberwachung', 'überwachung')
             # rank 100
             KMS_KEYWORDS = ('km', 'kms')
             # rank 90
-            PFP_KEYWORDS = ('pfp', 'fixed_point', 'point_fixe', 'punkte')
+            PFP_KEYWORDS = ('fp', 'pf', 'pfp', 'fixed_point', 'point_fixe', 'punkte')
             # rank 80
-            GEO_KEYWORDS = ('geo', 'geology', 'geologie')
+            GEO_KEYWORDS = ('geo', 'geology', 'geologie', 'sondierung')
             # rank 70
-            CABINETV_KEYWORDS = ('cabinetv', 'kk')
+            CABINETV_KEYWORDS = ('cabine-tv', 'tv-kabine', 'cabinetv', 'tvkabine',
+                                 'tv', 'kk')
             # rank 60
             HYDRANTS_KEYWORDS = ('hydrant', 'hydrante')
             # rank 50
             EGID_KEYWORDS = ('egid')
             # rank 40 nomemclatures no need for keyword
             # rank 30
-            PARCEL_KEYWORDS = ('parzelle', 'parcelle', 'parcella', 'parcel')
+            PARCEL_KEYWORDS = ('parzelle', 'parcelle', 'parcella', 'parcel',
+                               'grundstuck', 'grundstueck', 'grundstück')
             # rank 20
             ADDRESS_KEYWORDS = ('addresse', 'adresse', 'indirizzo', 'address')
             # rank 10 cities no need for keyword

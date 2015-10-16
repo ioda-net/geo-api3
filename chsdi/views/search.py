@@ -1,5 +1,6 @@
 import pyramid.httpexceptions as exc
 
+from collections import namedtuple
 from pyramid.view import view_config
 from shapely.geometry import box, Point
 
@@ -9,11 +10,49 @@ from chsdi.lib.sphinxapi import sphinxapi
 from chsdi.lib import mortonspacekey as msk
 
 
+SearchKeywords = namedtuple('SearchKeywords', 'keywords filter_keys')
+
+
 class Search(SearchValidation):
 
     LOCATION_LIMIT = 50
     LAYER_LIMIT = 30
     FEATURE_LIMIT = 20
+
+    SEARCH_KEYWORDS = (
+        # surv, rank 110
+        SearchKeywords(
+            keywords=('surv', 'survey', 'surveillance',
+                      'uberwachung', 'ueberwachung', 'überwachung'),
+            filter_keys=['surv']),
+        # kms, rank 100
+        SearchKeywords(keywords=('km', 'kms'), filter_keys=['kms']),
+        # pfp, rank 90
+        SearchKeywords(
+            keywords=('fp', 'pf', 'pfp', 'fixed_point', 'point_fixe', 'punkte'),
+            filter_keys=['pfp']),
+        # geo, rank 80
+        SearchKeywords(keywords=('geo', 'geology', 'geologie', 'sondierung'), filter_keys=['geo']),
+        # cabine tv, rank 70
+        SearchKeywords(
+            keywords=('cabine-tv', 'tv-kabine', 'cabinetv', 'tvkabine', 'tv', 'kk'),
+            filter_keys=['cabinetv']),
+        # hydrant, rank 60
+        SearchKeywords(keywords=('hydrant', 'hydrante'), filter_keys=['hydrants']),
+        # egid, rank 50
+        SearchKeywords(keywords=('egid'), filter_keys=['egid']),
+        # rank 40 nomemclatures no need for keyword
+        # parcel, rank 30
+        SearchKeywords(
+            keywords=('parzelle', 'parcelle', 'parcella', 'parcel',
+                      'grundstuck', 'grundstueck', 'grundstück'),
+            filter_keys=['parcels']),
+        # address, rank 20
+        SearchKeywords(
+            keywords=('addresse', 'adresse', 'indirizzo', 'address'),
+            filter_keys=['cities', 'streetnames'])
+        # rank 10 cities no need for keyword
+    )
 
     def __init__(self, request):
         super().__init__()
@@ -203,74 +242,13 @@ class Search(SearchValidation):
 
     def _detect_keywords(self):
         if len(self.searchText) > 0:
-            # rank 110
-            SURV_KEYWORDS = ('surv', 'survey', 'surveillance',
-                             'uberwachung', 'ueberwachung', 'überwachung')
-            # rank 100
-            KMS_KEYWORDS = ('km', 'kms')
-            # rank 90
-            PFP_KEYWORDS = ('fp', 'pf', 'pfp', 'fixed_point', 'point_fixe', 'punkte')
-            # rank 80
-            GEO_KEYWORDS = ('geo', 'geology', 'geologie', 'sondierung')
-            # rank 70
-            CABINETV_KEYWORDS = ('cabine-tv', 'tv-kabine', 'cabinetv', 'tvkabine',
-                                 'tv', 'kk')
-            # rank 60
-            HYDRANTS_KEYWORDS = ('hydrant', 'hydrante')
-            # rank 50
-            EGID_KEYWORDS = ('egid')
-            # rank 40 nomemclatures no need for keyword
-            # rank 30
-            PARCEL_KEYWORDS = ('parzelle', 'parcelle', 'parcella', 'parcel',
-                               'grundstuck', 'grundstueck', 'grundstück')
-            # rank 20
-            ADDRESS_KEYWORDS = ('addresse', 'adresse', 'indirizzo', 'address')
-            # rank 10 cities no need for keyword
             firstWord = self.searchText[0].lower()
 
-            if firstWord in SURV_KEYWORDS:
-                # As one cannot apply filters on string attributes, we use the rank information
-                self.sphinx.SetFilter('rank', self._origins_to_ranks(['surv']))
-                del self.searchText[0]
-
-            elif firstWord in KMS_KEYWORDS:
-                # As one cannot apply filters on string attributes, we use the rank information
-                self.sphinx.SetFilter('rank', self._origins_to_ranks(['kms']))
-                del self.searchText[0]
-
-            elif firstWord in PFP_KEYWORDS:
-                # As one cannot apply filters on string attributes, we use the rank information
-                self.sphinx.SetFilter('rank', self._origins_to_ranks(['pfp']))
-                del self.searchText[0]
-
-            elif firstWord in GEO_KEYWORDS:
-                # As one cannot apply filters on string attributes, we use the rank information
-                self.sphinx.SetFilter('rank', self._origins_to_ranks(['geo']))
-                del self.searchText[0]
-
-            elif firstWord in CABINETV_KEYWORDS:
-                # As one cannot apply filters on string attributes, we use the rank information
-                self.sphinx.SetFilter('rank', self._origins_to_ranks(['cabinetv']))
-                del self.searchText[0]
-
-            elif firstWord in HYDRANTS_KEYWORDS:
-                # As one cannot apply filters on string attributes, we use the rank information
-                self.sphinx.SetFilter('rank', self._origins_to_ranks(['hydrants']))
-                del self.searchText[0]
-
-            elif firstWord in EGID_KEYWORDS:
-                # As one cannot apply filters on string attributes, we use the rank information
-                self.sphinx.SetFilter('rank', self._origins_to_ranks(['egid']))
-                del self.searchText[0]
-
-            elif firstWord in PARCEL_KEYWORDS:
-                # As one cannot apply filters on string attributes, we use the rank information
-                self.sphinx.SetFilter('rank', self._origins_to_ranks(['parcels']))
-                del self.searchText[0]
-
-            elif firstWord in ADDRESS_KEYWORDS:
-                self.sphinx.SetFilter('rank', self._origins_to_ranks(['cities', 'streetnames']))
-                del self.searchText[0]
+            for search_keywords in self.SEARCH_KEYWORDS:
+                if firstWord in search_keywords.keywords:
+                    filter = self._origins_to_ranks(search_keywords.filter_keys)
+                    self.sphinx.SetFilter('rank', filter)
+                    del self.searchText[0]
 
     def _filter_locations_by_origins(self):
         ranks = self._origins_to_ranks(self.origins)

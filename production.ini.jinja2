@@ -56,9 +56,9 @@ raster.preloaded = {{ raster.preloaded | join(",") }}
 
 # Search
 address_search_referers = {{ search.referers | join(",") }}
-search.address_origins = {{ search.address_origins }}
+search.address_origins = {{ search.address_origins | join(",") }}
 search.origins_to_ranks =
-    {%- for origin, ranks in search.origins_to_ranks -%}
+    {%- for origin, ranks in search.origins_to_ranks.items() -%}
     {{ origin }}: {{ ranks }},
     {%- endfor %}
 sphinxhost = {{ search.host }}

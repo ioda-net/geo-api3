@@ -1,5 +1,5 @@
 from pyramid.paster import get_app, setup_logging
 
-ini_path = '{{ install_directory }}/{{ stage }}.ini'
+ini_path = '{{ ini_path }}'
 setup_logging(ini_path)
 application = get_app(ini_path, 'main')

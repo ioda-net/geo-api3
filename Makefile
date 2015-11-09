@@ -10,6 +10,7 @@ PIP_CMD ?= $(shell pwd)/.venv/bin/pip
 PSERVE_CMD ?= $(shell pwd)/.venv/bin/pserve
 NOSE_CMD ?= $(shell pwd)/.venv/bin/nosetests
 FLAKE8_CMD ?= $(shell pwd)/.venv/bin/flake8
+JINJA2_CMD ?= $(shell pwd)/.venv/bin/jinja2
 
 .PHONY: help
 help:
@@ -35,10 +36,16 @@ help:
 serve: ini_files
 	PYTHONPATH=${PYTHONPATH} ${PSERVE_CMD} development.ini --reload
 
-ini_files: node_modules
-	@if [ ! -e production.ini ] || [ ! -e development.ini ]; then \
-	    cd bin && ./node_modules/gulp/bin/gulp.js build-config; \
-	fi
+ini_files: development.ini production.ini
+	$(JINJA2_CMD) --format toml \
+	    -Dapp_version="$(shell date +"%s")" \
+	    development.ini.jinja2 \
+	    config.toml > development.ini
+	$(JINJA2_CMD) --format toml \
+	    -Dapp_version="$(shell date +"%s")" \
+	    -Dinstall_directory="$(shell pwd)" \
+	    production.ini.jinja2 \
+	    config.toml > production.ini
 
 .PHONY: venv
 venv:
@@ -49,12 +56,6 @@ venv:
 	    ${PIP_CMD} install -U pip; \
 	    ${PIP_CMD} install Cython; \
 	    ${PYTHON_CMD} setup.py develop; \
-	fi
-
-.PHONY: node_modules
-node_modules:
-	@if [ ! -d bin/node_modules ]; then \
-	    cd bin && npm install; \
 	fi
 
 
@@ -81,9 +82,17 @@ testprotocol:
 checkall: check testprotocol
 
 
-.PHONY: wsgi ini_files
-wsgi: node_modules
-	cd bin && ./node_modules/gulp/bin/gulp.js wsgi
+.PHONY: wsgi
+wsgi: ini_files
+	mkdir -p parts/wsgi
+	$(JINJA2_CMD) --format toml \
+	    -Dini_path="$(shell pwd)/production.ini" \
+	    parts/geo-api3.wsgi.jinja2 \
+	    config.toml > parts/wsgi/production.wsgi
+	$(JINJA2_CMD) --format toml \
+	    -Dini_path="$(shell pwd)/development.ini" \
+	    parts/geo-api3.wsgi.jinja2 \
+	    config.toml > parts/wsgi/development.wsgi
 
 
 .PHONY: gdal
@@ -121,11 +130,9 @@ revert:
 
 .PHONY: clean
 clean:
-	rm -rf production.ini
-	rm -rf development.ini
+	rm -rf *.ini
 
 
 .PHONY: cleanall
 cleanall: clean
 	rm -rf .venv
-	rm -rf bin/node_modules

@@ -19,7 +19,7 @@ pyramid==1.5.7
 pyramid_tm==0.12
 qrcode==5.1
 requests>=2.7.0
-shapely==1.5.9
+shapely>=1.5.9
 simplejson
 sphinx_rtd_theme
 toml

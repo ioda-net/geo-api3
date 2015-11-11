@@ -37,10 +37,16 @@ serve: ini_files
 	PYTHONPATH=${PYTHONPATH} ${PSERVE_CMD} development.ini --reload
 
 ini_files: development.ini production.ini
+
+.PHONY: development.ini
+development.ini:
 	$(JINJA2_CMD) --format toml \
 	    -Dapp_version="$(shell date +"%s")" \
 	    development.ini.jinja2 \
 	    config.toml > development.ini
+
+.PHONY: production.ini
+production.ini:
 	$(JINJA2_CMD) --format toml \
 	    -Dapp_version="$(shell date +"%s")" \
 	    -Dinstall_directory="$(shell pwd)" \
@@ -135,4 +141,6 @@ clean:
 
 .PHONY: cleanall
 cleanall: clean
-	rm -rf .venv
+	rm -rf .venv lib build dist
+	rm -f bin/coverage* bin/easy_install* bin/flake8 bin/jinja2 bin/mako-render bin/nosetests* bin/pcreate bin/pdistreport bin/pep8 bin/prequest bin/proutes bin/pserve bin/pshell bin/ptweens bin/pviews bin/pybabel* bin/pyflakes bin/pygmentize* bin/qr bin/sphinx-apidoc* bin/sphinx-autogen* bin/sphinx-build* bin/sphinx-quickstart* bin/waitress-serve
+

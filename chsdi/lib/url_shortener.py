@@ -38,18 +38,23 @@ def check_url(url, config):
 
 
 def _add_item(request, url):
-    short_url = _get_short_url(request, url)
-    if short_url is None:
+    short_url_id = _get_short_url(request, url)
+    if short_url_id is None:
         # Create a new short url if url not in DB
         # Magic number relates to the initial epoch
         t = int(time.time() * 1000) - 1000000000000
-        short_url = '{:x}'.format(t)
+        short_url_id = '{:x}'.format(t)
         try:
-            shorten_url = UrlShortener(url=url, short_url=short_url, createtime=datetime.now())
+            shorten_url = UrlShortener(url=url, short_url=short_url_id, createtime=datetime.now())
             request.db.add(shorten_url)
             request.db.commit()
         except Exception as e:  # pragma: no cover
             raise HTTPBadRequest('Error during put item %s' % e)
+
+    short_url = '{}://{}/shorten/{}'.format(
+        request.scheme,
+        request.registry.settings['shortener.host'],
+        short_url_id)
 
     return short_url
 

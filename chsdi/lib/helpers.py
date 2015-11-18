@@ -3,7 +3,6 @@ import unicodedata
 
 import math
 from osgeo import osr, ogr
-from urllib.parse import quote
 
 
 def round(val):
@@ -53,10 +52,6 @@ def escape_sphinx_syntax(input_str):
         '$': r'\$',
         '"': r'\"',
     }))
-
-
-def quoting(text):
-    return quote(text.encode('utf-8'))
 
 
 def transformCoordinate(wkt, srid_from, srid_to):

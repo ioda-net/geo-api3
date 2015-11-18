@@ -5,15 +5,13 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.response import Response
 
-from chsdi.lib.helpers import quoting
 from chsdi.lib.url_shortener import create_short_url
 
 
 @view_config(route_name='qrcodegenerator')
 def create_qrcode(request):
     short_url = create_short_url(request)
-    url = quoting(short_url)
-    img = _make_qrcode_img(url)
+    img = _make_qrcode_img(short_url)
     response = Response(img, content_type='image/png')
     return response
 

@@ -10,11 +10,7 @@ from chsdi.lib.url_shortener import expand_short_url
 def shortener(request):
     short_url = create_short_url(request)
     return {
-        'shorturl': '{}://{}/shorten/{}'.format(
-            request.scheme,
-            request.registry.settings['shortener.host'],
-            short_url
-        )
+        'shorturl': short_url
     }
 
 

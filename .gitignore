@@ -20,9 +20,13 @@ chsdi/static/js/layersconfig.*.js
 chsdi/static/js/serverconfig.js
 chsdi/static/js/*.css
 deploy/hooks/pre-create-code
-node_modules
 *.toml
 *.wsgi
+config/config.sh
 local.mk
 /cover
 /.venv
+/bin
+/build
+/dist
+/lib

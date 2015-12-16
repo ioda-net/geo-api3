@@ -1,14 +1,13 @@
 # -*- coding: utf-8  -*-
 
 import unittest
-import toml
 from chsdi.lib.sphinxapi import sphinxapi
+from tasks.config import load_config
 
 
 class Test_SphinxApi(unittest.TestCase):
     def setUp(self):
-        with open('config/config.toml', 'r') as test_config_file:
-            self.search_config = toml.load(test_config_file)['search']
+        self.search_config = load_config()['search']
 
     def _callFUT(self):
         api = sphinxapi.SphinxClient()

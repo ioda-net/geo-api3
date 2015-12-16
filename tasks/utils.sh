@@ -28,11 +28,9 @@ Regenerate the ini files for pyramid from the configuration."
 function ini-files {
     declare -a ini_files=(production.ini development.ini)
     for file in ${ini_files[@]}; do
-        "${JINJA2}" --format toml \
-                    -Dapp_version="$(date "+%s")" \
+        python3 tasks/config.py | "${JINJA2}" --format json \
                     -Dinstall_directory="$(pwd)" \
-                    "${file}.jinja2" \
-                    config/config.toml > "${file}"
+                    "${file}.jinja2" > "${file}"
     done
 }
 
@@ -44,9 +42,8 @@ function wsgi-files {
     ini-files
     declare -a wsgi_files=(production.wsgi development.wsgi)
     for file in ${wsgi_files[@]}; do
-        "${JINJA2}" --format toml \
+        python3 tasks/config.py | "${JINJA2}" --format json \
                     -Dini_path="$(pwd)/${file%%.*}.ini" \
-                    parts/geo-api3.wsgi.jinja2 \
-                    config/config.toml > "parts/wsgi/${file}"
+                    parts/geo-api3.wsgi.jinja2 > "parts/wsgi/${file}"
     done
 }

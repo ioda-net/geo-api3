@@ -1,5 +1,3 @@
-import toml
-
 from chsdi.tests.integration import TestsBase
 
 
@@ -8,9 +6,7 @@ class TestSearchServiceView(TestsBase):
         super().setUp()
         self.portal_name = 'geojb'
         self.search_uri = '/rest/services/{}/SearchServer'.format(self.portal_name)
-        with open('config/config.toml', 'r') as test_config_file:
-            config = toml.load(test_config_file)
-            self.address_origins = config['search']['address_origins']
+        self.address_origins = self.config['search']['address_origins']
 
     def test_no_type(self):
         self.testapp.get(self.search_uri, params={'searchText': 'ga'}, status=400)

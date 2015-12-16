@@ -9,7 +9,7 @@ def admin_kml(request):
     return {
         'files': files,
         'count': len(files),
-        'bucket': request.registry.settings.get('api_url')
+        'bucket': request.registry.settings.get('shortener.host')
     }
 
 

@@ -15,7 +15,7 @@ Each target is detailed in the Makefile. You don't have to install the dependenc
 Makefile will do this for you if you haven't downloaded them already.
 
 You can customize the build in a copy of `config.dist.toml`. This copy must be
-named `config.toml`. This file is written in the
+named `config/config.toml`. This file is written in the
 [toml configuration](https://github.com/toml-lang/toml) language. Without this
 configuration file, you will not be able to generate the configuration files
 from the templates.

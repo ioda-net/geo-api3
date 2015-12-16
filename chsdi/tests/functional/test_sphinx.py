@@ -7,7 +7,7 @@ from chsdi.lib.sphinxapi import sphinxapi
 
 class Test_SphinxApi(unittest.TestCase):
     def setUp(self):
-        with open('config.toml', 'r') as test_config_file:
+        with open('config/config.toml', 'r') as test_config_file:
             self.search_config = toml.load(test_config_file)['search']
 
     def _callFUT(self):

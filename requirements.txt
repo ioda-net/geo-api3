@@ -27,6 +27,5 @@ waitress
 
 
 # lint
-pep8
-pyflakes
+## flake8 installs pep8 and pyflakes
 flake8

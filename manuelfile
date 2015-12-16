@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+
+# Exit on error
+set -e
+# Prevent usage of undefined variable
+set -u
+
+
+# Declare help
+declare -A HELP
+
+
+source tasks/test.sh
+source tasks/utils.sh
+
+
+# Load config
+source config/config.dist.sh
+source config/config.sh 2> /dev/null || :
+
+
+HELP['help']="manuel help [TASK]
+
+Display the help for the given task. Use manuel list to list all tasks."
+function help {
+    if [[ -z "${1:-}" ]]; then
+        help help
+    else
+        [[ -n "${HELP[$1]}" ]] && echo -e "${HELP[$1]}" || echo "No task named $1." >&2
+    fi
+}
+
+
+HELP['clean']="manuel clean
+
+Remove ini and wsgi files."
+function clean {
+    rm -f *.ini
+    rm -f parts/wsgi/*.wsgi
+}
+
+
+HELP['clean-all']="manuel clean-all
+
+Like clean and remove .venv lib build dist and bin."
+function clean-all {
+    clean
+    rm -rf .venv lib build dist bin
+}
+
+
+HELP['serve']="manuel serve
+
+Launch pserse in dev mode with the --reload option."
+function serve {
+    ini-files
+
+    if [[ ! -d "chsdi.egg-info" ]]; then
+        develop
+    fi
+    "${PSERVE}" development.ini --reload
+}
+
+
+HELP['deploy']="manuel deploy
+
+Install geo-api3 in the current directory."
+function deploy {
+    clean
+    ini-files
+    wsgi-files
+
+    "${PYTHON}" setup.py install --prefix $(pwd)
+}

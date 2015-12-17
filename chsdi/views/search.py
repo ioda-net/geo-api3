@@ -24,15 +24,19 @@ class Search(SearchValidation):
         SearchKeywords(
             keywords=('surv', 'survey', 'surveillance',
                       'uberwachung', 'ueberwachung', 'überwachung'),
-            filter_keys=['surv']),
+            filter_keys=['n16_surveillances']),
         # kms, rank 100
-        SearchKeywords(keywords=('km', 'kms'), filter_keys=['kms']),
+        SearchKeywords(
+            keywords=('km', 'kms'),
+            filter_keys=['n16_kilometrage']),
         # pfp, rank 90
         SearchKeywords(
             keywords=('fp', 'pf', 'pfp', 'fixed_point', 'point_fixe', 'punkte'),
-            filter_keys=['pfp']),
+            filter_keys=['n16_pfp']),
         # geo, rank 80
-        SearchKeywords(keywords=('geo', 'geology', 'geologie', 'sondierung'), filter_keys=['geo']),
+        SearchKeywords(
+            keywords=('geo', 'geology', 'geologie', 'sondierung'),
+            filter_keys=['n16_geologie']),
         # cabine tv, rank 70
         SearchKeywords(
             keywords=('cabine-tv', 'tv-kabine', 'cabinetv', 'tvkabine', 'tv', 'kk'),
@@ -46,11 +50,11 @@ class Search(SearchValidation):
         SearchKeywords(
             keywords=('parzelle', 'parcelle', 'parcella', 'parcel',
                       'grundstuck', 'grundstueck', 'grundstück'),
-            filter_keys=['parcels']),
+            filter_keys=['sorted_parcels']),
         # address, rank 20
         SearchKeywords(
             keywords=('addresse', 'adresse', 'indirizzo', 'address'),
-            filter_keys=['cities', 'streetnames'])
+            filter_keys=['communes', 'sorted_buildings'])
         # rank 10 cities no need for keyword
     )
 
@@ -77,8 +81,6 @@ class Search(SearchValidation):
         self.limit = request.params.get('limit')
         self.results = {'results': []}
         self.request = request
-        self.addressOrigins = [origin.strip() for origin in
-                               request.registry.settings['search.address_origins'].split(',')]
         originAndRanks = [originRank.split(':') for originRank in
                           request.registry.settings['search.origins_to_ranks'].split(',')
                           if originRank]

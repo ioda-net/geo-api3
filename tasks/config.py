@@ -20,7 +20,7 @@ def load_config():
 def update(dest, source):
     for key, value in source.items():
         if key not in dest:
-            print('WARNING: Key {} not in test', file=sys.stderr)
+            print('WARNING: Key {} not in dest'.format(key), file=sys.stderr)
         if isinstance(value, dict):
             update(dest.setdefault(key), value)
         else:

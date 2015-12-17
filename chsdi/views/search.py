@@ -20,6 +20,10 @@ class Search(SearchValidation):
     FEATURE_LIMIT = 20
 
     SEARCH_KEYWORDS = (
+        # surv, rank 120
+        SearchKeywords(
+            keywords=('infiltration', 'eindringen', 'unterwanderung'),
+            filter_keys=['eu_infiltration']),
         # surv, rank 110
         SearchKeywords(
             keywords=('surv', 'survey', 'surveillance',

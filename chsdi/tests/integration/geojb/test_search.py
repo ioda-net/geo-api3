@@ -6,7 +6,6 @@ class TestSearchServiceView(TestsBase):
         super().setUp()
         self.portal_name = 'geojb'
         self.search_uri = '/rest/services/{}/SearchServer'.format(self.portal_name)
-        self.address_origins = self.config['search']['address_origins']
 
     def test_no_type(self):
         self.testapp.get(self.search_uri, params={'searchText': 'ga'}, status=400)
@@ -114,41 +113,40 @@ class TestSearchLocations(TestSearchServiceView):
         }
         resp = self.testapp.get(self.search_uri, params=params, status=200)
         self.assertTrue(resp.content_type == 'application/json')
-        self.assertTrue(resp.json['results'][0]['attrs']['detail'] == 'pery-la heutte')
+        self.assertTrue(resp.json['results'][0]['attrs']['search_string'] == 'pery-la heutte')
         self.assertTrue(resp.json['results'][0]['attrs']['origin'] == 'communes')
 
     def test_search_locations_grandval(self):
         params = {'searchText': 'Grandval', 'type': 'locations'}
         resp = self.testapp.get(self.search_uri, params=params, status=200)
         self.assertTrue(resp.content_type == 'application/json')
-        self.assertTrue(resp.json['results'][0]['attrs']['detail'] == 'grandval')
+        self.assertTrue(resp.json['results'][0]['attrs']['search_string'] == 'grandval')
 
     def test_search_locations_mou(self):
         params = {'searchText': 'mou', 'type': 'locations'}
         resp = self.testapp.get(self.search_uri, params=params, status=200)
         self.assertTrue(resp.content_type == 'application/json')
-        self.assertTrue(resp.json['results'][0]['attrs']['detail'][:3] == 'mou')
+        self.assertTrue(resp.json['results'][0]['attrs']['search_string'][:3] == 'mou')
 
     def test_search_locations_accent(self):
         params = {'searchText': 'Corgémont, Rue de l\'Envers, 19', 'type': 'locations'}
         resp = self.testapp.get(self.search_uri, params=params, status=200)
         self.assertTrue(resp.content_type == 'application/json')
-        expected_detail = resp.json['results'][0]['attrs']['detail']
+        expected_detail = resp.json['results'][0]['attrs']['search_string']
         self.assertTrue(expected_detail == 'corgemont, rue de l\'envers, 19')
 
     def test_search_locations_moutier_oeuches(self):
         params = {'searchText': 'moutier oeuches', 'type': 'locations'}
         resp = self.testapp.get(self.search_uri, params=params, status=200)
         self.assertTrue(resp.content_type == 'application/json')
-        self.assertTrue('moutier' in resp.json['results'][0]['attrs']['detail'])
-        self.assertTrue('oeuches' in resp.json['results'][0]['attrs']['detail'])
+        self.assertTrue('moutier' in resp.json['results'][0]['attrs']['search_string'])
+        self.assertTrue('oeuches' in resp.json['results'][0]['attrs']['search_string'])
 
     def test_search_location_max_address(self):
         params = {'searchText': 'moutier', 'type': 'locations'}
         resp = self.testapp.get(self.search_uri, params=params, status=200)
         self.assertTrue(resp.content_type == 'application/json')
-        results_addresses = [result for result in resp.json['results']
-                             if result['attrs']['origin'] in self.address_origins]
+        results_addresses = [result for result in resp.json['results']]
         self.assertTrue(len(results_addresses) <= 50)
 
     def test_search_locations_no_geometry(self):
@@ -161,7 +159,7 @@ class TestSearchLocations(TestSearchServiceView):
         params = {'searchText': 'corgemont, Rue de l\'Envers', 'type': 'locations'}
         resp = self.testapp.get(self.search_uri, params=params, status=200)
         self.assertTrue(resp.content_type == 'application/json')
-        expected_detail = resp.json['results'][0]['attrs']['detail']
+        expected_detail = resp.json['results'][0]['attrs']['search_string']
         self.assertTrue(expected_detail.startswith('corgemont, rue de l\'envers'))
 
     def test_order_addresses(self):
@@ -169,24 +167,25 @@ class TestSearchLocations(TestSearchServiceView):
         resp = self.testapp.get(self.search_uri, params=params, status=200)
         self.assertTrue(resp.content_type == 'application/json')
         self.assertTrue(
-            resp.json['results'][0]['attrs']['detail'] == 'moutier, chemin de graitery, 1')
+            resp.json['results'][0]['attrs']['search_string'] == 'moutier, chemin de graitery, 1')
         self.assertTrue(
-            resp.json['results'][1]['attrs']['detail'] == 'moutier, chemin de graitery, 1a')
+            resp.json['results'][1]['attrs']['search_string'] == 'moutier, chemin de graitery, 1a')
         self.assertTrue(
-            resp.json['results'][7]['attrs']['detail'] == 'moutier, chemin de graitery, 10')
+            resp.json['results'][7]['attrs']['search_string'] == 'moutier, chemin de graitery, 10')
         self.assertTrue(
-            resp.json['results'][8]['attrs']['detail'] == 'moutier, chemin de graitery, 12')
-        self.assertTrue(
-            resp.json['results'][9]['attrs']['detail'] == 'moutier, chemin de graitery, 12a')
+            resp.json['results'][8]['attrs']['search_string'] == 'moutier, chemin de graitery, 12')
+        resp_attr = resp.json['results'][9]['attrs']['search_string']
+        expected_resp = 'moutier, chemin de graitery, 12a'
+        self.assertTrue(resp_attr == expected_resp)
 
     def test_order_communes_addresses(self):
         params = {'searchText': 'cor', 'type': 'locations'}
         resp = self.testapp.get(self.search_uri, params=params, status=200)
         self.assertTrue(resp.content_type == 'application/json')
-        self.assertTrue(resp.json['results'][0]['attrs']['detail'] == 'corcelles _be_')
-        self.assertTrue(resp.json['results'][1]['attrs']['detail'] == 'corgemont')
-        self.assertTrue(resp.json['results'][2]['attrs']['detail'] == 'cormoret')
-        self.assertTrue(resp.json['results'][3]['attrs']['detail'] == 'cortebert')
+        self.assertTrue(resp.json['results'][0]['attrs']['search_string'] == 'corcelles _be_')
+        self.assertTrue(resp.json['results'][1]['attrs']['search_string'] == 'corgemont')
+        self.assertTrue(resp.json['results'][2]['attrs']['search_string'] == 'cormoret')
+        self.assertTrue(resp.json['results'][3]['attrs']['search_string'] == 'cortebert')
         self.assertTrue(len(resp.json['results']) == 50)
 
     def test_search_address_with_letters(self):
@@ -213,12 +212,16 @@ class TestSearchLocations(TestSearchServiceView):
         self.assertTrue('geom_st_box2d' not in resp.json['results'][0]['attrs'].keys())
 
     def test_search_locations_one_origin(self):
-        params = {'searchText': 'moutier', 'type': 'locations', 'origins': 'cities'}
+        params = {'searchText': 'moutier', 'type': 'locations', 'origins': 'communes'}
         resp = self.testapp.get(self.search_uri, params=params, status=200)
         self.assertTrue(len(resp.json['results']) == 1)
 
     def test_search_locations_several_origins(self):
-        params = {'searchText': 'moutier', 'type': 'locations', 'origins': 'cities,streetnames'}
+        params = {
+            'searchText': 'moutier',
+            'type': 'locations',
+            'origins': 'communes,sorted_buildings'
+        }
         resp = self.testapp.get(self.search_uri, params=params, status=200)
         self.assertTrue(len(resp.json['results']) > 1)
 
@@ -234,7 +237,7 @@ class TestSearchLocations(TestSearchServiceView):
         }
         resp = self.testapp.get(self.search_uri, params=params, status=200)
         self.assertTrue(
-            resp.json['results'][0]['attrs']['detail'] == 'moutier, rue des oeuches, 45a')
+            resp.json['results'][0]['attrs']['search_string'] == 'moutier, rue des oeuches, 45a')
         self.assertTrue(len(resp.json['results']) == 1)
 
     def test_search_locations_bbox_only(self):
@@ -266,7 +269,7 @@ class TestSearchLocations(TestSearchServiceView):
         params = {'searchText': 'moutier', 'type': 'locations', 'limit': '1'}
         resp = self.testapp.get(self.search_uri, params=params, status=200)
         self.assertTrue(len(resp.json['results']) == 1)
-        self.assertTrue(resp.json['results'][0]['attrs']['detail'] == 'moutier')
+        self.assertTrue(resp.json['results'][0]['attrs']['search_string'] == 'moutier')
 
     def test_locations_search_wrong_limit(self):
         params = {'searchText': 'moutier', 'type': 'locations', 'limit': '5.5'}
@@ -301,9 +304,9 @@ class TestSearchLocations(TestSearchServiceView):
     def test_search_with_keyword(self):
         params = {'searchText': 'address moutier', 'type': 'locations', 'limit': '1'}
         resp = self.testapp.get(self.search_uri, params=params, status=200)
-        self.assertTrue(resp.json['results'][0]['attrs']['detail'] == 'moutier')
+        self.assertTrue(resp.json['results'][0]['attrs']['search_string'] == 'moutier')
 
         params = {'searchText': 'parcel 123', 'type': 'locations', 'limit': '1'}
         resp = self.testapp.get(self.search_uri, params=params, status=200)
         self.assertTrue(
-            resp.json['results'][0]['attrs']['detail'] == 'corgemont, 123 _ch887046354323_')
+            resp.json['results'][0]['attrs']['search_string'] == 'corgemont, 123 _ch887046354323_')

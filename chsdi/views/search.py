@@ -20,6 +20,10 @@ class Search(SearchValidation):
     FEATURE_LIMIT = 20
 
     SEARCH_KEYWORDS = (
+        # vannes 130
+        SearchKeywords(
+            keywords=('vanne', 'valve', 'schieber'),
+            filter_keys=['vannes']),
         # surv, rank 120
         SearchKeywords(
             keywords=('infiltration', 'eindringen', 'unterwanderung'),

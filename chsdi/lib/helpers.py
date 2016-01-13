@@ -6,7 +6,10 @@ from osgeo import osr, ogr
 
 
 def round(val):
-    import math
+    '''The builtin round function rounds even numbers down and odd numbers up. This avoids a round
+    up bias and is conform to floating point manipulation defined by the IEEE. Since we want to
+    round number in .5 up and the others down, we add 0.5 to the value and take the floor.
+    '''
     return math.floor(val + 0.5)
 
 

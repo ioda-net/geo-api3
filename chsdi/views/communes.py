@@ -1,6 +1,11 @@
+import logging
+
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPBadRequest
-from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.orm.exc import (
+    NoResultFound,
+    MultipleResultsFound,
+)
 
 from chsdi.models.utilities import Communes
 
@@ -16,7 +21,8 @@ def communes(request):
         commune = request.db.query(Communes)\
             .filter(Communes.the_geom.ST_Contains(point))\
             .one()
-    except NoResultFound:
+    except (NoResultFound, MultipleResultsFound) as e:
+        logging.error(e)
         return {}
     else:
         return {'commune': commune.nom}

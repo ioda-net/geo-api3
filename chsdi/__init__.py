@@ -64,6 +64,7 @@ def main(global_config, **settings):
     config.add_route('files_collection', '/{portal}/files')
     config.add_route('files', '/{portal}/files/{id}')
     config.add_route('adminkml', '/{portal}/admin/kml')
+    config.add_route('color', '/{portal}/color/{r},{g},{b}/{image}')
 
     # Shortener
     config.add_route('shorten', '/{portal}/shorten.json')

@@ -23,6 +23,9 @@ sqlalchemy.sit.url = postgresql://{{ db.host }}:{{ db.port }}/sit_{{ db.staging 
 mako.directories = chsdi:templates
 
 
+# Global
+default_epsg = {{ default_epsg }}
+
 # Deploy
 install_directory = {{ install_directory }}
 

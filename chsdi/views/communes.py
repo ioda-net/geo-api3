@@ -16,7 +16,8 @@ def communes(request):
     y = request.params.get('y')
     if not x or not y:
         raise HTTPBadRequest('You must provide the coordonates.')
-    point = 'SRID={};POINT({} {})'.format(21781, x, y)
+    geom_srid = Communes.the_geom.property.columns[0].type.srid
+    point = 'SRID={};POINT({} {})'.format(geom_srid, x, y)
     try:
         commune = request.db.query(Communes)\
             .filter(Communes.the_geom.ST_Contains(point))\

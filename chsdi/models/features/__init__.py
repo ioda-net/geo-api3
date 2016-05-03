@@ -134,7 +134,7 @@ class Feature(GeoInterface):
             else cls.__mapper__.primary_key[0]
 
     @classmethod
-    def geom_filter(cls, geometry, geometryType, imageDisplay, mapExtent, tolerance):
+    def geom_filter(cls, geometry, geometryType, imageDisplay, mapExtent, tolerance, epsg):
         toleranceMeters = getToleranceMeters(imageDisplay, mapExtent, tolerance)
         scale = None
         resolution = None
@@ -153,7 +153,7 @@ class Feature(GeoInterface):
                 (resolution is None or
                     (resolution > cls.__minresolution__ and resolution <= cls.__maxresolution__)):
             geom = esriRest2Shapely(geometry, geometryType)
-            wkbGeometry = WKBElement(memoryview(geom.wkb), 21781)
+            wkbGeometry = WKBElement(memoryview(geom.wkb), epsg)
             geomColumn = cls.geometry_column()
             geomFilter = func.ST_DWITHIN(geomColumn, wkbGeometry, toleranceMeters)
             return geomFilter

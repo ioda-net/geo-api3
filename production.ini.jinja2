@@ -16,7 +16,7 @@ pyramid.includes = pyramid_tm
 
 
 # SQLAlchemy database URL
-sqlalchemy.sit.url = postgresql://{{ db.host }}:{{ db.port }}/sit_{{ db.staging }}
+sqlalchemy.sit.url = postgresql://{{ db.host }}:{{ db.port }}/{{ db.name }}{% if db.staging %}_{% endif %}{{ db.staging }}
 
 
 # Mako specific

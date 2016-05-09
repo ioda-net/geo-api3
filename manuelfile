@@ -55,7 +55,7 @@ Launch pserse in dev mode with the --reload option."
 function serve {
     ini-files
 
-    if [[ ! -d "chsdi.egg-info" ]]; then
+    if [[ ! -d "geo_api3.egg-info" ]]; then
         develop
     fi
     "${PSERVE}" development.ini --reload

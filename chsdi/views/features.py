@@ -200,7 +200,7 @@ def _get_features_for_filters(params, models, maxFeatures=None):
                     params.imageDisplay,
                     params.mapExtent,
                     params.tolerance,
-                    params.request.registry.settings['default_epsg']
+                    int(params.request.registry.settings['default_epsg'])
                 )
                 # Can be None because of max and min scale
                 if geomFilter is not None:

@@ -3,7 +3,7 @@
 # http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/environment.html
 ###
 [app:main]
-use = egg:chsdi
+use = egg:geo_api3
 
 
 pyramid.reload_templates = false
@@ -16,12 +16,16 @@ pyramid.includes = pyramid_tm
 
 
 # SQLAlchemy database URL
-sqlalchemy.sit.url = postgresql://{{ db.host }}:{{ db.port }}/sit_{{ db.staging }}
+sqlalchemy.sit.url = postgresql://{{ db.host }}:{{ db.port }}/{{ db.name }}{% if db.staging %}_{% endif %}{{ db.staging }}
 
 
 # Mako specific
 mako.directories = chsdi:templates
 
+
+# Global
+default_epsg = {{ default_epsg }}
+max_features = {{ max_features }}
 
 # Deploy
 install_directory = {{ install_directory }}

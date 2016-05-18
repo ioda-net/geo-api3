@@ -201,7 +201,7 @@ class Search(SearchValidation):
         centerX = (self.bbox[2] + self.bbox[0]) / 2
         centerY = (self.bbox[3] + self.bbox[1]) / 2
         wkt = 'POINT(%s %s)' % (centerX, centerY)
-        return transformCoordinate(wkt, 21781, 4326)
+        return transformCoordinate(wkt, self.request.registry.settings['default_epsg'], 4326)
 
     def _query_fields(self, fields):
         def exact_nondigit_prefix_digit(x):

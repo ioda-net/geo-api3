@@ -91,7 +91,7 @@ class EsriGeoJSONEncoder(GeoJSONEncoder):
 
                 path = coordinates  # ret['coordinates']
                 mapPointList = (lambda s, x, y: (x, y))
-                ret['paths'] = [[mapPointList(21781, *xy) for xy in path]]
+                ret['paths'] = [[mapPointList(self.srs, *xy) for xy in path]]
                 ret['type'] = 'esriGeometryPolyline'
 
                 return self._cleanup(ret)
@@ -99,7 +99,7 @@ class EsriGeoJSONEncoder(GeoJSONEncoder):
             if isinstance(obj, (geojson.MultiPoint)):
                 ret = dict(obj)
                 mapPointList = (lambda s, x, y: (x, y))
-                points = [mapPointList(21781, *xy) for xy in coordinates]
+                points = [mapPointList(self.srs, *xy) for xy in coordinates]
                 ret['points'] = points
                 ret['type'] = 'esriGeometryMultipoint'
 
@@ -110,7 +110,7 @@ class EsriGeoJSONEncoder(GeoJSONEncoder):
 
                 paths = coordinates
                 mapPointList = (lambda s, x, y: (x, y))
-                ret['paths'] = [[mapPointList(21781, *xy) for xy in p] for p in paths]
+                ret['paths'] = [[mapPointList(self.srs, *xy) for xy in p] for p in paths]
                 ret['type'] = 'esriGeometryPolyline'
 
                 return self._cleanup(ret)
@@ -121,7 +121,7 @@ class EsriGeoJSONEncoder(GeoJSONEncoder):
 
                 rings = coordinates
                 mapPointList = (lambda s, x, y: (x, y))
-                ret['rings'] = [[mapPointList(21781, *xy) for xy in ring] for ring in rings]
+                ret['rings'] = [[mapPointList(self.srs, *xy) for xy in ring] for ring in rings]
                 ret['type'] = 'esriGeometryPolygon'
 
                 return self._cleanup(ret)
@@ -131,7 +131,7 @@ class EsriGeoJSONEncoder(GeoJSONEncoder):
 
                 mapPointList = (lambda s, x, y: (x, y))
                 rings = reduce(add, coordinates)
-                ret['rings'] = [[mapPointList(21781, *xy) for xy in ring] for ring in rings]
+                ret['rings'] = [[mapPointList(self.srs, *xy) for xy in ring] for ring in rings]
                 ret['type'] = 'esriGeometryPolygon'
 
                 return self._cleanup(ret)
@@ -152,6 +152,10 @@ class EsriSimple():
             x, y = coords
             if x <= 180 and y <= 180:
                 wkid = 4326
+            elif x >= 485071.54 and x <= 828515.78 and y >= 75346.36 and y <= 299941.84:
+                wkid = 21781
+            elif x >= 2485071.58 and x <= 2828515.82 and y >= 1075346.31 and y <= 1299941.79:
+                wkid = 2056
 
             crs = Named(properties=dict(name="urn:ogc:def:crs:EPSG:%d" % wkid))
 

@@ -16,6 +16,10 @@ from chsdi.lib.filters import full_text_search
 from chsdi.lib.validation.mapservice import MapServiceValidation
 
 
+# This should only be used in case of an invalid configurataion
+MAX_FEATURES = 201
+
+
 # For several features
 class FeatureParams(MapServiceValidation):
 
@@ -117,7 +121,10 @@ def _identify(request):
     if models is None or len(models) == 0:
         raise exc.HTTPBadRequest('No GeoTable was found for %s' % ' '.join(layerIds))
 
-    maxFeatures = 201
+    try:
+        maxFeatures = int(request.registry.settings['max_features'])
+    except ValueError:
+        maxFeatures = MAX_FEATURES
     features = []
     feature_gen = _get_features_for_filters(params, models, maxFeatures=maxFeatures)
     while True:
@@ -192,7 +199,8 @@ def _get_features_for_filters(params, models, maxFeatures=None):
                     params.geometryType,
                     params.imageDisplay,
                     params.mapExtent,
-                    params.tolerance
+                    params.tolerance,
+                    params.request.registry.settings['default_epsg']
                 )
                 # Can be None because of max and min scale
                 if geomFilter is not None:

@@ -20,6 +20,10 @@ class Search(SearchValidation):
     FEATURE_LIMIT = 20
 
     SEARCH_KEYWORDS = (
+        # oseu 140
+        SearchKeywords(
+            keywords=('os', 'oseu', 'ouvrage', 'ouvrages'),
+            filter_keys=['oseu']),
         # vannes 130
         SearchKeywords(
             keywords=('vanne', 'valve', 'schieber'),

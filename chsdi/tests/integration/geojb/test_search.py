@@ -309,4 +309,4 @@ class TestSearchLocations(TestSearchServiceView):
         params = {'searchText': 'parcel 123', 'type': 'locations', 'limit': '1'}
         resp = self.testapp.get(self.search_uri, params=params, status=200)
         self.assertTrue(
-            resp.json['results'][0]['attrs']['search_string'] == 'corgemont, 123 _ch887046354323_')
+            resp.json['results'][0]['attrs']['search_string'] == 'corgemont, 123 ch887046354323')

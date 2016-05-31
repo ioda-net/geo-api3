@@ -150,6 +150,7 @@ class QuadTree:
                     return res
             if not has_quad:
                 return res
+        return res
 
     def bbox_to_morton(self, bbox):
         '''

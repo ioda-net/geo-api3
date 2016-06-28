@@ -1,0 +1,62 @@
+# keep the keys alphabetically ordered
+
+default_epsg = 21781
+max_features = 201
+
+[db]
+name = 'sit'
+host = 'geo_api3:geo_api3@localhost'
+port = 5432
+staging = 'prod'
+
+
+[feedback]
+default_recipient = 'support@example.com'
+default_subject = 'Geoportal Customer feedback'
+mail_host_name = 'localhost'
+mail_host_port = 25
+
+
+[raster]
+available = ['MNT50']
+dtm_base_path = '/var/geo-api3/data/bt'
+preloaded = ['MNT50']
+
+
+[search]
+host = 'localhost'
+port = 9312
+
+
+[search.origins_to_ranks]
+# this part need to be in sync in mapfinfra/config/global.toml
+nomenclatures = 40
+sorted_parcels = 30
+sorted_buildings = 20
+communes = 10
+
+
+[shortener]
+allowed_domains = ['geoportal.local']
+allowed_hosts = ['localhost']
+host = 'api.geoportal.local'
+
+
+[storage]
+kml = '/tmp'
+
+
+[tests]
+layer_id = 'test'
+
+
+[waitress]
+# Configuration for the waitress webserver used by pserve. You must choose the ip and the port it
+# must listen to.
+ip = '127.0.0.1'
+port = 9000
+
+
+[wsgi]
+modwsgi_user = 'wwwrun'
+wsgi_threads = 32

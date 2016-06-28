@@ -21,6 +21,7 @@ chsdi/static/js/serverconfig.js
 chsdi/static/js/*.css
 deploy/hooks/pre-create-code
 *.toml
+!*.dist.toml
 *.wsgi
 config/config.sh
 local.mk

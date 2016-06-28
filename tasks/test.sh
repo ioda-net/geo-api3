@@ -21,7 +21,7 @@ function lint {
 
 HELP['test']="manuel test [ARGS]
 
-If no args are given, launch all tests except those concerning the protocols.
+If no args are given, launch all tests.
 If args is set, these arguments are passed to nose. This is equivalent to:
 \t'nose ARGS'"
 function test {
@@ -30,21 +30,4 @@ function test {
     else
         "${NOSE}" "$@"
     fi
-}
-
-
-HELP['test-protocol']="manuel test-protocol
-
-Launch the tests associated with the protocols."
-function test-protocol {
-    "${NOSE}" chsdi/tests/integration/test_protocol.py
-}
-
-
-HELP['check-all']="manuel check-all
-
-Launch check and test-protocol."
-function check-all {
-    check
-    test-protocol
 }

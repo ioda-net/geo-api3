@@ -1,16 +1,13 @@
 import pyramid.httpexceptions as exc
 
-from collections import namedtuple
 from pyramid.view import view_config
 from shapely.geometry import box, Point
 
+from chsdi.customers.utils.search import SEARCH_KEYWORDS
 from chsdi.lib.validation.search import SearchValidation
 from chsdi.lib.helpers import format_search_text, transformCoordinate
 from chsdi.lib.sphinxapi import sphinxapi
 from chsdi.lib import mortonspacekey as msk
-
-
-SearchKeywords = namedtuple('SearchKeywords', 'keywords filter_keys')
 
 
 class Search(SearchValidation):
@@ -18,57 +15,6 @@ class Search(SearchValidation):
     LOCATION_LIMIT = 50
     LAYER_LIMIT = 30
     FEATURE_LIMIT = 20
-
-    SEARCH_KEYWORDS = (
-        # oseu 140
-        SearchKeywords(
-            keywords=('os', 'oseu', 'ouvrage', 'ouvrages'),
-            filter_keys=['oseu']),
-        # vannes 130
-        SearchKeywords(
-            keywords=('vanne', 'valve', 'schieber'),
-            filter_keys=['vannes']),
-        # surv, rank 120
-        SearchKeywords(
-            keywords=('infiltration', 'eindringen', 'unterwanderung'),
-            filter_keys=['eu_infiltration']),
-        # surv, rank 110
-        SearchKeywords(
-            keywords=('surv', 'survey', 'surveillance',
-                      'uberwachung', 'ueberwachung', 'überwachung'),
-            filter_keys=['n16_surveillances']),
-        # kms, rank 100
-        SearchKeywords(
-            keywords=('km', 'kms'),
-            filter_keys=['n16_kilometrage']),
-        # pfp, rank 90
-        SearchKeywords(
-            keywords=('fp', 'pf', 'pfp', 'fixed_point', 'point_fixe', 'punkte'),
-            filter_keys=['n16_pfp']),
-        # geo, rank 80
-        SearchKeywords(
-            keywords=('geo', 'geology', 'geologie', 'sondierung'),
-            filter_keys=['n16_geologie']),
-        # cabine tv, rank 70
-        SearchKeywords(
-            keywords=('cabine-tv', 'tv-kabine', 'cabinetv', 'tvkabine', 'tv', 'kk'),
-            filter_keys=['cabinetv']),
-        # hydrant, rank 60
-        SearchKeywords(keywords=('hydrant', 'hydrante'), filter_keys=['hydrants']),
-        # egid, rank 50
-        SearchKeywords(keywords=('egid'), filter_keys=['egid']),
-        # rank 40 nomemclatures no need for keyword
-        # parcel, rank 30
-        SearchKeywords(
-            keywords=('parzelle', 'parcelle', 'parcella', 'parcel',
-                      'grundstuck', 'grundstueck', 'grundstück'),
-            filter_keys=['sorted_parcels']),
-        # address, rank 20
-        SearchKeywords(
-            keywords=('addresse', 'adresse', 'indirizzo', 'address'),
-            filter_keys=['communes', 'sorted_buildings'])
-        # rank 10 cities no need for keyword
-    )
 
     def __init__(self, request):
         super().__init__()
@@ -261,7 +207,7 @@ class Search(SearchValidation):
         if len(self.searchText) > 0:
             firstWord = self.searchText[0].lower()
 
-            for search_keywords in self.SEARCH_KEYWORDS:
+            for search_keywords in SEARCH_KEYWORDS:
                 if firstWord in search_keywords.keywords:
                     filter = self._origins_to_ranks(search_keywords.filter_keys)
                     self.sphinx.SetFilter('rank', filter)

@@ -2,6 +2,7 @@ from pyramid.config import Configurator
 from pyramid.renderers import JSONP
 from sqlalchemy.orm import scoped_session, sessionmaker
 
+from chsdi.customers.views import register_customer_view
 from chsdi.renderers import EsriJSON, CSVRenderer
 from chsdi.models import initialize_sql
 from papyrus.renderers import GeoJSON
@@ -62,8 +63,6 @@ def main(global_config, **settings):
     config.add_route('checker', '/checker')
     config.add_route('files_collection', '/files')
     config.add_route('files', '/files/{id}')
-    config.add_route('protocol', '/protocol/{type}/{id}')
-    config.add_route('communes', '/communes')
     config.add_route('adminkml', '/admin/kml')
 
     # Shortener
@@ -77,6 +76,9 @@ def main(global_config, **settings):
     config.add_static_view('vectorStyles', 'chsdi:static/vectorStyles')
     # keep this the last one
     config.add_static_view('/', 'chsdi:static/doc/build')
+
+    # Customer views
+    register_customer_view(config)
 
     # required to find code decorated by view_config
     config.scan(ignore=['chsdi.tests', 'chsdi.models.vector'])

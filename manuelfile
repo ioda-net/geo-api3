@@ -53,6 +53,10 @@ HELP['serve']="manuel serve
 
 Launch pserse in dev mode with the --reload option."
 function serve {
+    if [[ -n "${1:-}" ]]; then
+        git checkout "$1"
+    fi
+
     ini-files
 
     if [[ ! -d "geo_api3.egg-info" ]]; then

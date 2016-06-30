@@ -7,11 +7,14 @@ import toml
 from os.path import exists
 
 
-def load_config():
+def load_config(git_branch=''):
     dist = toml.load('config/config.dist.toml')
     if exists('config/config.toml'):
         conf = toml.load('config/config.toml')
+        update(dist, conf)
 
+    if exists('config/config.' + git_branch + '.toml'):
+        conf = toml.load('config/config.' + git_branch + '.toml')
         update(dist, conf)
 
     return dist
@@ -28,5 +31,7 @@ def update(dest, source):
 
 
 if __name__ == '__main__':
-    config = load_config()
+    if len(sys.argv) >= 2:
+        git_branch = sys.argv[1]
+    config = load_config(git_branch)
     print(json.dumps(config))

@@ -27,8 +27,9 @@ HELP['ini-files']="manuel ini-files
 Regenerate the ini files for pyramid from the configuration."
 function ini-files {
     declare -a ini_files=(production.ini development.ini)
+    local current_branch=$(git rev-parse --abbrev-ref HEAD)
     for file in ${ini_files[@]}; do
-        python3 tasks/config.py | "${JINJA2}" --format json \
+        python3 tasks/config.py "${current_branch}" | "${JINJA2}" --format json \
                     -Dinstall_directory="$(pwd)" \
                     "${file}.jinja2" > "${file}"
     done
@@ -41,8 +42,9 @@ Regenetare apache's wsgi-files from the configuration."
 function wsgi-files {
     ini-files
     declare -a wsgi_files=(production.wsgi development.wsgi)
+    local current_branch=$(git rev-parse --abbrev-ref HEAD)
     for file in ${wsgi_files[@]}; do
-        python3 tasks/config.py | "${JINJA2}" --format json \
+        python3 tasks/config.py "${current_branch}" | "${JINJA2}" --format json \
                     -Dini_path="$(pwd)/${file%%.*}.ini" \
                     parts/geo-api3.wsgi.jinja2 > "parts/wsgi/${file}"
     done

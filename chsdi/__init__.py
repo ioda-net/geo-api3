@@ -69,6 +69,9 @@ def main(global_config, **settings):
     config.add_route('shorten', '/shorten.json')
     config.add_route('shorten_redirect', '/shorten/{id}')
 
+    # Customer views
+    register_customer_view(config)
+
     # static view definitions
     config.add_static_view('static', 'chsdi:static')
     config.add_static_view('images', 'chsdi:static/images')
@@ -76,9 +79,6 @@ def main(global_config, **settings):
     config.add_static_view('vectorStyles', 'chsdi:static/vectorStyles')
     # keep this the last one
     config.add_static_view('/', 'chsdi:static/doc/build')
-
-    # Customer views
-    register_customer_view(config)
 
     # required to find code decorated by view_config
     config.scan(ignore=['chsdi.tests', 'chsdi.models.vector'])

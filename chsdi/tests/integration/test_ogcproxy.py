@@ -10,7 +10,7 @@ class TestOGCproxyView(TestsBase):
         params = {'url': 'http://www.geo.admin.ch/'}
         resp = self.testapp.get('/ogcproxy', params=params, status=200)
         self.assertTrue(resp.content_type == 'text/html')
-        resp.mustcontain('Bundesgeoportal')
+        resp.mustcontain('geo.admin.ch - the federal geoportal')
 
     def test_proxy_kmz(self):
         params = {'url': 'http://dl.google.com/developers/maps/buffetthawaiitour.kmz'}

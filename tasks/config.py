@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import json
+import subprocess
 import sys
 import toml
 
@@ -18,6 +19,14 @@ def load_config(git_branch=''):
         update(dist, conf)
 
     return dist
+
+
+def get_git_branch():
+    return subprocess.Popen(['git', 'rev-parse', '--abbrev-ref', 'HEAD'], stdout=subprocess.PIPE)\
+        .stdout\
+        .read()\
+        .decode('utf-8')\
+        .strip()
 
 
 def update(dest, source):

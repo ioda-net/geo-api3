@@ -8,7 +8,8 @@ function venv {
     if [[ ! -d .venv ]]; then
         "virtualenv-${PYTHON_VERSION}" .venv
         "${PIP}" install -U pip
-	"${PIP}" install Cython
+        "${PIP}" install Cython
+        "${PIP}" install -r requirements.txt
     fi
     develop
 }

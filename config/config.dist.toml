@@ -50,6 +50,13 @@ kml = '/tmp'
 layer_id = 'test'
 
 
+[uwsgi]
+home = '/home/jenselme/Work/geo-api3/.venv'
+master = 1
+processes = 4
+socket = '/tmp/uwsgi.sock'
+
+
 [waitress]
 # Configuration for the waitress webserver used by pserve. You must choose the ip and the port it
 # must listen to.

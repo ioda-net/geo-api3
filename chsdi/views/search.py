@@ -25,7 +25,7 @@ class Search(SearchValidation):
             request.registry.settings['sphinxhost'],
             request.registry.settings['sphinxport'])
         self.sphinx.SetMatchMode(sphinxapi.SPH_MATCH_EXTENDED)
-        self.portalName = request.matchdict.get('map')
+        self.portalName = request.matchdict.get('portal')
         self.cbName = request.params.get('callback')
         self.bbox = request.params.get('bbox')
         self.lang = request.params.get('lang')

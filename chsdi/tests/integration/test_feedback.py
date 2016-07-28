@@ -15,13 +15,13 @@ class TestFeedback(TestsBase):
         self.file = ('attachment', 'test.txt', 'Cocuou'.encode('utf-8'))
 
     def test_send_mail(self):
-        resp = self.testapp.post('/feedback', params=self.payload, status=200)
+        resp = self.testapp.post('/geoportalxyz/feedback', params=self.payload, status=200)
         self.assertTrue(resp.json['success'])
 
     def test_send_mail_with_empty_kml(self):
         self.payload['kml'] = self.empty_kml
         resp = self.testapp.post(
-            '/feedback',
+            '/geoportalxyz/feedback',
             params=self.payload,
             status=200)
         self.assertTrue(resp.json['success'])
@@ -29,14 +29,14 @@ class TestFeedback(TestsBase):
     def test_send_mail_with_kml(self):
         self.payload['kml'] = self.kml
         resp = self.testapp.post(
-            '/feedback',
+            '/geoportalxyz/feedback',
             params=self.payload,
             status=200)
         self.assertTrue(resp.json['success'])
 
     def test_send_mail_with_file(self):
         resp = self.testapp.post(
-            '/feedback',
+            '/geoportalxyz/feedback',
             params=self.payload,
             upload_files=[self.file],
             status=200)
@@ -45,7 +45,7 @@ class TestFeedback(TestsBase):
     def test_send_mail_all(self):
         self.payload['kml'] = self.kml
         resp = self.testapp.post(
-            '/feedback',
+            '/geoportalxyz/feedback',
             params=self.payload,
             upload_files=[self.file],
             status=200)

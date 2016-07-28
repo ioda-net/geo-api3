@@ -7,6 +7,6 @@ class TestFeatures(TestsBase):
         self.assertTrue(len(registered_features) >= 1)
 
     def test_relead(self):
-        resp = self.testapp.get('/features_reload')
+        resp = self.testapp.get('/geoportalxyz/features_reload')
         self.assertTrue(resp.json['success'])
         self.assertTrue(len(registered_features) >= 1)

@@ -11,12 +11,12 @@ class TestShortener(TestsBase):
     def setUp(self):
         super().setUp()
         self.allowed_shortener_domain = self.config['shortener']['allowed_domains'][0]
-        self.base_url = 'http://{}/'.format(self.allowed_shortener_domain)
+        self.base_url = 'http://{}/geoportalxyz/'.format(self.allowed_shortener_domain)
         self.shortener_host = self.config['shortener']['host']
         # Link is only added if not in database. So we create a random one each time.
         location = self.base_url + str(int(time.time()))
         self.resp = self.testapp.get(
-            '/shorten.json',
+            '/geoportalxyz/shorten.json',
             params={'url': location},
             status=200)
         self.shorturl = self.resp.json['shorturl']
@@ -45,27 +45,27 @@ class TestShortener(TestsBase):
         self.assertEqual(url, check_url(url, config))
 
     def test_no_url(self):
-        self.testapp.get('/shorten.json', status=400)
+        self.testapp.get('/geoportalxyz/shorten.json', status=400)
 
     def test_get_non_existant(self):
-        self.testapp.get('/shorten/dummy', status=400)
+        self.testapp.get('/geoportalxyz/shorten/dummy', status=400)
 
     def test_create_short_link(self):
         regexp = 'https?://' + self.shortener_host + '/shorten/[0-9a-f]{10}'
         self.assertTrue(re.match(regexp, self.shorturl))
 
     def test_get_short_link(self):
-        self.testapp.get(self.shorturl, status=301)
+        self.testapp.get(self.shorturl.replace('api', 'geoportalxyz'), status=301)
 
     def test_too_long(self):
         params = {
-            'url': self.base_url + 'a'*2050
+            'url': self.base_url.replace('/geoportalxyz', '') + 'a'*2050
         }
         headers = {'origin': self.base_url}
         resp = self.testapp.get(
-            '/shorten.json',
+            '/geoportalxyz/shorten.json',
             params=params,
             headers=headers,
             status=200)
-        resp = self.testapp.get(resp.json['shorturl'], status=301)
+        resp = self.testapp.get(resp.json['shorturl'].replace('api', 'geoportalxyz'), status=301)
         self.assertTrue(resp.headers['location'] == self.base_url)

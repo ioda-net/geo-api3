@@ -41,9 +41,13 @@ class FileView:
 
     def _get_file_from_admin_id(self):
         try:
-            return self.query(Files)\
+            file = self.query(Files)\
                 .filter(Files.admin_id == self.admin_id)\
                 .one()
+            file.accesstime = datetime.now()
+            self.db.add(file)
+            self.db.commit()
+            return file
         except NoResultFound:  # pragma: no cover
             raise exc.HTTPNotFound('File %s not found' % self.admin_id)
 
@@ -92,11 +96,13 @@ class FileView:
             kml.write(data)
 
         if not update:
+            current_time = datetime.now()
             file = Files(
                 admin_id=self.admin_id,
                 file_id=self.file_id,
                 mime_type=mime_type,
-                createtime=datetime.now()
+                createtime=current_time,
+                accesstime=current_time
             )
             self.db.add(file)
             self.db.commit()

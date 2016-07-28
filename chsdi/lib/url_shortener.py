@@ -45,7 +45,13 @@ def _add_item(request, url):
         t = int(time.time() * 1000) - 1000000000000
         short_url_id = '{:x}'.format(t)
         try:
-            shorten_url = UrlShortener(url=url, short_url=short_url_id, createtime=datetime.now())
+            current_time = datetime.now()
+            shorten_url = UrlShortener(
+                url=url,
+                short_url=short_url_id,
+                createtime=current_time,
+                accesstime=current_time
+            )
             request.db.add(shorten_url)
             request.db.commit()
         except Exception as e:  # pragma: no cover
@@ -72,10 +78,13 @@ def _get_short_url(request, url):
 
 def expand_short_url(request, short_url):
     try:
-        url = request.db.query(UrlShortener)\
+        shorten_url = request.db.query(UrlShortener)\
             .filter(UrlShortener.short_url == short_url)\
             .one()
     except NoResultFound:
         return None
     else:
-        return url.url
+        shorten_url.accesstime = datetime.now()
+        request.db.add(shorten_url)
+        request.db.commit()
+        return shorten_url.url

@@ -2,6 +2,7 @@ import time
 
 from datetime import datetime
 from pyramid.httpexceptions import HTTPBadRequest
+from sqlalchemy import or_
 from sqlalchemy.orm.exc import NoResultFound
 from urllib.parse import urlparse
 
@@ -46,11 +47,13 @@ def _add_item(request, url):
         short_url_id = '{:x}'.format(t)
         try:
             current_time = datetime.now()
+            portal = request.matchdict['portal']
             shorten_url = UrlShortener(
                 url=url,
                 short_url=short_url_id,
                 createtime=current_time,
-                accesstime=current_time
+                accesstime=current_time,
+                portal=portal
             )
             request.db.add(shorten_url)
             request.db.commit()
@@ -77,10 +80,12 @@ def _get_short_url(request, url):
 
 
 def expand_short_url(request, short_url):
+    portal = request.matchdict['portal']
     try:
         shorten_url = request.db.query(UrlShortener)\
             .filter(UrlShortener.short_url == short_url)\
-            .one()
+            .filter(or_(UrlShortener.portal == portal, UrlShortener.portal == None))\
+            .one()  # noqa
     except NoResultFound:
         return None
     else:

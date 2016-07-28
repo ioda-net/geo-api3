@@ -15,6 +15,7 @@ class UrlShortener(Base):
     url = Column(String(URL_MAX_LENGTH), nullable=False)
     createtime = Column(DateTime)
     accesstime = Column(DateTime)
+    portal = Column(String(200))
 
 
 class Files(Base):
@@ -25,6 +26,7 @@ class Files(Base):
     mime_type = Column(String(50), nullable=False)
     createtime = Column(DateTime)
     accesstime = Column(DateTime)
+    portal = Column(String(200))
 
 
 class Communes(Base):

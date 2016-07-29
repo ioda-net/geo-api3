@@ -60,12 +60,7 @@ def _add_item(request, url):
         except Exception as e:  # pragma: no cover
             raise HTTPBadRequest('Error during put item %s' % e)
 
-    short_url = '{}://{}/shorten/{}'.format(
-        request.scheme,
-        request.registry.settings['shortener.host'],
-        short_url_id)
-
-    return short_url
+    return '/shorten/{}'.format(short_url_id)
 
 
 def _get_short_url(request, url):

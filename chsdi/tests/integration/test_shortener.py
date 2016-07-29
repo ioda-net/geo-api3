@@ -12,7 +12,6 @@ class TestShortener(TestsBase):
         super().setUp()
         self.allowed_shortener_domain = self.config['shortener']['allowed_domains'][0]
         self.base_url = 'http://{}/geoportalxyz/'.format(self.allowed_shortener_domain)
-        self.shortener_host = self.config['shortener']['host']
         # Link is only added if not in database. So we create a random one each time.
         location = self.base_url + str(int(time.time()))
         self.resp = self.testapp.get(
@@ -51,11 +50,12 @@ class TestShortener(TestsBase):
         self.testapp.get('/geoportalxyz/shorten/dummy', status=400)
 
     def test_create_short_link(self):
-        regexp = 'https?://' + self.shortener_host + '/shorten/[0-9a-f]{10}'
+        regexp = '/shorten/[0-9a-f]{10}'
         self.assertTrue(re.match(regexp, self.shorturl))
 
     def test_get_short_link(self):
-        self.testapp.get(self.shorturl.replace('api', 'geoportalxyz'), status=301)
+        print(self.shorturl.replace('api', 'geoportalxyz'))
+        self.testapp.get('/geoportalxyz' + self.shorturl, status=301)
 
     def test_too_long(self):
         params = {
@@ -67,5 +67,5 @@ class TestShortener(TestsBase):
             params=params,
             headers=headers,
             status=200)
-        resp = self.testapp.get(resp.json['shorturl'].replace('api', 'geoportalxyz'), status=301)
+        resp = self.testapp.get('/geoportalxyz' + resp.json['shorturl'], status=301)
         self.assertTrue(resp.headers['location'] == self.base_url)

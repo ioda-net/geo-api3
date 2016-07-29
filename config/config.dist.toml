@@ -39,7 +39,6 @@ communes = 10
 [shortener]
 allowed_domains = ['geoportal.local']
 allowed_hosts = ['localhost']
-host = 'api.geoportal.local'
 
 
 [storage]

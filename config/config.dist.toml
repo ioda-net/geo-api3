@@ -50,10 +50,15 @@ layer_id = 'test'
 
 
 [uwsgi]
-home = '/home/jenselme/Work/geo-api3/.venv'
+chmod = 666
+chown = 'uwsgi:uwsgi'
+gid = 'uwsgi'
+uid = 'uwsgi'
+home = ''
 master = 1
 processes = 4
-socket = '/tmp/uwsgi.sock'
+python_path = ['.venv/lib/python3.5/site-packages', '/usr/lib64/python3.5/site-packages', '/home/jenselme/Work/geo-api3']
+socket = '/run/uwsgi/geo-api3.sock'
 
 
 [waitress]

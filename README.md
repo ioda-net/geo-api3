@@ -58,3 +58,60 @@ manuel lint || exit 1
 ```shell
 manuel check || exit 1
 ```
+
+
+# Launch with UWSGI with unix socket
+
+## Apache configuration
+
+Replace:
+
+```apache
+ProxyPass /api http://localhost:9090 connectiontimeout=5 timeout=180
+ProxyPAssReverse /api http://localhost:9090
+```
+
+By
+
+```apache
+<Location /api>
+    Options FollowSymLinks Indexes
+    SetHandler uwsgi-handler
+    uWSGISocket /run/uwsgi/geo-api3.sock
+</Location>
+```
+
+## uWSGI
+
+In your `/etc/uwsgi.ini`:
+
+```ini
+[uwsgi]
+pidfile = /run/uwsgi/uwsgi.pid
+emperor = /etc/uwsgi.d
+stats = /run/uwsgi/stats.sock
+emperor-tyrant = true
+plugins = python3
+```
+
+Adapt your `config.<branchname>.toml` to get something like this in `uwsgi.ini` (generated with `manuel ini-files`):
+
+```ini
+[uwsgi]
+chmod-socket = 666
+chown-socket = uwsgi:uwsgi
+chdir = /home/jenselme/Work/geo-api3
+home = /home/jenselme/Work/geo-api3/.venv
+gid = uwsgi
+uid = uwsgi
+ini-paste = /home/jenselme/Work/geo-api3/production.ini
+master = 1
+plugins = python3
+processes = 4
+pythonpath = .venv/lib/python3.5/site-packages
+pythonpath = /usr/lib64/python3.5/site-packages
+pythonpath = /home/jenselme/Work/geo-api3
+socket = /run/uwsgi/geo-api3.sock
+```
+
+**Note on permissions:** your `production.ini` and `uwsgi.ini` must be owned by the user `uwsgi` and by the group `uwsgi`.

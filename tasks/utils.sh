@@ -27,7 +27,7 @@ HELP['ini-files']="manuel ini-files
 
 Regenerate the ini files for pyramid from the configuration."
 function ini-files {
-    declare -a ini_files=(production.ini development.ini)
+    declare -a ini_files=(production.ini development.ini uwsgi.ini)
     local current_branch=$(git rev-parse --abbrev-ref HEAD)
     for file in ${ini_files[@]}; do
         python3 tasks/config.py "${current_branch}" | "${JINJA2}" --format json \

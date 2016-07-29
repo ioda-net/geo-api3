@@ -1,0 +1,17 @@
+[uwsgi]
+chmod-socket = {{ uwsgi.chmod }}
+chown-socket = {{ uwsgi.chown }}
+chdir = {{ install_directory }}
+{%- if uwsgi.home %}
+home = {{ uwsgi.home }}
+{%- endif %}
+gid = {{ uwsgi.gid }}
+uid = {{ uwsgi.uid }}
+ini-paste = {{ install_directory }}/production.ini
+master = {{ uwsgi.master }}
+plugins = python3
+processes = {{ uwsgi.processes }}
+{%- for pp in uwsgi.python_path %}
+pythonpath = {{ pp }}
+{%- endfor %}
+socket = {{ uwsgi.socket }}

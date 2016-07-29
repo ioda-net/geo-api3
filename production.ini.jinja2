@@ -130,7 +130,11 @@ format = %(asctime)s %(levelname)-5.5s [%(name)s][%(threadName)s] %(message)s
 
 
 [uwsgi]
+chmod-socket = {{ uwsgi.chmod }}
+chown-socket = {{ uwsgi.chown }}
+{%- if uwsgi.home %}
 home = {{ uwsgi.home }}
+{%- endif %}
 master = {{ uwsgi.master }}
 processes = {{ uwsgi.processes }}
 socket = {{ uwsgi.socket }}

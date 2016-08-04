@@ -4,6 +4,8 @@ as the 3-clause (or "modified") BSD license:
 ==============================
 
 Copyright (c) 2013-2016, swisstopo
+Copyright (c) 2015-2016, sigeom sa All rights reserved.
+Copyright (c) 2015-2016, Ioda-Net Sàrl All rights reserved.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,

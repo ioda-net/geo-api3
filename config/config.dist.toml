@@ -4,14 +4,14 @@ default_epsg = 21781
 max_features = 201
 
 [db]
-name = 'sit'
-host = 'geo_api3:geo_api3@localhost'
+name = 'geo'
+host = 'geo_api3:geo_api3@db.geoportal.prod'
 port = 5432
 staging = 'prod'
 
 
 [feedback]
-default_recipient = 'support@example.com'
+default_recipient = 'support@geoportal.prod'
 default_subject = 'Geoportal Customer feedback'
 mail_host_name = 'localhost'
 mail_host_port = 25
@@ -19,7 +19,8 @@ mail_host_port = 25
 
 [raster]
 available = ['MNT50']
-dtm_base_path = '/var/geo-api3/data/bt'
+# bt files located in data/bt
+dtm_base_path = '/var/geo-api3/data'
 preloaded = ['MNT50']
 
 
@@ -29,7 +30,7 @@ port = 9312
 
 
 [search.origins_to_ranks]
-# this part need to be in sync in mapfinfra/config/global.toml
+# this part need to be in sync in customer-infra/config/global.toml
 nomenclatures = 40
 sorted_parcels = 30
 sorted_buildings = 20
@@ -37,12 +38,12 @@ communes = 10
 
 
 [shortener]
-allowed_domains = ['geoportal.local']
+allowed_domains = ['geoportal.local', 'geoportal.prod']
 allowed_hosts = ['localhost']
 
 
 [storage]
-kml = '/tmp'
+kml = '/var/tmp'
 
 
 [tests]
@@ -50,6 +51,7 @@ layer_id = 'test'
 
 
 [uwsgi]
+# beta work in progress
 chmod = 666
 chown = 'uwsgi:uwsgi'
 gid = 'uwsgi'

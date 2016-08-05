@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import json
+import logging
 import subprocess
 import sys
 import toml
@@ -9,12 +10,11 @@ from os.path import exists
 
 
 def load_config(git_branch=''):
+    logging.info('INFO: loaded config file: config/config.dist.toml')
     dist = toml.load('config/config.dist.toml')
-    if exists('config/config.toml'):
-        conf = toml.load('config/config.toml')
-        update(dist, conf)
 
     if exists('config/config.' + git_branch + '.toml'):
+        logging.info('INFO: loaded config file: config/config.' + git_branch + '.toml')
         conf = toml.load('config/config.' + git_branch + '.toml')
         update(dist, conf)
 

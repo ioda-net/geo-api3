@@ -19,6 +19,20 @@ source config/config.dist.sh
 source config/config.sh 2> /dev/null || :
 
 
+# Checks: perform various checks before launching manuel
+MUST_EXIT="false"
+if [[ -f 'config/config.toml' ]]; then
+    MUST_EXIT="true"
+    echo "Support for config/config.toml has been removed.
+You may want to rename it in config/config.$(git rev-parse --abbrev-ref HEAD).toml" >&2
+fi
+
+if [[ "${MUST_EXIT}" == "true" ]]; then
+    exit 1
+fi
+# END: Checks
+
+
 HELP['help']="manuel help [TASK]
 
 Display the help for the given task. Use manuel list to list all tasks."

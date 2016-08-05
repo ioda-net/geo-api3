@@ -1,8 +1,4 @@
-mf-chsdi3
-=========
-
-
-# Getting started
+# Getting started with geo-api3
 
 Checkout the source code:
 
@@ -21,12 +17,12 @@ from the templates. The keys used in it, will override any values loaded from
 `config/config.dist.toml`.
 
 
-# Serve
+## Serve
 
 - Launch pserve with the development configuration: `manuel serve`
 
 
-# Test
+## Test
 
 - To launch all test, use make: `manuel test`
 - To launch only some test, pass the proper argumemnts to `manuel test`:
@@ -34,12 +30,12 @@ from the templates. The keys used in it, will override any values loaded from
   options recognized by nose as you want.
 
 
-# Lint
+## Lint
 
 Use `manuel lint`.
 
 
-# Recommanded hooks
+## Recommanded hooks
 
 git hooks allow you to launch a script before or after a git command. They are very handy to
 automatically perform checks. If the script exits with a non 0 status, the git command will be
@@ -47,22 +43,22 @@ aborted. You must write them in the `.git/hooks/` folder in a file following the
 <pre|post>-<git-action>. You must not forget to make them executable, eg:
 `chmod +x .git/hooks/pre-commit`.
 
-## pre-commit
+### pre-commit
 
 ```shell
 manuel lint || exit 1
 ```
 
-## pre-push
+### pre-push
 
 ```shell
 manuel check || exit 1
 ```
 
 
-# Launch with UWSGI with unix socket
+## Launch with UWSGI with unix socket
 
-## Apache configuration
+### Apache configuration
 
 Replace:
 
@@ -81,7 +77,7 @@ By
 </Location>
 ```
 
-## uWSGI
+### uWSGI
 
 In your `/etc/uwsgi.ini`:
 
@@ -115,3 +111,10 @@ socket = /run/uwsgi/geo-api3.sock
 ```
 
 **Note on permissions:** your `production.ini` and `uwsgi.ini` must be owned by the user `uwsgi` and by the group `uwsgi`.
+
+
+
+
+## Credits
+
+- [manuel](https://github.com/ShaneKilkelly/manuel) was created by Shane Kilkelly and is released under the MIT License.

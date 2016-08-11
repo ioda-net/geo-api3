@@ -8,5 +8,5 @@ SEARCH_KEYWORDS = (
     # address, rank 20
     SearchKeywords(
         keywords=('addresse', 'adresse', 'indirizzo', 'address'),
-        filter_keys=['communes', 'sorted_buildings']),
+        filter_keys=['places']),
 )

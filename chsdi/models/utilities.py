@@ -1,7 +1,6 @@
 # -*- coding: utf-8
 
-from sqlalchemy import Column, String, DateTime, Integer
-from geoalchemy2.types import Geometry
+from sqlalchemy import Column, String, DateTime
 from chsdi.models import (
     bases,
     PARTIALLY_SUPPORTED_DATABASE_TYPE,
@@ -34,11 +33,3 @@ class Files(Base):
     createtime = Column(DateTime)
     accesstime = Column(DateTime)
     portal = Column(String(200))
-
-
-class Communes(Base):
-    __tablename__ = 'communes'
-    __table_args__ = ({'schema': schema, 'autoload': False})
-    gid = Column(Integer, primary_key=True)
-    nom = Column(String)
-    the_geom = Column(Geometry(geometry_type='GEOMETRY', srid=21781, dimension=2))

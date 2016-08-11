@@ -11,6 +11,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from chsdi.models import bases
 from chsdi.models import engines
 from chsdi.models import registered_features
+from chsdi.models import PARTIALLY_SUPPORTED_DATABASE_TYPE
 from chsdi.models.features import Feature
 
 
@@ -27,6 +28,8 @@ class MapLayersFeatures(Base):
 
 def register_features():
     for engine in engines.values():
+        if engine.driver in PARTIALLY_SUPPORTED_DATABASE_TYPE:
+            continue
         features_names = _get_feature_names(engine)
         session = Session(bind=engine)
         meta = MetaData(bind=engine, schema='features')

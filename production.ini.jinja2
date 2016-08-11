@@ -16,7 +16,11 @@ pyramid.includes = pyramid_tm
 
 
 # SQLAlchemy database URL
+{%- if db.type == 'sqlite' %}
+sqlalchemy.sit.url = sqlite:///{{ db.file_path }}{% if db.staging %}_{% endif %}{{ db.staging }}
+{%- else %}
 sqlalchemy.sit.url = postgresql://{{ db.host }}:{{ db.port }}/{{ db.name }}{% if db.staging %}_{% endif %}{{ db.staging }}
+{%- endif %}
 
 
 # Mako specific

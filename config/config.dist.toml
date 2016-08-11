@@ -4,6 +4,11 @@ default_epsg = 21781
 max_features = 201
 
 [db]
+# Available types: postgresql, sqlite. If types doesn't match anything in this
+# list, postgresql will be assumed.
+# Keys below are for postgresql.
+# For sqlite databases, valid keys are (in addition to type): file_path and staging.
+type = 'postgresql'
 name = 'geo'
 host = 'geo_api3:geo_api3@db.geoportal.prod'
 port = 5432

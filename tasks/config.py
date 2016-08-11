@@ -32,7 +32,8 @@ def get_git_branch():
 def update(dest, source):
     for key, value in source.items():
         if key not in dest:
-            print('WARNING: Key {} not in dest'.format(key), file=sys.stderr)
+            if not (key == 'file_path' and source.get('type', '') == 'sqlite'):
+                print('WARNING: Key {} not in dest'.format(key), file=sys.stderr)
         if isinstance(value, dict):
             update(dest.setdefault(key), value)
         else:

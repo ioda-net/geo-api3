@@ -23,7 +23,7 @@ class Search(SearchValidation):
         self.sphinx = sphinxapi.SphinxClient()
         self.sphinx.SetServer(
             request.registry.settings['sphinxhost'],
-            request.registry.settings['sphinxport'])
+            int(request.registry.settings['sphinxport']))
         self.sphinx.SetMatchMode(sphinxapi.SPH_MATCH_EXTENDED)
         self.portalName = request.matchdict.get('portal')
         self.cbName = request.params.get('callback')

@@ -35,11 +35,8 @@ port = 9312
 
 
 [search.origins_to_ranks]
-# this part need to be in sync in customer-infra/config/global.toml
-nomenclatures = 40
-sorted_parcels = 30
-sorted_buildings = 20
-communes = 10
+# This part need to be in sync in customer-infra/config/_common.dist.toml
+#communes = 10
 
 
 [shortener]

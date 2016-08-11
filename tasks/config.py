@@ -29,13 +29,16 @@ def get_git_branch():
         .strip()
 
 
-def update(dest, source):
+def update(dest, source, check=True):
     for key, value in source.items():
         if key not in dest:
-            if not (key == 'file_path' and source.get('type', '') == 'sqlite'):
+            if check and not (key == 'file_path' and source.get('type', '') == 'sqlite'):
                 print('WARNING: Key {} not in dest'.format(key), file=sys.stderr)
         if isinstance(value, dict):
-            update(dest.setdefault(key), value)
+            check = True
+            if key in 'origins_to_ranks':  # Can contain anything that is customer specific.
+                check = False
+            update(dest.setdefault(key), value, check=check)
         else:
             dest[key] = value
 

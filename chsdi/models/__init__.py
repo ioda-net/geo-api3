@@ -28,7 +28,7 @@ def initialize_sql(settings):
         engine = engine_from_config(
             settings,
             'sqlalchemy.%s.' % db,
-            **kwargs,
+            **kwargs
         )
         engines[db] = engine
         bases[db].metadata.bind = engine

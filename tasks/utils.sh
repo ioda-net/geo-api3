@@ -6,7 +6,7 @@ HELP['venv']="manuel venv
 Create a virtual env for the API in .venv"
 function venv {
     if [[ ! -d .venv ]]; then
-        "virtualenv-${PYTHON_VERSION}" .venv
+        python3 -m venv .venv
         "${PIP}" install -U pip
         "${PIP}" install Cython
         "${PIP}" install -r requirements.txt

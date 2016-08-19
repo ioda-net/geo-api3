@@ -44,6 +44,7 @@ function wsgi-files {
     ini-files
     declare -a wsgi_files=(production.wsgi development.wsgi)
     local current_branch=$(git rev-parse --abbrev-ref HEAD)
+    mkdir -p parts/wsgi
     for file in ${wsgi_files[@]}; do
         python3 tasks/config.py "${current_branch}" | "${JINJA2}" --format json \
                     -Dini_path="$(pwd)/${file%%.*}.ini" \

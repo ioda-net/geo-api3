@@ -44,12 +44,6 @@ class Search(SearchValidation):
                           if originRank]
         self.originsToRanks = {origin.strip(): int(rank) for origin, rank in originAndRanks}
 
-        self.quadtree = msk.QuadTree(
-            msk.BBox(420000, 30000, 900000, 510000), 20)
-        self.sphinx = sphinxapi.SphinxClient()
-        self.sphinx.SetServer(request.registry.settings['sphinxhost'], 9312)
-        self.sphinx.SetMatchMode(sphinxapi.SPH_MATCH_EXTENDED)
-
     @view_config(route_name='search', renderer='jsonp')
     def search(self):
         self.sphinx.SetConnectTimeout(10.0)

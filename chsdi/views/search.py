@@ -119,7 +119,7 @@ class Search(SearchValidation):
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC')
         index_name = '{portal}_layers_{lang}'\
             .format(portal=self.portalName, lang=self.lang)
-        searchText = self._query_fields('@(layer,label)')
+        searchText = self._query_fields('@(search_string)')
         try:
             temp = self.sphinx.Query(searchText, index=index_name)
         except IOError:  # pragma: no cover

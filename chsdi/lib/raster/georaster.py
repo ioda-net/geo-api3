@@ -1,5 +1,5 @@
 from chsdi.lib.raster import shputils
-from os.path import dirname
+from os.path import dirname, join
 from struct import unpack
 
 import logging
@@ -22,7 +22,7 @@ def get_raster(name):
 def init_rasterfiles(datapath, preloadtypes):
     global _rasterfiles
     _rasterfiles = {
-        'MNT50': datapath + 'bt/MNT50.shp'
+        'MNT50': join(datapath, 'bt/MNT50.shp'),
     }
     try:
         for pt in preloadtypes:

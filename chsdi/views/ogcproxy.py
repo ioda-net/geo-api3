@@ -22,12 +22,12 @@ class OgcProxy:
 
         url = self.request.params.get("url")
         if url is None:
-            return HTTPBadRequest()
+            return HTTPBadRequest('No URL provided')
 
         # check for full url
         parsed_url = urlparse(url)
         if not parsed_url.netloc or parsed_url.scheme not in ("http", "https"):  # pragma: no cover
-            raise HTTPBadRequest()
+            raise HTTPBadRequest('URL must contain the scheme (http or https)')
 
         # forward request to target (without Host Header)
         h = dict(self.request.headers)

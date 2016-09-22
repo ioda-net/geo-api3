@@ -43,7 +43,9 @@ class OgcProxy:
         #  All content types are allowed
         if "content-type" in resp.headers:
             ct = resp.headers["content-type"]
-            if ct == "application/vnd.google-earth.kmz":
+            if ct == "application/vnd.google-earth.kmz" or \
+                    (ct == "application/octet-stream" and
+                     resp["content-location"].endswith(".kmz")):
                 zipfile = None
                 try:
                     zipfile = ZipFile(BytesIO(content))

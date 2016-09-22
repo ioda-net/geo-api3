@@ -120,7 +120,11 @@ class FileView:
             else:
                 with open(self._get_save_path()) as kml:
                     data = kml.read()
-                return Response(data, content_type='application/vnd.google-earth.kml+xml')
+                headers = {
+                    'Cache-Control': 'no-cache, must-revalidate',
+                    'Content-Type': 'application/vnd.google-earth.kml+xml',
+                }
+                return Response(data, headers=headers)
         except Exception:
             raise exc.HTTPNotFound('File %s not found' % self.file_id)
 

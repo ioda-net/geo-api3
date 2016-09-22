@@ -24,7 +24,10 @@ def get_image_colored(request):
     g = int(g)
     b = int(b)
     imgName = request.matchdict['image']
-    path = os.path.join(request.registry.settings['install_directory'], 'chsdi/static/images/maki/', imgName)
+    path = os.path.join(
+        request.registry.settings['install_directory'],
+        'chsdi/static/images/maki/',
+        imgName)
     if not os.path.isfile(path):
         raise HTTPBadRequest('The image to color doesn\'t exist')
 

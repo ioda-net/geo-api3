@@ -2,8 +2,6 @@
 
 import os.path
 
-from chsdi.lib.decorators import requires_authorization
-
 from io import BytesIO
 from PIL import Image
 from pyramid.httpexceptions import HTTPBadRequest
@@ -12,7 +10,6 @@ from pyramid.response import Response
 
 
 @view_config(route_name='color')
-@requires_authorization()
 def get_image_colored(request):
     r = request.matchdict['r']
     if r.isdigit() is False:

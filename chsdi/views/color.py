@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import os.path
-import StringIO
 
 from chsdi.lib.decorators import requires_authorization
 
+from io import BytesIO
 from PIL import Image
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
@@ -36,7 +36,7 @@ def get_image_colored(request):
     if mask.mode == 'P':
         mask = mask.convert('RGBA')
     img = Image.composite(Image.new("RGB", mask.size, (r, g, b)), mask, mask)
-    output = StringIO.StringIO()
+    output = BytesIO()
     img.save(output, format='PNG')
     response = Response(output.getvalue(), content_type='image/png')
     return response

@@ -122,7 +122,7 @@ class FileView:
                     data = kml.read()
                 headers = {
                     'Cache-Control': 'no-cache, must-revalidate',
-                    'Content-Type': 'application/vnd.google-earth.kml+xml',
+                    'Content-Type': 'application/vnd.google-earth.kml+xml; charset=UTF-8',
                 }
                 return Response(data, headers=headers)
         except Exception:

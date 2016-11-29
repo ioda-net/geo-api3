@@ -1,10 +1,14 @@
+import logging
 import re
 
 from pyramid.view import view_config
 import pyramid.httpexceptions as exc
 
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
-from sqlalchemy.exc import InternalError
+from sqlalchemy.exc import (
+    InternalError,
+    ProgrammingError,
+)
 from sqlalchemy.sql.expression import cast
 from sqlalchemy import Text, Integer, Boolean, Numeric, Date
 from geoalchemy2.types import Geometry
@@ -126,20 +130,16 @@ def _identify(request):
     except ValueError:
         maxFeatures = MAX_FEATURES
     features = []
-    feature_gen = _get_features_for_filters(params, models, maxFeatures=maxFeatures)
-    while True:
-        try:
-            feature = next(feature_gen)
-        except InternalError as e:  # pragma: no cover
-            raise exc.HTTPBadRequest('Your request generated the following database error: %s' % e)
-        except StopIteration:
-            break
-        else:
-            f = _process_feature(feature, params)
-            features.append(f)
+    try:
+        raw_features = _get_features_for_filters(params, models, maxFeatures=maxFeatures)
+    except InternalError as e:  # pragma: no cover
+        raise exc.HTTPBadRequest('Your request generated the following database error: %s' % e)
+    for feature in raw_features:
+        f = _process_feature(feature, params)
+        features.append(f)
 
-            if len(features) > maxFeatures:  # pragma: no cover
-                break
+        if len(features) >= maxFeatures:  # pragma: no cover
+            break
 
     return {'results': features}
 
@@ -189,6 +189,7 @@ def _get_features(params, extended=False):
 def _get_features_for_filters(params, models, maxFeatures=None):
     ''' Returns a generator function that yields
     a feature. '''
+    features = []
     for vectorLayer in models:
         for model in vectorLayer:
             query = params.request.db.query(model)
@@ -209,8 +210,19 @@ def _get_features_for_filters(params, models, maxFeatures=None):
             # Add limit
             query = query.limit(maxFeatures) if maxFeatures is not None else query
 
-            for feature in query:
-                yield feature
+            try:
+                features.extend(query.all())
+            except ProgrammingError as e:
+                params.request.db.rollback()
+                logging.exception(e)
+
+        # On next loop, update the max number of features we can get.
+        if maxFeatures is not None:
+            maxFeatures = maxFeatures - len(features)
+            if maxFeatures <= 0:
+                break
+
+    return features
 
 
 def _find(request):

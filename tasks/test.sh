@@ -31,3 +31,15 @@ function test {
         "${NOSE}" "$@"
     fi
 }
+
+
+
+HELP['test-cover']="manuel test-cover
+
+Launch all tests with code coverage."
+function test-cover {
+    "${NOSE}" --ignore-files test_protocol.py \
+        --with-coverage \
+        --cover-package=chsdi \
+        --cover-html
+}

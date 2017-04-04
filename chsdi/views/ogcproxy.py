@@ -9,6 +9,10 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPBadRequest, HTTPBadGateway, HTTPNotAcceptable
 from pyramid.response import Response
 
+# Disable "unverified https request" warnings
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
 
 DEFAULT_ENCODING = 'utf-8'
 

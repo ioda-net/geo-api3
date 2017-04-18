@@ -36,6 +36,7 @@ class OgcProxy:
         # forward request to target (without Host Header)
         h = dict(self.request.headers)
         h.pop("Host", h)
+        h.pop('X-Forwarded-Host', h)
         try:
             resp = requests.request(self.request.method, url,
                                     data=self.request.body, headers=h,

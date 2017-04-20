@@ -44,6 +44,17 @@ class Search(SearchValidation):
                           if originRank]
         self.originsToRanks = {origin.strip(): int(rank) for origin, rank in originAndRanks}
 
+        self.default_srid = int(request.registry.settings['default_epsg'])
+        try:
+            if request.params.get('epsg'):
+                _, self.srid = request.params['epsg'].split(':')
+            else:
+                self.srid = request.params.get('srid', self.default_srid)
+            self.srid = int(self.srid)
+        except:
+            raise exc.HTTPBadRequest('Invalid SRID or EPSG. Use something like: srid=2056 or '
+                                     'epsg=EPSG:2056')
+
     @view_config(route_name='search', renderer='jsonp')
     def search(self):
         self.sphinx.SetConnectTimeout(10.0)
@@ -153,7 +164,7 @@ class Search(SearchValidation):
         wkt = 'POINT(%s %s)' % (centerX, centerY)
         return transformCoordinate(
             wkt,
-            int(self.request.registry.settings['default_epsg']),
+            self.srid,
             4326)
 
     def _query_fields(self, fields):

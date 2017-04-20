@@ -38,6 +38,17 @@ class FeatureParams(MapServiceValidation):
             .get('X-SearchServer-Authorized', 'false')\
             .lower() == 'true'
 
+        self.default_srid = int(request.registry.settings['default_epsg'])
+        try:
+            if request.params.get('epsg'):
+                _, self.srid = request.params['epsg'].split(':')
+            else:
+                self.srid = request.params.get('srid', self.default_srid)
+            self.srid = int(self.srid)
+        except:
+            raise exc.HTTPBadRequest('Invalid SRID or EPSG. Use something like: srid=2056 or '
+                                     'epsg=EPSG:2056')
+
 # for releases requests
 
 
@@ -201,7 +212,7 @@ def _get_features_for_filters(params, models, maxFeatures=None):
                     params.imageDisplay,
                     params.mapExtent,
                     params.tolerance,
-                    int(params.request.registry.settings['default_epsg'])
+                    params.srid
                 )
                 # Can be None because of max and min scale
                 if geomFilter is not None:

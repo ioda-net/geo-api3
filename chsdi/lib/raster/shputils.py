@@ -32,6 +32,7 @@ def loadShapefile(file_name):
 
     return records
 
+
 record_class = {0: 'RecordNull', 1: 'RecordPoint', 8: 'RecordMultiPoint',
                 3: 'RecordPolyLine', 5: 'RecordPolygon'}
 
@@ -73,6 +74,7 @@ def readRecordAny(fp, type):
 def readRecordNull(fp):
     data = {}
     return data
+
 
 point_count = 0
 

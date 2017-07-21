@@ -19,7 +19,7 @@ HELP['develop']="manuel develop
 
 Install geo-api3 for development ('python setup.py develop')."
 function develop {
-    "${PYTHON}" setup.py develop
+    "${PYTHON}" setup.py develop --prefix $(pwd)
 }
 
 

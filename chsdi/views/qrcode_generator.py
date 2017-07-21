@@ -4,6 +4,7 @@ from io import BytesIO
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.response import Response
+from urllib.parse import urlparse
 
 from chsdi.lib.url_shortener import create_short_url
 
@@ -11,6 +12,9 @@ from chsdi.lib.url_shortener import create_short_url
 @view_config(route_name='qrcodegenerator')
 def create_qrcode(request):
     short_url = create_short_url(request)
+    parsedUrl = urlparse(request.params.get('url'))
+    api_url = parsedUrl.scheme + '://' + parsedUrl.netloc + parsedUrl.path + 'api'
+    short_url = api_url + short_url
     img = _make_qrcode_img(short_url)
     response = Response(img, content_type='image/png')
     return response

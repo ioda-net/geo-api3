@@ -87,6 +87,8 @@ function deploy {
     clean
     ini-files
     wsgi-files
-
+    if [[ ! -d "lib/python${PYTHON_VERSION}/site-packages" ]];then
+          mkdir -p "lib/python${PYTHON_VERSION}/site-packages"
+    fi
     "${PYTHON}" setup.py install --prefix $(pwd)
 }

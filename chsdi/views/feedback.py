@@ -36,6 +36,8 @@ class Feedback:
         permalink = self.get_param('permalink', 'No permalink provided')
         feedback = self.get_param('feedback', 'No feedback provided')
         self.user_email = self.get_param('email', None)
+        # Protect ourselves from stupid undefined string issue#62
+        self.user_email = self.default_recipient if self.user_email == 'undefined' else self.user_email
         self.recipient = self.get_param('to', None)
         self.subject = self.get_param('subject', None)
         text_format = {

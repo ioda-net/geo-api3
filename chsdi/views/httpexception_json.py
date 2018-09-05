@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from webob.acceptparse import Accept
+from webob.acceptparse import create_accept_header
 from pyramid.view import exception_view_config
 from pyramid.httpexceptions import HTTPException
 
@@ -19,7 +19,7 @@ def exception_view_json(context, request):
     accept_header = headers.get('Accept')
     if accept_header is None:
         return context
-    accept_parser = Accept(accept_header)
+    accept_parser = create_accept_header(accept_header)
     if '*/*' in accept_header or 'application/json' in accept_parser:
         context.json_body = format_exception_context(context)
         context.content_type = 'application/json'
